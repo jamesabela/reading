@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Minecraft Reader | Interactive Story Explorer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --mc-sky: #87CEEB;
+            --mc-grass: #5ba432;
+            --mc-sun: #ffff00;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Quicksand', sans-serif;
+            background: var(--mc-sky);
+        }
+
+        /* Setup View */
+        #setup-view {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            background: linear-gradient(135deg, rgba(135, 206, 235, 0.8), rgba(91, 164, 50, 0.4));
+            backdrop-filter: blur(10px);
+            transition: opacity 0.5s ease;
+            padding-top: 80px; /* Space for fixed nav */
+        }
+
+        .setup-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .setup-card h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .setup-card p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 2px solid var(--card-border);
+            font-size: 1rem;
+            resize: none;
+            margin-bottom: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .char-count.limit {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* World View UI */
+        #ui-layer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #ui-layer * {
+            pointer-events: auto;
+        }
+
+        .world-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 50px;
+            transition: 0.3s;
+            font-family: 'Fredoka', sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .world-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .world-btn.back-btn {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        #overlay {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            pointer-events: none;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        #copy-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(26, 188, 156, 0.3);
+            transform: translateY(100px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+
+        #copy-toast.show {
+            transform: translateY(0);
+        }
+
+        /* Hidden when not in use */
+        .hidden {
+            display: none !important;
+        }
+
+        /* World Controls */
+        #controls {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            display: grid;
+            grid-template-areas: 
+                ". up ."
+                "left down right";
+            gap: 10px;
+            z-index: 20;
+            pointer-events: auto;
+        }
+
+        .dpad-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .dpad-btn:active {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(0.9);
+        }
+
+        #move-up { grid-area: up; }
+        #move-down { grid-area: down; }
+        #move-left { grid-area: left; }
+        #move-right { grid-area: right; }
+    </style>
+</head>
+<body>
+    <nav id="main-nav"></nav>
+
+    <!-- Setup View -->
+    <div id="setup-view">
+        <div class="setup-card">
+            <h1>Minecraft Reader</h1>
+            <p>Paste your story below to explore it in a 3D blocky world (Max 1,900 chars).</p>
+            <textarea id="story-input" placeholder="Once upon a time in a world of blocks..."></textarea>
+            <div id="char-info" class="char-count">0 / 1900</div>
+            <div class="hero-btns" style="justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <button id="start-btn" class="btn btn-primary">Enter the World</button>
+                <button id="random-btn" class="btn btn-secondary" style="border-color: var(--accent); color: var(--accent);">🎁 Random Story</button>
+            </div>
+        </div>
+        <footer id="main-footer" class="section"></footer>
+    </div>
+
+    <!-- World View UI -->
+    <div id="ui-layer" class="hidden">
+        <button id="reset-btn" class="world-btn">🏠 Back to Start</button>
+        <button id="share-btn" class="world-btn">🔗 Share Story Link</button>
+        <button id="exit-btn" class="world-btn back-btn">⬅️ Change Text</button>
+    </div>
+
+    <!-- Controls -->
+    <div id="controls" class="hidden">
+        <div id="move-up" class="dpad-btn">↑</div>
+        <div id="move-left" class="dpad-btn">←</div>
+        <div id="move-right" class="dpad-btn">→</div>
+        <div id="move-down" class="dpad-btn">↓</div>
+    </div>
+
+    <div id="copy-toast">Link copied to clipboard!</div>
+
+    <script src="components.js"></script>
+
+    <script>
+        // --- CONSTANTS & STATE ---
+        const MAX_CHARS = 1900;
+        const CHUNK_SIZE = 200;
+        const MAX_SIGNS = 50;
+        
+        const PRESET_STORIES = [
+            {
+                title: "The Fox and the Hare",
+                text: "The fox was fast. He loved to run. The hare was slow. She loved to read. One day, the fox saw a sign. He could not read it. 'What does it say?' he asked. The hare smiled. 'It says the bridge is broken,' she said. The fox stopped. He was glad he asked. 'Can you teach me?' he asked. The hare said, 'Yes.' They sat down by a tree. Every day, they met. The fox learned a few words. Soon, he could read the signs too. Now, they run and read together. They are the best of friends. Reading made their world safer and their friendship stronger. The fox realized that some things are worth slowing down for, and the hare realized that sharing her love for books was the greatest adventure of all."
+            },
+            {
+                title: "The Girl and the Hidden Maps",
+                text: "Leo struggled with books. The letters danced on the page. He felt lost in a sea of ink. But one day, he found a 3D blocky world. In this world, words were like mountains. He could walk around them. He could jump on them. He started to see patterns. 'The' looked like a tall oak. 'And' looked like a small path. Slowly, the dancing stopped. The letters became his friends. He didn't just read the story; he explored it. Today, Leo is a cartographer. He builds maps made of words, helping others find their way through the sea of ink. He found that when you change how you look at things, the things you look at change. The blocks weren't just shapes; they were the building blocks of his future."
+            },
+            {
+                title: "The Librarian's Hidden Key",
+                text: "Arthur was seventy. He had lived a long, full life without ever reading a book. He was clever, but the library felt like a locked castle. One afternoon, a young librarian named Sam gave him a special key. It wasn't made of metal; it was a simple, clear guide with large letters. Sam sat with Arthur every Tuesday. They started with one letter. Then two. Arthur's hands shook with effort, but Sam was patient. One day, Arthur picked up a book about the stars. He read the first sentence. Then the next. The castle walls crumbled. Arthur didn't just learn to read; he learned to fly. He realized it is never too late to open a new door, and that every word was a star in a galaxy he was finally starting to explore."
+            },
+            {
+                title: "The Blocky Odyssey",
+                text: "You stand at the edge of a great digital forest. Every tree is a letter, and every path is a sentence. You used to fear the forest. It was too dense, too dark. But today, you have a compass. You walk forward, and a sign appears. It is a word you know. Then another. The forest starts to clear. You realize that the story is yours to build, block by block. With every step, you become stronger. The forest is no longer a maze; it is an adventure. You are not just a reader; you are the hero of the blocky odyssey. Each word you discover is a resource gathered, each sentence a structure built. In this world, your literacy is your greatest tool, and every page is a new territory waiting for your arrival."
+            }
+        ];
+        
+        let storyData = [];
+        let scene, camera, renderer, sun, ground;
+        let keys = { w: false, a: false, s: false, d: false };
+        const speed = 0.15; // Reduced from 0.4 for better precision
+        const startPos = { x: 0, y: 2, z: 10 };
+
+        const storyInput = document.getElementById('story-input');
+        const charInfo = document.getElementById('char-info');
+        const startBtn = document.getElementById('start-btn');
+        const setupView = document.getElementById('setup-view');
+        const uiLayer = document.getElementById('ui-layer');
+        const overlay = document.getElementById('overlay');
+
+        // --- UTILS ---
+        
+        function encodeStory(text) {
+            return btoa(unescape(encodeURIComponent(text)));
+        }
+
+        function decodeStory(base64) {
+            try {
+                return decodeURIComponent(escape(atob(base64)));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function processStory(text) {
+            // Remove extra whitespace
+            text = text.trim();
+            if (!text) return [];
+
+            // Simple splitting logic matching Python version
+            let rawSegments = text.split('\n').filter(s => s.trim().length > 0);
+            let processed = [];
+
+            rawSegments.forEach((segment, i) => {
+                const baseIndex = i + 1;
+                
+                if (segment.length <= CHUNK_SIZE) {
+                    processed.push({ text: segment, index: String(baseIndex) });
+                } else {
+                    const words = segment.split(' ');
+                    let currentChunk = [];
+                    let currentLen = 0;
+                    let chunkIdx = 1;
+
+                    words.forEach(word => {
+                        if (currentLen + word.length + 1 > CHUNK_SIZE) {
+                            processed.push({ 
+                                text: currentChunk.join(' '), 
+                                index: `${baseIndex}.${chunkIdx++}` 
+                            });
+                            currentChunk = [word];
+                            currentLen = word.length;
+                        } else {
+                            currentChunk.push(word);
+                            currentLen += word.length + 1;
+                        }
+                    });
+                    if (currentChunk.length > 0) {
+                        processed.push({ 
+                            text: currentChunk.join(' '), 
+                            index: `${baseIndex}.${chunkIdx}` 
+                        });
+                    }
+                }
+            });
+
+            if (processed.length > MAX_SIGNS) {
+                processed = processed.slice(0, MAX_SIGNS);
+                processed[processed.length - 1].text = "Read the rest of the text on-screen.";
+                processed[processed.length - 1].index = "END";
+            }
+
+            return processed;
+        }
+
+        // --- 3D ENGINE ---
+
+        function initScene() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87CEEB);
+            scene.fog = new THREE.Fog(0x87CEEB, 200, 2000);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(50, 100, 50);
+            scene.add(dirLight);
+
+            createTerrain();
+            createSun();
+            createMountains();
+
+            resetCamera();
+            animate();
+        }
+
+        function createGrassTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#5ba432'; 
+            ctx.fillRect(0,0,64,64);
+            
+            for(let i=0; i<300; i++) {
+                const colors = ['#468b22', '#6cc93d', '#3e7a1e'];
+                ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+                const x = Math.floor(Math.random()*16)*4;
+                const y = Math.floor(Math.random()*16)*4;
+                ctx.fillRect(x,y,4,4);
+            }
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.magFilter = THREE.NearestFilter;
+            tex.minFilter = THREE.NearestFilter;
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(1000, 1000); 
+            return tex;
+        }
+
+        function createTerrain() {
+            const groundGeo = new THREE.PlaneGeometry(20000, 20000);
+            const groundMat = new THREE.MeshStandardMaterial({ map: createGrassTexture() });
+            ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.05;
+            scene.add(ground);
+        }
+
+        function createSun() {
+            const sunGeo = new THREE.BoxGeometry(300, 300, 300);
+            const sunMat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+            sun = new THREE.Mesh(sunGeo, sunMat);
+            sun.position.set(200, 400, -5000);
+            sun.rotation.z = Math.PI / 4;
+            sun.rotation.y = Math.PI / 4;
+            scene.add(sun);
+        }
+
+        function createMountainChunk(x, z, height, isStone) {
+            const radius = 30 + Math.random() * 50;
+            const mountainMat = new THREE.MeshStandardMaterial({ color: 0x475F31 });
+            const stoneMat = new THREE.MeshStandardMaterial({ color: 0x757575 });
+            
+            let geo, mesh;
+            if (isStone) {
+                geo = new THREE.ConeGeometry(radius, height, 32); 
+                mesh = new THREE.Mesh(geo, stoneMat);
+                mesh.position.set(x, height/2, z);
+            } else {
+                geo = new THREE.SphereGeometry(radius * 1.5, 32, 16);
+                mesh = new THREE.Mesh(geo, mountainMat);
+                mesh.position.set(x, 0, z); 
+                mesh.scale.y = 0.4; 
+            }
+            scene.add(mesh);
+        }
+
+        function createMountains() {
+            for (let z = 100; z > -5000; z -= 80) {
+                if (Math.random() > 0.1) {
+                    const dist = 300 + Math.random() * 200;
+                    const h = 100 + Math.random() * 150;
+                    createMountainChunk(-dist, z, h, Math.random() > 0.5);
+                }
+                 if (Math.random() > 0.1) {
+                    const dist = 300 + Math.random() * 200;
+                    const h = 100 + Math.random() * 150;
+                    createMountainChunk(dist, z, h, Math.random() > 0.5);
+                }
+            }
+        }
+
+        const activeSigns = [];
+        function createSign(data, x, z) {
+            const { text, index } = data;
+            const group = new THREE.Group();
+            const woodMat = new THREE.MeshStandardMaterial({ color: 0x5D4037 });
+            
+            const post = new THREE.Mesh(new THREE.BoxGeometry(0.4, 3, 0.4), woodMat);
+            post.position.y = 1.5;
+
+            const board = new THREE.Mesh(new THREE.BoxGeometry(8, 5, 0.3), woodMat);
+            board.position.y = 3;
+            
+            group.add(post);
+            group.add(board);
+            group.position.set(x, 0, z);
+            scene.add(group);
+            activeSigns.push(group);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024; canvas.height = 640;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = "#3E2723";
+            ctx.fillRect(0,0,1024,640);
+            ctx.strokeStyle = "#5D4037";
+            ctx.lineWidth = 20;
+            ctx.strokeRect(0,0,1024,640);
+            
+            ctx.fillStyle = '#ffaa00';
+            ctx.font = 'bold 80px "Comic Sans MS", "Chalkboard SE", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(index, 512, 100);
+            
+            ctx.font = '40px "Comic Sans MS", "Chalkboard SE", sans-serif';
+            ctx.fillStyle = '#eeeeee';
+            
+            const words = text.split(' ');
+            let line = '';
+            let y = 180;
+            const lineHeight = 55;
+            const maxWidth = 900;
+
+            words.forEach(word => {
+                let testLine = line + word + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth) {
+                    ctx.fillText(line, 512, y);
+                    line = word + ' ';
+                    y += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            });
+            ctx.fillText(line, 512, y);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture }));
+            sprite.position.set(x, 3, z + 0.2); 
+            sprite.scale.set(7.8, 4.8, 1);
+            scene.add(sprite);
+            activeSigns.push(sprite);
+        }
+
+        function clearSigns() {
+            activeSigns.forEach(obj => scene.remove(obj));
+            activeSigns.length = 0;
+        }
+
+        function resetCamera() {
+            camera.position.set(startPos.x, startPos.y, startPos.z);
+            camera.rotation.set(0, 0, 0);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (keys.w) camera.position.z -= speed;
+            if (keys.s) camera.position.z += speed;
+            if (keys.a) camera.position.x -= speed;
+            if (keys.d) camera.position.x += speed;
+
+            camera.position.x = Math.max(-9, Math.min(9, camera.position.x));
+
+            if (storyData.length > 0) {
+                const maxZ = 12; 
+                const minZ = ((storyData.length - 1) * -18) - 10;
+                camera.position.z = Math.max(minZ, Math.min(maxZ, camera.position.z));
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // --- UI LOGIC ---
+
+        function startWorld(text) {
+            storyData = processStory(text);
+            if (storyData.length === 0) return;
+
+            clearSigns();
+            storyData.forEach((data, i) => {
+                const x = (i % 2 === 0 ? 6 : -6);
+                const z = i * -18;
+                createSign(data, x, z);
+            });
+
+            // Update URL
+            const encoded = encodeStory(text);
+            const newUrl = `${window.location.pathname}?text=${encoded}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+
+            // Transition UI
+            setupView.style.opacity = '0';
+            document.getElementById('main-nav').classList.add('hidden');
+            document.body.style.overflow = 'hidden'; 
+            
+            setTimeout(() => {
+                setupView.classList.add('hidden');
+                uiLayer.classList.remove('hidden');
+                document.getElementById('controls').classList.remove('hidden');
+                resetCamera();
+            }, 500);
+        }
+
+        function exitWorld() {
+            uiLayer.classList.add('hidden');
+            document.getElementById('controls').classList.add('hidden');
+            setupView.classList.remove('hidden');
+            document.getElementById('main-nav').classList.remove('hidden');
+            document.body.style.overflow = 'auto';
+
+            setTimeout(() => setupView.style.opacity = '1', 10);
+            
+            // Clear URL
+            window.history.pushState({}, '', window.location.pathname);
+        }
+
+        function updateCharCount() {
+            const count = storyInput.value.length;
+            charInfo.textContent = `${count} / ${MAX_CHARS}`;
+            charInfo.classList.toggle('limit', count >= MAX_CHARS);
+        }
+
+        function loadRandomStory() {
+            const currentText = storyInput.value;
+            let available = PRESET_STORIES.filter(s => s.text !== currentText);
+            if (available.length === 0) available = PRESET_STORIES;
+            
+            const randomStory = available[Math.floor(Math.random() * available.length)];
+            storyInput.value = randomStory.text;
+            updateCharCount();
+            
+            // Subtle feedback
+            storyInput.style.borderColor = 'var(--accent)';
+            setTimeout(() => storyInput.style.borderColor = '', 500);
+        }
+
+        storyInput.addEventListener('input', () => {
+            const val = storyInput.value;
+            if (val.length > MAX_CHARS) {
+                storyInput.value = val.substring(0, MAX_CHARS);
+            }
+            updateCharCount();
+        });
+
+        startBtn.addEventListener('click', () => startWorld(storyInput.value));
+        document.getElementById('random-btn').addEventListener('click', loadRandomStory);
+        document.getElementById('reset-btn').addEventListener('click', resetCamera);
+        document.getElementById('exit-btn').addEventListener('click', exitWorld);
+        
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text);
+            } else {
+                // Fallback for non-HTTPS or older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                textArea.style.top = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    textArea.remove();
+                    return Promise.resolve();
+                } catch (err) {
+                    textArea.remove();
+                    return Promise.reject(err);
+                }
+            }
+        }
+
+        document.getElementById('share-btn').addEventListener('click', () => {
+            copyToClipboard(window.location.href).then(() => {
+                const toast = document.getElementById('copy-toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert("Could not copy link automatically. Please copy the URL from your browser's address bar.");
+            });
+        });
+
+        window.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            if (e.key === "ArrowUp") keys.w = true;
+            if (e.key === "ArrowDown") keys.s = true;
+            if (e.key === "ArrowLeft") keys.a = true;
+            if (e.key === "ArrowRight") keys.d = true;
+            if (keys.hasOwnProperty(key)) keys[key] = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            const key = e.key.toLowerCase();
+            if (e.key === "ArrowUp") keys.w = false;
+            if (e.key === "ArrowDown") keys.s = false;
+            if (e.key === "ArrowLeft") keys.a = false;
+            if (e.key === "ArrowRight") keys.d = false;
+            if (keys.hasOwnProperty(key)) keys[key] = false;
+        });
+
+        // Mobile Control Event Listeners
+        const dpadMapping = {
+            'move-up': 'w',
+            'move-down': 's',
+            'move-left': 'a',
+            'move-right': 'd'
+        };
+
+        Object.keys(dpadMapping).forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const key = dpadMapping[id];
+
+            const startPress = (e) => {
+                keys[key] = true;
+                e.preventDefault();
+            };
+            const endPress = (e) => {
+                keys[key] = false;
+                e.preventDefault();
+            };
+
+            el.addEventListener('touchstart', startPress, { passive: false });
+            el.addEventListener('touchend', endPress, { passive: false });
+            el.addEventListener('mousedown', startPress);
+            el.addEventListener('mouseup', endPress);
+            el.addEventListener('mouseleave', endPress);
+        });
+
+        window.addEventListener('resize', () => {
+            if (camera) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+
+        // --- INIT ---
+        window.addEventListener('load', () => {
+            initScene();
+            
+            // Allow page scroll in setup mode
+            document.body.style.overflow = 'auto';
+
+            // Check URL for text
+            const params = new URLSearchParams(window.location.search);
+            const encoded = params.get('text');
+            if (encoded) {
+                const decoded = decodeStory(encoded);
+                if (decoded) {
+                    storyInput.value = decoded;
+                    charInfo.textContent = `${decoded.length} / ${MAX_CHARS}`;
+                    startWorld(decoded);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

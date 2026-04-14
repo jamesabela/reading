@@ -13,6 +13,9 @@
     --text-muted: #7F8C8D;
     --nav-bg: rgba(255, 251, 240, 0.9);
     --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Minecraft Theme */
+    --mc-sky: #87CEEB;
+    --mc-grass: #5ba432;
 }
 
 * {
