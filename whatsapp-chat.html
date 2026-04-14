@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Maker - Concept Grid</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --wa-bg: #e5ddd5;
+            --wa-header: #075e54;
+            --wa-me: #dcf8c6;
+            --wa-them: #ffffff;
+            --wa-info: rgba(0, 0, 0, 0.45);
+            --wa-blue: #34b7f1;
+            --drawer-width: 420px;
+        }
+
+        body {
+            background-color: var(--bg-warm);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 80px;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Sidebar Drawer */
+        .editor-drawer {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: var(--drawer-width);
+            height: calc(100vh - 80px);
+            background: #fff;
+            border-right: 2px solid var(--card-border);
+            z-index: 1500;
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body.drawer-open .editor-drawer {
+            transform: translateX(0);
+        }
+
+        /* Drawer Toggle Handle */
+        .drawer-handle {
+            position: absolute;
+            top: 50%;
+            right: -40px;
+            width: 40px;
+            height: 80px;
+            background: #fff;
+            border: 2px solid var(--card-border);
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            transform: translateY(-50%);
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.2s;
+        }
+
+        .drawer-handle:hover {
+            background-color: var(--bg-warm);
+        }
+
+        .drawer-handle svg {
+            transition: transform 0.4s;
+            color: var(--primary);
+        }
+
+        body.drawer-open .drawer-handle svg {
+            transform: rotate(180deg);
+        }
+
+        /* Main Preview Area */
+        .preview-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: calc(100vh - 80px);
+            transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.drawer-open .preview-content {
+            padding-left: var(--drawer-width);
+        }
+
+        /* Forms Styling */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+        }
+
+        label {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input,
+        textarea {
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--card-border);
+            border-radius: 1rem;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+            background: var(--bg-warm);
+        }
+
+        textarea {
+            width: 100%;
+            height: 450px;
+            resize: none;
+            line-height: 1.5;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px var(--primary-glow);
+        }
+
+        /* Phone Preview */
+        .phone-frame {
+            width: 380px;
+            /* Small default */
+            height: 750px;
+            background: var(--wa-bg);
+            border-radius: 2.5rem;
+            border: 12px solid #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Responsive Scaling for Display Mode */
+        @media (min-width: 1200px) {
+            body:not(.drawer-open) .phone-frame {
+                width: 480px;
+                height: 850px;
+            }
+        }
+
+        .wa-header {
+            background: var(--wa-header);
+            color: #fff;
+            padding: 2.5rem 1rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            z-index: 10;
+        }
+
+        .wa-status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 1rem;
+            align-items: center;
+            font-size: 0.7rem;
+            color: #fff;
+        }
+
+        .wa-avatar {
+            width: 36px;
+            height: 36px;
+            background: #ccc;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .wa-contact-info h4 {
+            font-size: 0.95rem;
+            margin: 0;
+            color: #fff;
+        }
+
+        .wa-contact-info p {
+            font-size: 0.7rem;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-blend-mode: overlay;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            scroll-behavior: smooth;
+        }
+
+        /* Bubbles */
+        .bubble {
+            max-width: 85%;
+            padding: 0.6rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            position: relative;
+            line-height: 1.4;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+        }
+
+        .bubble.me {
+            background: var(--wa-me);
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+
+        .bubble.them {
+            background: var(--wa-them);
+            align-self: flex-start;
+            border-top-left-radius: 0;
+        }
+
+        .bubble-time {
+            font-size: 0.65rem;
+            color: var(--wa-info);
+            text-align: right;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 3px;
+        }
+
+        .wa-ticks {
+            color: var(--wa-blue);
+            font-weight: bold;
+        }
+
+        /* Tail simulation */
+        .bubble::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+        }
+
+        .bubble.me::after {
+            right: -8px;
+            border-left-color: var(--wa-me);
+            border-top-color: var(--wa-me);
+        }
+
+        .bubble.them::after {
+            left: -8px;
+            border-right-color: var(--wa-them);
+            border-top-color: var(--wa-them);
+        }
+
+        .wa-footer {
+            height: 50px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            gap: 1rem;
+        }
+
+        .wa-input-mock {
+            flex: 1;
+            background: #fff;
+            height: 34px;
+            border-radius: 17px;
+            padding: 0 1rem;
+            font-size: 0.8rem;
+            color: #999;
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body class="drawer-open">
+    <nav id="main-nav"></nav>
+
+    <aside class="editor-drawer">
+        <button class="drawer-handle" id="toggle-drawer">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+        </button>
+
+        <header style="margin-bottom: 2rem;">
+            <h2>Chat Editor</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">Type your messages below.</p>
+        </header>
+
+        <div class="input-group">
+            <label>Contact Name</label>
+            <input type="text" id="contact-name" value="Classroom 7B">
+        </div>
+
+        <div class="input-group" style="flex: 1; display: flex; flex-direction: column;">
+            <label>Conversation Text</label>
+            <textarea id="chat-input" spellcheck="false" placeholder="Type here...">> Hello! Welcome back.
+Hi! Ready for the quiz?
+> Of course. Let's start!
+Good luck everyone.
+> Tip: Start a line with > for ME.</textarea>
+        </div>
+
+        <button class="btn btn-secondary" style="width: 100%; border-radius: 1rem; margin-top: 1rem;" id="share-link">
+            Copy Shareable Link
+        </button>
+    </aside>
+
+    <main class="preview-content">
+
+        <div class="phone-frame" id="phone-frame">
+            <div class="wa-status-bar">
+                <span>9:41</span>
+                <span>📶 🛜 🔋</span>
+            </div>
+            <div class="wa-header">
+                <div class="wa-avatar" id="avatar-initials">C</div>
+                <div class="wa-contact-info">
+                    <h4 id="header-name">Classroom 7B</h4>
+                    <p>online</p>
+                </div>
+            </div>
+
+            <div class="chat-area" id="chat-area"></div>
+
+            <div class="wa-footer">
+                <span>➕</span>
+                <div class="wa-input-mock">Type a message</div>
+                <span>📷</span>
+                <span>🎤</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const chatInput = document.getElementById('chat-input');
+        const contactInput = document.getElementById('contact-name');
+        const chatArea = document.getElementById('chat-area');
+        const headerName = document.getElementById('header-name');
+        const avatarBox = document.getElementById('avatar-initials');
+        const toggleBtn = document.getElementById('toggle-drawer');
+        const shareBtn = document.getElementById('share-link');
+
+        function updateChat() {
+            const name = contactInput.value || "Contact";
+            headerName.innerText = name;
+            avatarBox.innerText = name.charAt(0).toUpperCase();
+
+            const lines = chatInput.value.split('\n').filter(l => l.trim() !== '');
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const bubblesHTML = lines.map(line => {
+                const isMe = line.trim().startsWith('>');
+                const text = isMe ? line.trim().substring(1).trim() : line.trim();
+                const bubbleClass = isMe ? 'me' : 'them';
+
+                return `
+                    <div class="bubble ${bubbleClass}">
+                        ${text}
+                        <div class="bubble-time">
+                            ${timeStr}
+                            ${isMe ? '<span class="wa-ticks">✓✓</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            chatArea.innerHTML = bubblesHTML;
+
+            setTimeout(() => {
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }, 10);
+        }
+
+        chatInput.addEventListener('input', updateChat);
+        contactInput.addEventListener('input', updateChat);
+
+        // Drawer Toggle
+        toggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('drawer-open');
+        });
+
+        // Share Link Logic
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                return navigator.clipboard.writeText(text);
+            } else {
+                const area = document.createElement('textarea');
+                area.value = text;
+                document.body.appendChild(area);
+                area.select();
+                document.execCommand('copy');
+                area.remove();
+                return Promise.resolve();
+            }
+        }
+
+        shareBtn.addEventListener('click', () => {
+            const url = new URL(window.location.href);
+            url.searchParams.set('n', contactInput.value);
+            url.searchParams.set('m', chatInput.value);
+            copyToClipboard(url.toString()).then(() => alert('Share link copied!'));
+        });
+
+        // Initialize from URL
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('closed')) document.body.classList.remove('drawer-open');
+        if (params.has('n')) contactInput.value = params.get('n');
+        if (params.has('m')) chatInput.value = params.get('m');
+
+        updateChat();
+    </script>
+    <script src="components.js"></script>
+</body>
+
+</html>

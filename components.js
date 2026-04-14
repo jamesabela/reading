@@ -23,7 +23,7 @@ function renderNav() {
                 <li><a href="eal.html" class="${currentPath === 'eal.html' ? 'active' : ''}">EAL Support</a></li>
                 <li><a href="news.html" class="${currentPath === 'news.html' ? 'active' : ''}">News</a></li>
                 <li><a href="videos.html" class="${currentPath === 'videos.html' ? 'active' : ''}">Videos</a></li>
-                <li><a href="apps.html" class="${currentPath === 'apps.html' ? 'active' : ''}">More Tools</a></li>
+                <li><a href="apps.html" class="${currentPath === 'apps.html' ? 'active' : ''}">English Tools</a></li>
                 <li><a href="contact.html" class="${currentPath === 'contact.html' ? 'active' : ''}">Contact</a></li>
             </ul>
             <a href="https://apps.microsoft.com/detail/9nfvnqtj2j7r" class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 0.9rem; margin-left: 1.5rem;">Download Now</a>
@@ -138,11 +138,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Reveal animations
-    const observer = new IntersectionObserver((entries) => {
+    window.revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) entry.target.classList.add('active');
         });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    document.querySelectorAll('.reveal').forEach(el => window.revealObserver.observe(el));
 });

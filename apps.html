@@ -1,83 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>More Tools - Concept Grid</title>
+    <title>English Tools - Concept Grid</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <nav id="main-nav"></nav>
 
-    <header class="section" style="padding-top: 10rem;">
+    <header class="section" style="padding-top: 10rem; padding-bottom: 2rem;">
         <div class="container">
             <div class="section-header reveal">
-                <h1>More <span style="color: var(--secondary);">Tools</span></h1>
-                <p>Beyond Concept Grid, explore these powerful applications designed to enhance classroom interaction and literacy.</p>
-            </div>
-            
-            <div class="grid-3">
-                <div class="card reveal">
-                    <h3>Minecraft Reader</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">Experience your stories in a procedural 3D world. Paste your text and watch it become part of the landscape!</p>
-                    <a href="minecraft-reader.html" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Try 3D Explorer</a>
-                </div>
-                <div class="card reveal">
-                    <h3>Star Wars Crawler</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">Create your own opening crawl! Paste your text and move it at your own pace through deep space.</p>
-                    <a href="star-wars-crawler.html" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Start Traveling</a>
-                </div>
-                <div class="card reveal">
-                    <h3>Ice Maze</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">A cool interactive game specifically designed to help students master <strong>word order</strong> and sentence structure.</p>
-                    <a href="https://jamesabela.github.io/icemaze/" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Master Word Order</a>
-                </div>
-                <div class="card reveal">
-                    <h3>Think Rank Studio</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">A professional studio for ranking and organizing thoughts and vocabulary.</p>
-                    <a href="https://jamesabela.github.io/ThinkRankStudio/" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Visit Studio</a>
-                </div>
-                <div class="card reveal">
-                    <h3>Connections Grid</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">A dynamic progress-based timer and puzzle board perfect for classroom warm-ups.</p>
-                    <a href="https://jamesabela.github.io/jsfun/connections.html" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Try Connections</a>
-                </div>
-                <div class="card reveal">
-                    <h3>Arctic Reading</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">A powerful tool that enables teachers to analyse text and perform <strong>rainbow word analysis</strong> for literacy development.</p>
-                    <a href="https://arcticreading.vercel.app/" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Start Analyzing</a>
-                </div>
-                <div class="card reveal">
-                    <h3>Microsoft Reading Coach</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">AI-powered reading practice personalized for every student.</p>
-                    <a href="https://coach.microsoft.com/en-us" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Open Coach</a>
-                </div>
-                <div class="card reveal">
-                    <h3>Google Read Along</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">Helping children discover the joy of reading with an AI reading buddy.</p>
-                    <a href="https://readalong.google.com/" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Try Read Along</a>
-                </div>
-                <div class="card reveal">
-                    <h3>OpenDyslexic</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">A typeface designed against some common symptoms of dyslexia—integrated into Concept Grid.</p>
-                    <a href="https://opendyslexic.org/" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Visit OpenDyslexic</a>
-                </div>
-                <div class="card reveal">
-                    <h3>Google Books Ngram</h3>
-                    <p style="color: var(--text-muted); margin: 1.5rem 0;">Analyze the frequency of words and phrases across centuries of literature.</p>
-                    <a href="https://books.google.com/ngrams/" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Open Ngram Viewer</a>
-                </div>
+                <h1>English <span style="color: var(--secondary);">Tools</span></h1>
+                <p>Beyond Concept Grid, explore these powerful applications designed to enhance classroom interaction
+                    and literacy.</p>
             </div>
 
-            <div class="reveal" style="text-align: center; margin-top: 6rem; padding: 4rem; background: var(--nav-bg); border-radius: 2rem;">
-                <h2>Even More Tools?</h2>
-                <p style="color: var(--text-muted); margin: 1.5rem 0;">Find an extensive collection of games and management tools at JSFun.</p>
-                <a href="https://jamesabela.github.io/jsfun/" target="_blank" class="btn btn-secondary" style="padding: 1rem 2rem;">Find More at JSFun</a>
+            <!-- Search UI -->
+            <div class="search-container reveal">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="tool-search" class="search-input" placeholder="Search by name, category or tag...">
+            </div>
+
+            <!-- Filter Chips -->
+            <div id="filter-chips" class="filter-container reveal">
+                <!-- Chips injected by JS -->
             </div>
         </div>
     </header>
 
+    <section class="section" style="padding-top: 0;">
+        <div class="container" id="tools-grid-container">
+            <!-- Tools injected by JS -->
+        </div>
+
+        <div class="container">
+            <div class="reveal"
+                style="text-align: center; margin-top: 6rem; padding: 4rem; background: var(--nav-bg); border-radius: 2rem; border: 2px solid var(--card-border);">
+                <h2>General Teaching Tools</h2>
+                <p style="color: var(--text-muted); margin: 1.5rem 0;">Explore an even wider collection of management tools and classroom games at JSFun. <br><small>Note: Some tools are multi-subject and may not be English-specific.</small></p>
+                <a href="https://jamesabela.github.io/jsfun/index.html" target="_blank" class="btn btn-secondary"
+                    style="padding: 1rem 2rem;">Browse All at JSFun</a>
+            </div>
+        </div>
+    </section>
+
     <footer id="main-footer"></footer>
     <script src="components.js"></script>
+    <script src="tools-loader.js"></script>
 </body>
+
 </html>

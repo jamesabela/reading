@@ -1,0 +1,286 @@
+[
+  {
+    "category": "Reading & Writing",
+    "description": "Tools for sentence construction, creative drafting, and story building.",
+    "tools": [
+      {
+        "title": "Minecraft Reader",
+        "emoji": "⛏️",
+        "url": "minecraft-reader.html",
+        "desc": "Experience your stories in a procedural 3D world. Paste your text and watch it become part of the landscape!",
+        "tag": "3D / Literacy",
+        "isExternal": false
+      },
+      {
+        "title": "Star Wars Crawler",
+        "emoji": "🚀",
+        "url": "star-wars-crawler.html",
+        "desc": "Create your own opening crawl! Paste your text and move it at your own pace through deep space.",
+        "tag": "Visual / Focus",
+        "isExternal": false
+      },
+      {
+        "title": "Chat Maker",
+        "emoji": "💬",
+        "url": "whatsapp-chat.html",
+        "desc": "Quickly create fake WhatsApp-style chats for roleplay or classroom displays. Simple text-to-chat logic.",
+        "tag": "Roleplay / Writing",
+        "isExternal": false
+      },
+      {
+        "title": "Sentence Ordering Quiz",
+        "emoji": "🔀",
+        "url": "https://jamesabela.github.io/jsfun/scramble.html",
+        "desc": "Order scrambled words, sentences or processes. Answers are encrypted so students can't guess from the URL.",
+        "tag": "Grammar / All ages",
+        "isExternal": true
+      },
+      {
+        "title": "Story Dice",
+        "emoji": "🎲",
+        "url": "https://jamesabela.github.io/jsfun/storydice.html",
+        "desc": "Generate story prompts and story net images. Even saves images for you!",
+        "tag": "Creative / Primary",
+        "isExternal": true
+      },
+      {
+        "title": "Writing Adventures",
+        "emoji": "✏️",
+        "url": "https://sethideclercq.com/tools/MyCreations/mywriting.html",
+        "desc": "Distraction-free writing tool for young learners to practise typing and build writing confidence.",
+        "tag": "Primary / Writing",
+        "isExternal": true
+      },
+      {
+        "title": "Blackout Poetry Creator",
+        "emoji": "🖊️",
+        "url": "https://sethideclercq.com/tools/blackoutpoetry.html",
+        "desc": "Upload any text and use highlighting tools to create blackout poetry. Share or export your creations.",
+        "tag": "Literature / KS2+",
+        "isExternal": true
+      },
+      {
+        "title": "Plot Device Chooser",
+        "emoji": "📖",
+        "url": "https://scratch.mit.edu/projects/2261416/fullscreen/",
+        "desc": "Scratch-based story plot device generator for creative writing inspiration.",
+        "tag": "Storytelling / KS1-3",
+        "isExternal": true
+      }
+    ]
+  },
+  {
+    "category": "Discussion & Debate",
+    "description": "Tools to stimulate classroom talk, critical thinking, and structured debate.",
+    "tools": [
+      {
+        "title": "Interactive Mind Map",
+        "emoji": "🧠",
+        "url": "https://jamesabela.github.io/mindmap/",
+        "desc": "Visually organize your thoughts, brainstorm ideas, and map out concepts collaboratively. Excellent for eliciting vocabulary.",
+        "tag": "Eliciting / Brainstorming",
+        "isExternal": true
+      },
+      {
+        "title": "Think Rank Studio",
+        "emoji": "🏆",
+        "url": "https://jamesabela.github.io/ThinkRankStudio/",
+        "desc": "Full ranking suite — Diamond 9, Diamond 5, Triangle, Line ranking, Podium and Elimination mode.",
+        "tag": "Sorting / Critical Thinking",
+        "isExternal": true
+      },
+      {
+        "title": "Debate Picker",
+        "emoji": "🗳️",
+        "url": "https://jamesabela.github.io/jsfun/debate.html",
+        "desc": "Pick a classroom debate topic and assign sides randomly.",
+        "tag": "Debate / KS3+",
+        "isExternal": true
+      },
+      {
+        "title": "Priority Triangle",
+        "emoji": "🔺",
+        "url": "https://jamesabela.github.io/jsfun/triangle.html",
+        "desc": "Which concept is most important? Editable words, dictionary look-up and image search built in.",
+        "tag": "Discussion / Ranking",
+        "isExternal": true
+      },
+      {
+        "title": "Lateral Thinking Puzzles",
+        "emoji": "🧩",
+        "url": "https://jamesabela.github.io/jsfun/lateral.html",
+        "desc": "Kickstart your class with 100+ lateral thinking puzzles. Includes cryptic hints and resolutions.",
+        "tag": "Critical Thinking / Warmer",
+        "isExternal": true
+      }
+    ]
+  },
+  {
+    "category": "Vocab & Analysis",
+    "description": "Powerful analytical tools for word frequency, definitions, and highlights.",
+    "tools": [
+      {
+        "title": "Arctic Reading",
+        "emoji": "📖",
+        "url": "https://arcticreading.vercel.app/",
+        "desc": "A powerful tool that enables teachers to analyse text and perform rainbow word analysis for literacy development.",
+        "tag": "Analysis / Literacy",
+        "isExternal": true
+      },
+      {
+        "title": "Google Books Ngram",
+        "emoji": "📊",
+        "url": "https://books.google.com/ngrams/",
+        "desc": "Analyze the frequency of words and phrases across centuries of literature.",
+        "tag": "History / Research",
+        "isExternal": true
+      },
+      {
+        "title": "Word Cloud",
+        "emoji": "☁️",
+        "url": "https://jamesabela.github.io/jsfun/wordcloud.html",
+        "desc": "Quickly generate a word cloud from any text. Great for summarising themes in a text.",
+        "tag": "Themes / Visual",
+        "isExternal": true
+      },
+      {
+        "title": "Word Type Highlighter",
+        "emoji": "🏷️",
+        "url": "https://sethideclercq.com/tools/wordtype.html",
+        "desc": "Highlight nouns, verbs, adjectives and more with school colour codes. Build grammar awareness.",
+        "tag": "Grammar / KS1-2",
+        "isExternal": true
+      },
+      {
+        "title": "Word Search Maker",
+        "emoji": "🔤",
+        "url": "https://sethideclercq.com/tools/wordsearch.html",
+        "desc": "Create custom word searches with your own word list. Multiple grid sizes, upper/lower case support.",
+        "tag": "Warmer / Primary",
+        "isExternal": true
+      },
+      {
+        "title": "Emoji Search",
+        "emoji": "😊",
+        "url": "https://sethideclercq.com/tools/emojisearch.html",
+        "desc": "Search emojis, get Unicode values and Google Sheets / Excel formulas.",
+        "tag": "Coding / Utility",
+        "isExternal": true
+      }
+    ]
+  },
+  {
+    "category": "Interactive Games",
+    "description": "Engage your classroom with quizzes, grids, and puzzles.",
+    "tools": [
+      {
+        "title": "Ice Maze",
+        "emoji": "❄️",
+        "url": "https://jamesabela.github.io/icemaze/",
+        "desc": "Navigate a maze collecting words in the right order to build sentences. Progressive stages.",
+        "tag": "Game / Grammar",
+        "isExternal": true
+      },
+      {
+        "title": "Connections Grid",
+        "emoji": "🔠",
+        "url": "https://jamesabela.github.io/jsfun/connections.html",
+        "desc": "Create a 4x4 connection grid activity. Includes easy URL sharing and save/load features.",
+        "tag": "Warmer / Logic",
+        "isExternal": true
+      },
+      {
+        "title": "Link Two Sides",
+        "emoji": "🔗",
+        "url": "https://jamesabela.github.io/jsfun/linksides.html",
+        "desc": "Draw lines between matching items — a very common exam question type.",
+        "tag": "Quiz / Match",
+        "isExternal": true
+      },
+      {
+        "title": "Tile Reveal Game",
+        "emoji": "🎮",
+        "url": "https://jamesabela.github.io/jsfun/imgtiles.html",
+        "desc": "Reveal tiles one by one — who can guess the hidden image first?",
+        "tag": "Visual / Starter",
+        "isExternal": true
+      }
+    ]
+  },
+  {
+    "category": "Pickers & Choosers",
+    "description": "Random selectors and spinners for classroom management.",
+    "tools": [
+      {
+        "title": "3D Lollipop Carousel",
+        "emoji": "🍭",
+        "url": "https://jamesabela.github.io/jsfun/lollipop.html",
+        "desc": "Choose random names, groups or questions with a beautiful 3D spinning carousel.",
+        "tag": "Picker / Visual",
+        "isExternal": true
+      },
+      {
+        "title": "Mega Spinner",
+        "emoji": "🌀",
+        "url": "https://jamesabela.github.io/jsfun/megaspinner.html",
+        "desc": "Spin the wheel to choose from large groups of names — perfect for bigger classes.",
+        "tag": "Picker / Management",
+        "isExternal": true
+      },
+      {
+        "title": "Presentation Spinner",
+        "emoji": "👥",
+        "url": "https://jamesabela.github.io/jsfun/prezzispinner.html",
+        "desc": "Get two students presenting at once — great for peer assessment activities.",
+        "tag": "Picker / Peer-Assessment",
+        "isExternal": true
+      },
+      {
+        "title": "Number Flash Cards",
+        "emoji": "🔢",
+        "url": "https://sethideclercq.com/tools/number-gen.html",
+        "desc": "Random number flash card generator for mathematics drills.",
+        "tag": "Maths / Primary",
+        "isExternal": true
+      }
+    ]
+  },
+  {
+    "category": "Support & Learning",
+    "description": "Accessibility and AI-powered support for diverse learning needs.",
+    "tools": [
+      {
+        "title": "Ticker Pro",
+        "emoji": "📺",
+        "url": "ticker-tape.html",
+        "desc": "A professional, broadcast-ready scrolling ticker tape. Customise and float it anywhere.",
+        "tag": "Focus / Accessibility",
+        "isExternal": false
+      },
+      {
+        "title": "Microsoft Reading Coach",
+        "emoji": "🤖",
+        "url": "https://coach.microsoft.com/en-us",
+        "desc": "AI-powered reading practice personalized for every student.",
+        "tag": "AI / Fluency",
+        "isExternal": true
+      },
+      {
+        "title": "Google Read Along",
+        "emoji": "🗣️",
+        "url": "https://readalong.google.com/",
+        "desc": "Helping children discover the joy of reading with an AI reading buddy.",
+        "tag": "Primary / Phonics",
+        "isExternal": true
+      },
+      {
+        "title": "OpenDyslexic",
+        "emoji": "👓",
+        "url": "https://opendyslexic.org/",
+        "desc": "A typeface designed against some common symptoms of dyslexia—integrated into Concept Grid.",
+        "tag": "Accessibility / Typeface",
+        "isExternal": true
+      }
+    ]
+  }
+]
