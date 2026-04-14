@@ -63,7 +63,7 @@ function renderFooter() {
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; text-align: left; margin-bottom: 4rem;">
                 <div>
                     <h4 style="margin-bottom: 1.5rem;">Concept Grid</h4>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Empowering educators with world-class vocabulary tools. Powered by LexaEngine™.</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Empowering educators with world-class vocabulary tools. Powered by <a href="lexaengine.html" style="color: inherit; text-decoration: underline;">LexaEngine™</a>.</p>
                 </div>
                 <div>
                     <h4 style="margin-bottom: 1.5rem;">Explore</h4>

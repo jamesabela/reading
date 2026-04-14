@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexaEngine™ - The Power Behind Concept Grid</title>
+    <meta name="description" content="LexaEngine™ is a flexible language system designed to power educational applications with structured vocabulary and text understanding.">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .engine-hero {
+            background: linear-gradient(135deg, #FFFBF0 0%, #FEE8D1 100%);
+            padding: 12rem 0 8rem;
+            text-align: center;
+        }
+        .engine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        .feature-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 2rem;
+            border: 2px solid var(--card-border);
+            transition: var(--transition);
+        }
+        .feature-box:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(241, 90, 36, 0.1);
+        }
+        .accent-text {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .engine-visual {
+            margin: 4rem 0;
+            padding: 4rem;
+            background: white;
+            border-radius: 3rem;
+            border: 2px dashed var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .flow-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .flow-item {
+            padding: 1.5rem 2.5rem;
+            background: var(--bg-warm);
+            border-radius: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            border: 2px solid var(--card-border);
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <nav id="main-nav"></nav>
+
+    <header class="engine-hero">
+        <div class="container reveal">
+            <span style="background: var(--primary); color: white; padding: 0.5rem 1.5rem; border-radius: 50px; font-weight: 700; font-size: 0.9rem; margin-bottom: 2rem; display: inline-block;">THE CORE TECHNOLOGY</span>
+            <h1 style="font-size: 4.5rem; margin-bottom: 1.5rem;">Lexa<span style="color: var(--secondary);">Engine™</span></h1>
+            <p style="max-width: 800px; margin: 0 auto; font-size: 1.4rem; color: var(--text-main); line-height: 1.6;">
+                A flexible language system designed to power a wide range of educational applications that rely on structured vocabulary and text understanding.
+            </p>
+        </div>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="engine-grid">
+                    <div class="feature-box reveal">
+                        <div class="feature-icon bg-orange">📚</div>
+                        <h3>Levelled Lexical Database</h3>
+                        <p style="color: var(--text-muted);">At its core is a large, levelled lexical database, enabling it to recognise how common, complex, or specialised a word is. This allows applications to support learners at different stages, from basic everyday language through to advanced academic vocabulary.</p>
+                    </div>
+                    <div class="feature-box reveal">
+                        <div class="feature-icon bg-blue">🏗️</div>
+                        <h3>Reusable Foundation</h3>
+                        <p style="color: var(--text-muted);">Designed as a reusable foundation that can analyse, organise, and transform language into meaningful outputs. It takes raw input such as individual words, lists, or full texts and structures them in ways that support learning.</p>
+                    </div>
+                    <div class="feature-box reveal">
+                        <div class="feature-icon bg-teal">🚀</div>
+                        <h3>Scalable & Extensible</h3>
+                        <p style="color: var(--text-muted);">By separating the engine from the application, LexaEngine™ provides a scalable approach, allowing multiple tools—from spelling tools to adaptive learning platforms—to benefit from the same intelligent handling of language.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="background: white;">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2>How It <span style="color: var(--secondary);">Works</span></h2>
+                    <p>LexaEngine™ acts as the bridge between raw text and educational insight.</p>
+                </div>
+
+                <div class="engine-visual reveal">
+                    <div class="flow-container">
+                        <div class="flow-item">Raw Text / Word Lists</div>
+                        <div class="flow-arrow">➜</div>
+                        <div class="flow-item" style="background: var(--primary); color: white; border-color: var(--primary);">LexaEngine™ Analysis</div>
+                        <div class="flow-arrow">➜</div>
+                        <div class="flow-item">Structured Learning Output</div>
+                    </div>
+                    <p style="max-width: 700px; text-align: center; color: var(--text-muted); font-size: 1.1rem;">
+                        Consistency is key. Whether it's a reading support tool or a content generator, every application drawing from LexaEngine™ uses the same underlying language framework for guaranteed accuracy and progression.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="card reveal" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);">
+                    <div>
+                        <h4 style="color: var(--accent); margin-bottom: 1rem;">CASE STUDY</h4>
+                        <h2 style="margin-bottom: 1.5rem;">Powering Concept Grid</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem;">
+                            Concept Grid is one example of how the LexaEngine™ can be applied. In this case, the engine takes input and automatically generates structured concept grids, helping learners move beyond simple definitions to a deeper understanding of words.
+                        </p>
+                        <a href="index.html" class="btn btn-primary">Back to Concept Grid</a>
+                    </div>
+                    <div style="border-radius: 2rem; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+                        <img src="assets/gridexample.png" alt="Concept Grid Example" style="width: 100%; display: block;">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="main-footer"></footer>
+
+    <script src="components.js"></script>
+</body>
+</html>
