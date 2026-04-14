@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Wars Crawler - Concept Grid</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --star-color: #fff;
+            --crawl-color: #FFE81F; /* Authentic Star Wars Yellow */
+            --crawl-bg: #000;
+            --crawl-font: 'Franklin Gothic Heavy', 'Arial Black', sans-serif;
+        }
+
+        body {
+            background: var(--crawl-bg);
+            color: var(--crawl-color);
+            overflow: hidden; /* We'll use a custom scroll container or handle wheel events */
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Starry Background */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            overflow: hidden;
+        }
+
+        /* Perspective Container */
+        .crawl-viewport {
+            width: 100%;
+            height: 90vh;
+            perspective: 350px; /* Steeper perspective */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .crawl-content {
+            position: absolute;
+            top: 100%; /* Top of text starts at bottom of viewport */
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            transform-origin: 50% 0%; /* Origin at top for smoother perspective entrance */
+            transform: rotateX(65deg) translateY(0); 
+            transition: transform 0.1s linear;
+            text-shadow: 0 0 10px rgba(255, 232, 31, 0.4);
+        }
+
+        .crawl-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .crawl-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.1rem;
+        }
+
+        .crawl-header h3 {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .crawl-body {
+            font-size: 3rem;
+            line-height: 1.4;
+            font-weight: 800;
+            font-family: var(--crawl-font);
+        }
+
+        /* Interaction Panel */
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-radius: 100px;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: opacity 0.3s;
+        }
+
+        .controls:hover {
+            opacity: 1;
+        }
+
+        /* Hide furniture in fullscreen mode */
+        body.fullscreen-mode nav,
+        body.fullscreen-mode .controls,
+        body.fullscreen-mode .text-editor {
+            display: none !important;
+        }
+
+        /* Invisible clickable area to exit fullscreen or show controls if needed, 
+           but for now, we'll just rely on ESC key as is standard */
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            width: 200px;
+        }
+
+        /* Text Editor Panel */
+        .text-editor {
+            position: fixed;
+            top: 8rem; /* Moved down to avoid navbar */
+            right: 2rem;
+            width: 350px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            display: none; /* Initially hidden */
+        }
+
+        .text-editor.active {
+            display: block;
+        }
+
+        .text-editor h4 {
+            color: var(--crawl-color);
+            margin-bottom: 1rem;
+        }
+
+        .text-editor textarea, .text-editor input {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .toggle-editor {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 101;
+        }
+
+        /* Animating Stars fallback if needed, but we'll use a static field for now */
+        #stars {
+            width: 2px;
+            height: 2px;
+            background: transparent;
+            box-shadow: 10vw 80vh #fff, 20vw 10vh #fff, 30vw 50vh #fff, 40vw 20vh #fff, 50vw 90vh #fff, 60vw 30vh #fff, 70vw 70vh #fff, 80vw 40vh #fff, 90vw 60vh #fff;
+        }
+
+        #copy-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(26, 188, 156, 0.3);
+            transform: translateY(100px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+
+        #copy-toast.show {
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+    <nav id="main-nav"></nav>
+
+    <div class="stars-container">
+        <canvas id="star-canvas"></canvas>
+    </div>
+
+    <div class="crawl-viewport" id="crawl-viewport">
+        <div class="crawl-content" id="crawl-content">
+            <div class="crawl-header">
+                <h2 id="display-episode">Episode IV</h2>
+                <h3 id="display-title">A NEW WORD</h3>
+            </div>
+            <div class="crawl-body" id="display-body">
+                It is a period of lexical war. Rebel vocabularies, striking from a hidden base, have won their first victory against the evil Galactic Empire of Monotony.<br><br>
+                During the battle, Rebel spies managed to steal secret plans to the Empire's ultimate weapon, the BOREDOM STAR, an armored space station with enough power to destroy an entire interesting paragraph. <br><br>
+                Pursued by the Empire's sinister agents, Princess Literacy races home aboard her starship, custodian of the stolen plans that can save her people and restore variety to the galaxy....
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>Progress</label>
+            <input type="range" id="progress-slider" min="0" max="100" value="0">
+        </div>
+        <div class="control-group">
+            <button id="autoplay-btn" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.8rem;">Auto Play</button>
+            <button id="speed-btn" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem; min-width: 60px;">1x</button>
+        </div>
+        <button id="fullscreen-btn" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: var(--accent);">⛶ Full Screen</button>
+        <button id="share-btn" class="btn btn-secondary" style="padding: 0.5rem 1.5rem; font-size: 0.8rem; border-color: var(--accent); color: var(--accent);">🔗 Share</button>
+        <button id="edit-btn" class="btn btn-secondary" style="padding: 0.5rem 1.5rem; font-size: 0.8rem;">Edit Text</button>
+    </div>
+
+    <div id="copy-toast">Link copied to clipboard!</div>
+
+    <div class="text-editor" id="text-editor">
+        <h4>Customize Crawl</h4>
+        <input type="text" id="input-episode" placeholder="Episode (e.g. Episode IV)">
+        <input type="text" id="input-title" placeholder="Title (e.g. A NEW HOPE)">
+        <textarea id="input-body" rows="10" placeholder="Story text..."></textarea>
+        <button id="close-editor" class="btn btn-primary" style="width: 100%;">Apply & Close</button>
+    </div>
+
+    <footer id="main-footer" style="display: none;"></footer>
+
+    <script src="components.js"></script>
+    <script>
+        const content = document.getElementById('crawl-content');
+        const slider = document.getElementById('progress-slider');
+        const autoplayBtn = document.getElementById('autoplay-btn');
+        const speedBtn = document.getElementById('speed-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const editBtn = document.getElementById('edit-btn');
+        const editor = document.getElementById('text-editor');
+        const closeEditor = document.getElementById('close-editor');
+        
+        const displayEpisode = document.getElementById('display-episode');
+        const displayTitle = document.getElementById('display-title');
+        const displayBody = document.getElementById('display-body');
+
+        const inputEpisode = document.getElementById('input-episode');
+        const inputTitle = document.getElementById('input-title');
+        const inputBody = document.getElementById('input-body');
+
+        let isAutoplay = false;
+        let progress = 0;
+        let lastTime = 0;
+        let crawlSpeedMultiplier = 1;
+        const speedPresets = [1, 1.5, 2, 3, 0.5];
+        let speedIndex = 0;
+
+        // --- URL UTILS ---
+        function encodeData(text) {
+            return btoa(unescape(encodeURIComponent(text)));
+        }
+
+        function decodeData(base64) {
+            try {
+                return decodeURIComponent(escape(atob(base64)));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function updateURL() {
+            const ep = encodeData(displayEpisode.innerText);
+            const ti = encodeData(displayTitle.innerText);
+            const tx = encodeData(displayBody.innerText);
+            const newUrl = `${window.location.pathname}?ep=${ep}&ti=${ti}&tx=${tx}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                textArea.style.top = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    textArea.remove();
+                    return Promise.resolve();
+                } catch (err) {
+                    textArea.remove();
+                    return Promise.reject(err);
+                }
+            }
+        }
+
+        // Initialize editor values
+        inputEpisode.value = displayEpisode.innerText;
+        inputTitle.value = displayTitle.innerText;
+        inputBody.value = displayBody.innerText.replace(/  +/g, ' ');
+
+        function updateCrawl() {
+            // progress is 0 to 100
+            // We want to translate from bottom (off screen) to top (off screen)
+            // Range typically -10% to 250% of viewport height depends on content length
+            const contentHeight = content.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            
+            // Map 0-100 to a movement range
+            // At 0, we are at top: 100% (top of text at bottom of screen)
+            // At 100, we want the bottom of the text to be at the top of the screen
+            const totalTravel = contentHeight + viewportHeight;
+            const offset = (progress / 100) * totalTravel; 
+            
+            content.style.transform = `rotateX(65deg) translateY(-${offset}px)`;
+        }
+
+        slider.addEventListener('input', (e) => {
+            progress = e.target.value;
+            isAutoplay = false;
+            autoplayBtn.innerText = "Auto Play";
+            updateCrawl();
+        });
+
+        // Mouse wheel interaction
+        window.addEventListener('wheel', (e) => {
+            progress = Math.max(0, Math.min(100, parseFloat(progress) + e.deltaY * 0.05));
+            slider.value = progress;
+            isAutoplay = false;
+            autoplayBtn.innerText = "Auto Play";
+            updateCrawl();
+        });
+
+        autoplayBtn.addEventListener('click', () => {
+            isAutoplay = !isAutoplay;
+            autoplayBtn.innerText = isAutoplay ? "Pause" : "Auto Play";
+            if (isAutoplay) {
+                lastTime = performance.now();
+                requestAnimationFrame(autoMove);
+            }
+        });
+
+        speedBtn.addEventListener('click', () => {
+            speedIndex = (speedIndex + 1) % speedPresets.length;
+            crawlSpeedMultiplier = speedPresets[speedIndex];
+            speedBtn.innerText = crawlSpeedMultiplier + "x";
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                document.body.classList.add('fullscreen-mode');
+                // Start autoplay automatically in fullscreen
+                if (!isAutoplay) {
+                    isAutoplay = true;
+                    autoplayBtn.innerText = "Pause";
+                    lastTime = performance.now();
+                    requestAnimationFrame(autoMove);
+                }
+            } else {
+                document.body.classList.remove('fullscreen-mode');
+            }
+        });
+
+        function autoMove(time) {
+            if (!isAutoplay) return;
+            if (lastTime > 0) {
+                const dt = (time - lastTime) / 1000;
+                // Base speed is 2% per second, multiplied by chosen speed
+                progress = Math.min(100, parseFloat(progress) + dt * 2 * crawlSpeedMultiplier); 
+                slider.value = progress;
+                updateCrawl();
+                if (progress >= 100) {
+                    isAutoplay = false;
+                    autoplayBtn.innerText = "Auto Play";
+                }
+            }
+            lastTime = time;
+            requestAnimationFrame(autoMove);
+        }
+
+        editBtn.addEventListener('click', () => editor.classList.toggle('active'));
+        closeEditor.addEventListener('click', () => {
+            displayEpisode.innerText = inputEpisode.value;
+            displayTitle.innerText = inputTitle.value;
+            displayBody.innerText = inputBody.value;
+            editor.classList.remove('active');
+            updateCrawl();
+            updateURL();
+        });
+
+        document.getElementById('share-btn').addEventListener('click', () => {
+            copyToClipboard(window.location.href).then(() => {
+                const toast = document.getElementById('copy-toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            });
+        });
+
+        // Star Canvas
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                // Subtle drift
+                star.y -= star.speed;
+                if (star.y < 0) star.y = canvas.height;
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        drawStars();
+        
+        // Initial load from URL
+        const params = new URLSearchParams(window.location.search);
+        const ep = params.get('ep');
+        const ti = params.get('ti');
+        const tx = params.get('tx');
+
+        if (ep) displayEpisode.innerText = decodeData(ep) || displayEpisode.innerText;
+        if (ti) displayTitle.innerText = decodeData(ti) || displayTitle.innerText;
+        if (tx) displayBody.innerText = decodeData(tx) || displayBody.innerText;
+
+        // Sync inputs
+        inputEpisode.value = displayEpisode.innerText;
+        inputTitle.value = displayTitle.innerText;
+        inputBody.value = displayBody.innerText;
+
+        updateCrawl();
+
+    </script>
+</body>
+</html>
