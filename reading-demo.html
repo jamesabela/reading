@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optical Reading Simulator - Concept Grid</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;500;700&family=Lexend:wght@300;400;500;600&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- GSAP for smooth animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --cream-bg: #FFFBF0;
+            --blue-bg: #E3F2FD;
+            --grey-bg: #ECEFF1;
+            --yellow-bg: #FFFDE7;
+            --reading-bg: white;
+            --panel-bg: white;
+        }
+
+        html,
+        body {
+            height: auto;
+            overflow: visible;
+            background: var(--bg-soft);
+            color: var(--text-dark);
+            padding: 0;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #simulator-app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .simulator-layout {
+            display: grid;
+            grid-template-columns: 280px minmax(400px, 1fr) 300px;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            align-items: start;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 1200px) {
+            .simulator-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .sidebar:first-child {
+                grid-column: 1;
+            }
+
+            .sidebar:last-child {
+                grid-column: 2;
+            }
+
+            .reading-container {
+                grid-column: 1 / span 2;
+                grid-row: 1;
+            }
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+            position: sticky;
+            top: 2rem;
+            height: auto;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+
+        /* Reading Panel */
+        .reading-container {
+            position: relative;
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.02);
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        #reading-surface,
+        #reading-surface * {
+            font-size: inherit;
+            line-height: inherit;
+            text-align: inherit;
+            user-select: none;
+            position: relative;
+            transition: font-family 0.3s ease, font-size 0.3s ease, color 0.3s ease;
+            font-family: inherit !important;
+        }
+
+        #reading-surface {
+            font-size: 1.4rem;
+            line-height: 1.5;
+            color: #2c3e50;
+            text-align: justify;
+            font-family: 'Times New Roman', Times, serif !important;
+            transition: text-align 0.4s ease, font-family 0.3s ease, font-size 0.3s ease, color 0.3s ease;
+        }
+
+        .reading-paragraph {
+            margin-bottom: 2rem;
+            display: block;
+            text-align: justify;
+            text-justify: inter-word;
+            line-height: 1.8;
+            min-width: 300px;
+        }
+
+        .word {
+            display: inline-block;
+            white-space: nowrap !important;
+            margin-right: 0.25em;
+            /* Explicit space between words */
+        }
+
+        .letter {
+            display: inline-block;
+            pointer-events: none;
+            margin: 0;
+            padding: 0;
+            white-space: nowrap;
+        }
+
+        /* Reading Ruler */
+        #reading-ruler {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: var(--secondary);
+            pointer-events: none;
+            z-index: 200;
+            display: none;
+            transform: translateY(-50%);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+
+        /* Span Structure */
+        .line {
+            display: block;
+            position: relative;
+            margin-bottom: 0.5rem;
+            white-space: pre-wrap;
+        }
+
+        .word {
+            display: inline-block;
+            position: relative;
+            margin-right: 0.3em;
+        }
+
+        .letter {
+            display: inline-block;
+            position: relative;
+            transition: filter 0.2s ease;
+        }
+
+        /* Sidebar Panels */
+        .control-panel,
+        .info-panel {
+            background: var(--panel-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            position: sticky;
+            top: 6rem;
+        }
+
+        .panel-section {
+            margin-bottom: 2rem;
+        }
+
+        .panel-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--card-border);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Controls */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+        }
+
+        .toggle-row label {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .slider-row {
+            margin-bottom: 1.2rem;
+        }
+
+        .slider-row label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: var(--text-muted);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-sm {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            border-radius: 12px;
+            white-space: nowrap;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+
+        /* Color Chips */
+        .color-chips {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .chip {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--card-border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chip:hover,
+        .chip.active {
+            transform: scale(1.1);
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(251, 176, 59, 0.3);
+        }
+
+        /* Disclaimer & Info */
+        .disclaimer-banner {
+            background: #fff9c4;
+            color: #827717;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            border-left: 5px solid #fbc02d;
+            font-weight: 500;
+        }
+
+        .tracking-highlight {
+            position: absolute;
+            background: rgba(251, 176, 59, 0.2);
+            height: 1.8em;
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .explanation {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--card-border);
+            display: none;
+        }
+
+        .explanation.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Loading Overlay: Cinematic Fade to black */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 1100px) {
+            .simulator-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .control-panel,
+            .info-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="main-nav"></nav>
+
+    <header class="section" style="padding-top: 10rem; padding-bottom: 2rem;">
+        <div class="container">
+            <div class="section-header reveal">
+                <h1 style="font-size: 3rem;">Optical Reading <span style="color: var(--secondary);">Simulator</span>
+                </h1>
+                <p>An educational tool for exploring reported visual experiences.</p>
+            </div>
+
+            <div class="disclaimer-banner reveal">
+                <strong>Important:</strong> This is a simulation of some reported visual experiences. It is for
+                awareness and discussion only. It is <strong>not</strong> a diagnostic tool. Experiences vary greatly
+                from person to person.
+            </div>
+        </div>
+    </header>
+
+    <main class="simulator-layout">
+        <!-- Left: Controls -->
+        <aside class="control-panel reveal">
+            <div class="panel-section">
+                <h3>Reading Passage</h3>
+                <div class="preset-grid" style="grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                    <button class="btn btn-secondary btn-sm passage-btn active"
+                        data-passage="narrative">Narrative</button>
+                    <button class="btn btn-secondary btn-sm passage-btn" data-passage="history">History</button>
+                    <button class="btn btn-secondary btn-sm passage-btn" data-passage="science">Science</button>
+                    <button class="btn btn-secondary btn-sm passage-btn" data-passage="nature">Nature</button>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3>Simulation Presets</h3>
+                <div class="preset-grid">
+                    <button class="btn btn-secondary btn-sm" id="preset-subtle">Subtle Drift</button>
+                    <button class="btn btn-secondary btn-sm" id="preset-mirror">Mirror Confusion</button>
+                    <button class="btn btn-secondary btn-sm" id="preset-jumble">Word Jumble</button>
+                    <button class="btn btn-secondary btn-sm" id="preset-glare">Pattern Glare</button>
+                    <button class="btn btn-secondary btn-sm" id="preset-crowding">Tracking/Crowding</button>
+                    <button class="btn btn-primary btn-sm" id="btn-reset">Reset All</button>
+                </div>
+                <div id="preset-description"
+                    style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); padding: 0.75rem; background: var(--bg-warm); border-radius: 8px; font-style: italic; border-left: 3px solid var(--secondary); display: none;">
+                    <!-- Description will appear here -->
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3>Optical Effects</h3>
+
+                <div class="toggle-row">
+                    <label for="effect-wobble">Letter Wobble</label>
+                    <input type="checkbox" id="effect-wobble">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    Some students report that letters appear to vibrate or shake on the page, making it hard to fixate
+                    on a single word.</p>
+
+                <div class="toggle-row">
+                    <label for="effect-shimmer">Word Shimmer</label>
+                    <input type="checkbox" id="effect-shimmer">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    Words may seem to fade in and out or change in brightness, creating a flickering effect that leads
+                    to eye strain.</p>
+
+                <div class="toggle-row">
+                    <label for="effect-drift">Line Drift</label>
+                    <input type="checkbox" id="effect-drift">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    Readers often feel that lines of text are sliding out of alignment or floating away from each other.
+                </p>
+
+                <div class="toggle-row">
+                    <label for="effect-blur">Blur Pulse</label>
+                    <input type="checkbox" id="effect-blur">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    Vision can periodically become "fuzzy" or out of focus, as if the eyes are struggling to maintain a
+                    sharp image.</p>
+
+                <div class="toggle-row">
+                    <label for="effect-crowding">Visual Crowding</label>
+                    <input type="checkbox" id="effect-crowding">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    Letters and lines may appear to bunch together or overlap, making it difficult to distinguish
+                    individual characters.</p>
+
+                <div class="toggle-row">
+                    <label for="effect-tracking">Tracking Offset</label>
+                    <input type="checkbox" id="effect-tracking">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    It can be challenging to move from the end of one word to the beginning of the next without losing
+                    the place.</p>
+            </div>
+
+            <div class="panel-section">
+                <h3>Text Challenges</h3>
+                <div class="toggle-row">
+                    <label for="effect-confusion">Letter Confusion</label>
+                    <input type="checkbox" id="effect-confusion">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    Mirror-image letters like 'b' and 'd' or 'p' and 'q' are frequently swapped or misread.</p>
+
+                <div class="toggle-row">
+                    <label for="effect-scramble">Letter Scrambling</label>
+                    <input type="checkbox" id="effect-scramble">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    The internal letters of a word can appear to switch places, making familiar words look
+                    unrecognizable.</p>
+
+                <div class="toggle-row">
+                    <label for="effect-mixups">Word Mix-ups</label>
+                    <input type="checkbox" id="effect-mixups">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    Students may frequently confuse common words that look visually similar, such as "was" and "saw."
+                </p>
+
+                <div class="toggle-row">
+                    <label for="effect-skipping">Small Word Skipping</label>
+                    <input type="checkbox" id="effect-skipping">
+                </div>
+                <p
+                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
+                    Short function words like "the" or "of" are often overlooked during rapid scanning of a sentence.
+                </p>
+            </div>
+
+            <div class="panel-section">
+                <h3>Global Intensity</h3>
+                <div class="slider-row">
+                    <label id="intensity-label">Intensity: 50%</label>
+                    <input type="range" id="global-intensity" min="0" max="100" value="50">
+                </div>
+                <div class="slider-row">
+                    <label id="speed-label">Speed: Normal</label>
+                    <input type="range" id="global-speed" min="20" max="180" value="100">
+                </div>
+            </div>
+
+            </div>
+        </aside>
+
+        <!-- Centre: Reading Panel -->
+        <section class="reading-panel">
+            <div class="reading-container" id="reading-box">
+                <!-- Transition Overlay -->
+                <div class="loading-overlay" id="loading-overlay">
+                    <div class="spinner"></div>
+                    <span
+                        style="font-family: 'Fredoka', sans-serif; font-weight: 700; color: white; letter-spacing: 1px; font-size: 0.9rem; opacity: 0.8;">Adjusting
+                        Simulator...</span>
+                </div>
+
+                <div id="reading-surface">
+                    <!-- Text will be processed and injected here -->
+                    The student sat at their desk, looking at the page filled with black text. At first, the words
+                    seemed steady and clear, but as they focused on the central paragraph, a strange feeling began to
+                    take hold. It wasn't that they couldn't read the words, but rather that the paper itself felt less
+                    stable than it should be. The bright white background seemed to glare, making it difficult to keep
+                    their place as they moved from one line to the next. They tried to concentrate on a single sentence
+                    about the ancient history of Rome, but the letters felt like they were vibrating slightly. By the
+                    time they reached the middle of the page, the effort of keeping the letters still was already making
+                    their eyes feel heavy and tired.
+                </div>
+                <!-- Reading Ruler (Moved outside text container to prevent DOM wipe) -->
+                <div id="reading-ruler"></div>
+            </div>
+        </section>
+
+        <!-- Right: Assistive Tools & Explanation -->
+        <aside class="info-panel reveal">
+            <div class="panel-section">
+                <h3>Things that can help</h3>
+
+                <!-- Font & Size -->
+                <div class="slider-row">
+                    <label>Reading Font</label>
+                    <select id="font-selector" class="btn btn-secondary btn-sm"
+                        style="width: 100%; text-align: left; margin-top: 0.5rem; border-radius: 12px; padding: 0.8rem;">
+                        <option value="'Times New Roman', Times, serif" selected>Times New Roman / Serif (Professional)</option>
+                        <option value="'Lexend', sans-serif">Lexend (Highly Recommended)</option>
+                        <option value="'Quicksand', sans-serif">Quicksand (Default Round)</option>
+                        <option value="'Arial', sans-serif">Arial / Helvetica (Standard)</option>
+                        <option value="'Verdana', sans-serif">Verdana (Wide Spacing)</option>
+                        <option value="'Tahoma', sans-serif">Tahoma (Narrow)</option>
+                        <option value="'Georgia', serif">Georgia (Serif Style)</option>
+                        <option value="'Roboto', sans-serif">Roboto (Clean Modern)</option>
+                    </select>
+                </div>
+
+                <div class="slider-row">
+                    <label id="text-size-label">Text Size: 1.4rem</label>
+                    <input type="range" id="text-size-slider" min="100" max="250" value="140">
+                </div>
+
+                <div class="slider-row">
+                    <label id="line-height-label">Line Spacing: 1.5</label>
+                    <input type="range" id="line-height-slider" min="10" max="25" value="15">
+                </div>
+
+                <!-- Formatting Tools -->
+                <div class="panel-section">
+                    <label
+                        style="display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.8rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.4rem; color: var(--primary);">Text
+                        Layout</label>
+                    <div class="toggle-row">
+                        <label for="layout-standard">Standard Passage</label>
+                        <input type="radio" name="text-layout" id="layout-standard" value="standard" checked>
+                    </div>
+                    <div class="toggle-row">
+                        <label for="layout-short">Shorter Paragraphs</label>
+                        <input type="radio" name="text-layout" id="layout-short" value="short">
+                    </div>
+                    <div class="toggle-row">
+                        <label for="layout-summary">Summary View</label>
+                        <input type="radio" name="text-layout" id="layout-summary" value="summary">
+                    </div>
+
+                    <label
+                        style="display: block; font-size: 0.9rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.8rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.4rem; color: var(--primary);">Additional
+                        Help</label>
+                    <div class="toggle-row">
+                        <label for="helper-left-align">Left Align (vs Justify)</label>
+                        <input type="checkbox" id="helper-left-align">
+                    </div>
+                    <div class="toggle-row">
+                        <label for="helper-indent">First-Line Indent</label>
+                        <input type="checkbox" id="helper-indent">
+                    </div>
+                </div>
+
+                <!-- Protective Tools -->
+                <div class="panel-section">
+                    <label
+                        style="display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.8rem; color: var(--primary);">Tracking
+                        Tools</label>
+                    <div class="toggle-row">
+                        <label for="helper-ruler">Reading Ruler</label>
+                        <input type="checkbox" id="helper-ruler">
+                    </div>
+                </div>
+
+
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <div class="slider-row">
+                        <label>Custom BG</label>
+                        <input type="color" id="bg-color-picker" value="#ffffff"
+                            style="width: 100%; height: 35px; border: 2px solid var(--card-border); border-radius: 8px; cursor: pointer; padding: 2px; background: white;">
+                    </div>
+                    <div class="slider-row">
+                        <label>Custom Text</label>
+                        <input type="color" id="text-color-picker" value="#2c3e50"
+                            style="width: 100%; height: 35px; border: 2px solid var(--card-border); border-radius: 8px; cursor: pointer; padding: 2px; background: white;">
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+
+    </main>
+
+    <footer id="main-footer"></footer>
+    <script src="components.js"></script>
+
+    <script>
+        // --- Configuration & State ---
+        const state = {
+            effects: {
+                wobble: false,
+                shimmer: false,
+                drift: false,
+                blur: false,
+                crowding: false,
+                tracking: false,
+                scramble: false,
+                mixups: false,
+                skipping: false
+            },
+            assistive: {
+                ruler: false,
+                tint: false,
+                font: "'Times New Roman', Times, serif",
+                fontSize: 1.4,
+                lineHeight: 1.5,
+                textColor: "#2c3e50",
+                leftAlign: false,
+                indent: false,
+                layout: 'standard'
+            },
+            showTransitions: true,
+            intensity: 0.5,
+            speed: 1.0
+        };
+
+        const passages = {
+            narrative: {
+                full: "The student sat at their desk, looking at the page filled with black text. At first, the words seemed steady and clear, but as they focused on the central paragraph, a strange feeling began to take hold. It wasn't that they couldn't read the words, but rather that the paper itself felt less stable than it should be. The bright white background seemed to glare, making it difficult to keep their place as they moved from one line to the next. They tried to concentrate on a single sentence about the ancient history of Rome, but the letters felt like they were vibrating slightly. By the time they reached the middle of the page, the effort of keeping the letters still was already making their eyes feel heavy and tired. Outside, the world continued as normal, with the distant sound of birds and the rustle of leaves against the windowpane, but inside the classroom, the simple act of reading had become an exhausting task. Every sentence required double the effort of the one before, and the student found themselves blinking frequently to clear their vision. They wondered if others in the room felt the same way or if they were the only ones struggling with the dancing characters on the page. Finally, they decided to take a deep breath and try one more time, hoping that the next paragraph would stay still long enough for them to finish the chapter.",
+                summary: [
+                    "A student struggles with reading a page of text.",
+                    "The words appear to vibrate and the background glares.",
+                    "Simple acts like following a line become exhausting.",
+                    "The student wonders if others share this difficult experience."
+                ]
+            },
+            history: {
+                full: "Ancient Rome was a powerful and important civilization that ruled much of Europe for nearly a thousand years. The city of Rome started as a small town on the Tiber River in central Italy, but it grew into an empire that covered most of continental Europe, Britain, much of western Asia, northern Africa and the Mediterranean islands. Among the many legacies of Roman dominance are the widespread use of the Romance languages derived from Latin, the modern Western alphabet and calendar, and the emergence of Christianity as a major world religion. At its height under the emperor Trajan, the Roman Empire was one of the largest in history, and its influence on architecture, philosophy, and law still echoes through modern society today. The Romans were master builders, leaving behind massive stadiums like the Colosseum and incredible aqueducts that carried fresh water across hundreds of miles of rugged terrain. Their roads were paved with stone and designed to last for centuries, connecting far-flung provinces to the heart of the capital. Even today, historians study the detailed records left behind by Roman scribes to understand the complex political and social structures that held the empire together for so long.",
+                summary: [
+                    "Ancient Rome grew from a small town into a massive empire.",
+                    "It left a lasting legacy in language, law, and architecture.",
+                    "Romans were expert engineers, building roads and aqueducts.",
+                    "Their complex social structures are still studied by historians today."
+                ]
+            },
+            science: {
+                full: "Stars are giant balls of hot gas held together by gravity. They are born in huge clouds of dust and gas called nebulae. Over millions of years, gravity pulls the gas and dust together. As the cloud collapses, it gets hotter and hotter until it reaches millions of degrees. At this point, nuclear fusion begins, and the star starts to shine. Our sun is a medium-sized star that has been shining for nearly five billion years and will continue to shine for several billion more. Galaxies are composed of hundreds of billions of stars, and the universe contains billions of such galaxies, each stretching vast distances across the empty void. Light from the nearest star, other than the Sun, takes over four years to reach Earth, moving at the incredible speed of three-hundred-thousand kilometers every single second. This vastness reminds us that we are part of an immense and ever-expanding cosmic neighborhood. Beyond the stars we can see, astronomers believe there are mysterious substances called dark matter and dark energy that make up most of the universe. Studying these distant objects helps us understand the origin of everything and where our small planet fits into the grand timeline of the cosmos.",
+                summary: [
+                    "Stars are hot gas balls formed in nebulae by gravity.",
+                    "Nuclear fusion causes stars like our sun to shine.",
+                    "Galaxies contain billions of stars in a vast, expanding universe.",
+                    "Dark matter and energy make up most of the unknown cosmos."
+                ]
+            },
+            nature: {
+                full: "The Amazon Rainforest is the world's largest tropical rainforest and is home to a staggering array of biodiversity. It covers an area of over five million square kilometers across South America. The forest is so dense that only one percent of sunlight actually reaches the forest floor. It is often called the 'lungs of the planet' because it produces more than twenty percent of the world's oxygen. Thousands of species of birds, mammals, and insects live in the canopy, while the Amazon River itself contains more than three thousand species of fish. Beyond the familiar parrots and monkeys, the Amazon is home to elusive jaguars and pink river dolphins found nowhere else on Earth. The heavy rains that fall daily support a cycle of growth that has remained unchanged for millions of years. However, this ancient habitat faces significant threats from deforestation and climate change, which could disrupt the delicate balance of life that supports both regional and global ecosystems. Indigenous communities have lived in harmony with this environment for generations, possessing deep knowledge of the plants and animals that thrive in the deep jungle. Protecting the Amazon is not just about saving trees; it is about preserving the incredible variety of life and the oxygen we all need to survive.",
+                summary: [
+                    "The Amazon Rainforest is a massive, biodiverse tropical ecosystem.",
+                    "It is critical to the planet's oxygen production (the 'lungs').",
+                    "The forest faces threats from deforestation and climate change.",
+                    "Protecting the Amazon preserves indigenous knowledge and global life."
+                ]
+            }
+        };
+
+        const elements = {
+            surface: document.getElementById('reading-surface'),
+            readingBox: document.getElementById('reading-box'),
+            ruler: document.getElementById('reading-ruler'),
+            intensityLabel: document.getElementById('intensity-label'),
+            speedLabel: document.getElementById('speed-label')
+        };
+
+        const explanations = {
+            'effect-wobble': '<strong>Letter Wobble</strong>: Simulates characters vibrating or moving out of focus.',
+            'effect-shimmer': '<strong>Word Shimmer</strong>: Words appear to fade or change brightness as you scan.',
+            'effect-drift': '<strong>Line Drift</strong>: Lines of text appear to float or slide out of horizontal alignment.',
+            'effect-blur': '<strong>Blur Pulse</strong>: A periodic loss of focus, simulating ocular fatigue effects.',
+            'effect-crowding': '<strong>Visual Crowding</strong>: Letters and lines appearing too close together to distinguish.',
+            'effect-tracking': '<strong>Tracking Difficulty</strong>: Difficulty maintaining position when moving between words.',
+            'effect-confusion': '<strong>Letter Confusion</strong>: Simulates confusion between mirrored letters like b/d or p/q.',
+            'effect-scramble': '<strong>Letter Scrambling</strong>: Internal letters of a word appear to switch places.',
+            'effect-mixups': '<strong>Word Mix-ups</strong>: Confusion between similar word shapes like "was" and "saw".',
+            'effect-skipping': '<strong>Small Word Skipping</strong>: Moments where short function words are overlooked.'
+        };
+
+        const solutionTips = {
+            'ruler': 'A <strong>Reading Ruler</strong> isolates a single line, preventing vertical "eye jumping" and helping students keep their place in long paragraphs.',
+            'tint': 'A <strong>Global Tint</strong> filters specific light wavelengths, reducing the "glare" that causes text to shimmer or move for many with visual stress.',
+            'font': '<strong>Lexend</strong> was uniquely designed to improve reading fluency by using distinct character widths that reduce visual "clutter".',
+            'size': '<strong>Increasing text size</strong> reduces the precision required for eye tracking and allows users to process word shapes more easily.',
+            'align': '<strong>Left justification</strong> prevents "rivers of white" which can be visually confusing when text is fully justified.',
+            'indent': '<strong>First-line indents</strong> create a clear visual anchor, helping the eyes return to the start of the correct line when reading long paragraphs.'
+        };
+
+        let gsapCtx = null;
+        let currentPassageKey = 'narrative';
+        let originalText = passages.narrative.full;
+
+        // --- Transformation Logic ---
+        const wordSubstitutions = {
+            "was": "saw", "saw": "was",
+            "from": "form", "form": "from",
+            "there": "three", "three": "there",
+            "quite": "quiet", "quiet": "quite"
+        };
+
+        const smallWords = new Set(["the", "and", "to", "of", "in", "a", "is", "it", "on", "at", "or"]);
+
+        function chance(prob) { return Math.random() < prob; }
+
+        function transformText(text) {
+            const intensity = state.intensity;
+            const words = text.split(/(\s+)/);
+
+            return words.map(token => {
+                if (/^\s+$/.test(token)) return token;
+
+                let word = token;
+                const stripped = word.toLowerCase().replace(/[^a-z]/g, "");
+
+                // 1. Small Word Skip
+                if (state.effects.skipping && smallWords.has(stripped) && chance(0.3 * intensity)) return "";
+
+                // 2. Word Mix-up
+                if (state.effects.mixups && wordSubstitutions[stripped] && chance(0.4 * intensity)) {
+                    const sub = wordSubstitutions[stripped];
+                    word = word[0] === word[0].toUpperCase() ? sub.charAt(0).toUpperCase() + sub.slice(1) : sub;
+                }
+
+                // 3. Letter Confusion
+                if (state.effects.confusion) {
+                    const swaps = { "b": "d", "d": "b", "p": "q", "q": "p" };
+                    word = word.split('').map(c => {
+                        const low = c.toLowerCase();
+                        if (swaps[low] && chance(0.35 * intensity)) {
+                            return c === low ? swaps[low] : swaps[low].toUpperCase();
+                        }
+                        return c;
+                    }).join('');
+                }
+
+                // 4. Scramble
+                if (state.effects.scramble && word.length > 3 && chance(0.2 * intensity)) {
+                    let chars = word.split('');
+                    let idx = 1 + Math.floor(Math.random() * (chars.length - 3));
+                    [chars[idx], chars[idx + 1]] = [chars[idx + 1], chars[idx]];
+                    word = chars.join('');
+                }
+
+                return word;
+            }).join("");
+        }
+
+        // --- Text Processing & Rendering ---
+
+
+        function processText() {
+            let textChunks = [];
+
+            if (state.assistive.layout === 'summary') {
+                // Use the summary array as chunks
+                textChunks = passages[currentPassageKey].summary;
+            } else {
+                const transformed = transformText(originalText);
+                const rawSentences = transformed.split(/(?<=\.)\s+/);
+
+                // Group sentences into paragraphs (shorter if tool is active)
+                const paragraphGroupSize = state.assistive.layout === 'short' ? 2 : 5;
+                for (let i = 0; i < rawSentences.length; i += paragraphGroupSize) {
+                    textChunks.push(rawSentences.slice(i, i + paragraphGroupSize).join(' '));
+                }
+            }
+
+            const isSummary = state.assistive.layout === 'summary';
+            const indentHtml = (state.assistive.indent && !isSummary) ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' : '';
+
+            let html = textChunks.map(chunk => {
+                const words = chunk.split(' ');
+                const content = words.map(word => {
+                    const letters = word.split('');
+                    return `<span class="word">${letters.map(l => `<span class="letter">${l}</span>`).join('')}</span>`;
+                }).join(' ');
+
+                if (isSummary) {
+                    return `<div class="reading-paragraph" style="margin-bottom: 2rem; display: flex; gap: 1rem; align-items: flex-start; text-align: left;">
+                        <span style="color: var(--primary); font-size: 1.5rem; line-height: 1;">•</span>
+                        <span style="flex: 1; font-weight: 500;">${content}</span>
+                    </div>`;
+                }
+                return `<div class="reading-paragraph">${indentHtml}${content}</div>`;
+            }).join('');
+
+            elements.surface.innerHTML = html;
+
+            // Update classes
+            elements.surface.classList.toggle('indent-active', state.assistive.indent);
+            elements.surface.style.textAlign = state.assistive.leftAlign ? 'left' : 'justify';
+        }
+
+        // --- UI Updates ---
+        function updateUI() {
+            elements.intensityLabel.textContent = `Intensity: ${Math.round(state.intensity * 100)}%`;
+            const speedText = state.speed < 0.7 ? "Slow" : state.speed > 1.3 ? "Fast" : "Normal";
+            elements.speedLabel.textContent = `Speed: ${speedText}`;
+
+            // Update explanations
+            document.querySelectorAll('.explanation').forEach(exp => {
+                const effectKey = exp.dataset.effect.replace('effect-', '');
+                exp.classList.toggle('active', state.effects[effectKey]);
+            });
+        }
+
+        // --- Animation Engine (GSAP) ---
+        function applyAnimations(forceOverlay = false, forceProcess = false) {
+            const overlay = document.getElementById('loading-overlay');
+            if (!overlay) return;
+
+            const shouldOverlay = state.showTransitions && forceOverlay;
+
+            if (shouldOverlay) {
+                overlay.classList.add('active');
+                setTimeout(() => performUpdate(true), 400);
+            } else {
+                performUpdate(forceProcess);
+            }
+
+            function performUpdate(reProcess) {
+                if (reProcess) processText();
+
+                if (gsapCtx) gsapCtx.revert();
+
+                gsapCtx = gsap.context(() => {
+                    const globalScaling = state.intensity;
+                    const timeScale = state.speed;
+
+                    // 1. Letter Wobble
+                    if (state.intensity > 0.3) {
+                        if (state.effects.wobble) {
+                            gsap.to(".letter", {
+                                x: () => (Math.random() - 0.5) * 5 * state.intensity,
+                                y: () => (Math.random() - 0.5) * 5 * state.intensity,
+                                duration: 0.1,
+                                repeat: -1,
+                                yoyo: true,
+                                ease: "sine.inOut",
+                                stagger: { amount: 0.5, from: "random" }
+                            });
+                        }
+                        if (state.effects.drift) {
+                            gsap.to(".reading-paragraph", {
+                                x: () => (Math.random() - 0.5) * 15 * state.intensity,
+                                duration: 3,
+                                repeat: -1,
+                                yoyo: true,
+                                ease: "sine.inOut"
+                            });
+                        }
+                    }
+
+                    // 2. Word Shimmer
+                    if (state.effects.shimmer) {
+                        gsap.to('.word', {
+                            opacity: () => 0.8 + (Math.random() * 0.2 * (1 - globalScaling)),
+                            filter: () => `blur(${Math.random() * 0.5 * globalScaling}px)`,
+                            duration: () => 0.1 / timeScale + (Math.random() * 0.3),
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "power1.inOut",
+                            stagger: { each: 0.05, repeat: -1, yoyo: true }
+                        });
+                    }
+
+                    // 3. Line Drift
+                    if (state.effects.drift) {
+                        gsap.to('.line', {
+                            x: () => (Math.random() - 0.5) * 10 * globalScaling,
+                            duration: () => 3 / timeScale,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "sine.inOut",
+                            stagger: 0.2
+                        });
+                    }
+
+                    // 4. Blur Pulse
+                    if (state.effects.blur) {
+                        gsap.to('#reading-surface', {
+                            filter: `blur(${1.5 * globalScaling}px)`,
+                            duration: 4 / timeScale,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "sine.inOut"
+                        });
+                    }
+
+                    // 5. Visual Crowding
+                    if (state.effects.crowding) {
+                        gsap.to('.word', {
+                            letterSpacing: `${-1.5 * globalScaling}px`,
+                            marginRight: `${0.1 * (1 - globalScaling)}em`,
+                            duration: 1
+                        });
+                        gsap.to('.line', {
+                            lineHeight: 1.8 - (0.4 * globalScaling),
+                            duration: 1
+                        });
+                    } else {
+                        gsap.to('.word', { letterSpacing: '0px', marginRight: '0.3em', duration: 0.5 });
+                        gsap.to('.line', { lineHeight: 1.8, duration: 0.5 });
+                    }
+
+                    // 6. Tracking Difficulty
+                    if (state.effects.tracking) {
+                        gsap.to('.word', {
+                            y: () => Math.random() < 0.1 ? (Math.random() - 0.5) * 8 * globalScaling : 0,
+                            duration: 0.5,
+                            repeat: -1,
+                            repeatRefresh: true,
+                            ease: "none"
+                        });
+                    }
+                });
+
+                if (shouldOverlay) {
+                    setTimeout(() => overlay.classList.remove('active'), 400);
+                }
+            }
+        }
+
+        // --- Mode & Preset Logic ---
+        const presetDescriptions = {
+            "subtle": "A gentle introduction to visual movement effects.",
+            "mirror": "Simulates difficulty distinguishing mirrored letters like b, d, p, and q.",
+            "jumble": "Shows how letters can appear to swap places and common words look identical.",
+            "glare": "Simulates Meares-Irlen syndrome with shimmering patterns and 'dancing' text.",
+            "crowding": "Demonstrates the feeling of lines and letters bleeding together.",
+            "reset": ""
+        };
+
+        function setPreset(id, config) {
+            Object.keys(state.effects).forEach(key => state.effects[key] = false);
+
+            if (config.effects) config.effects.forEach(e => state.effects[e] = true);
+            state.intensity = config.intensity || 0.5;
+            state.speed = config.speed || 1.0;
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                const key = cb.id.replace('effect-', '');
+                cb.checked = state.effects[key] || false;
+            });
+            document.getElementById('global-intensity').value = state.intensity * 100;
+            document.getElementById('global-speed').value = state.speed * 100;
+
+            // Update description
+            const desc = document.getElementById('preset-description');
+            if (presetDescriptions[id]) {
+                desc.textContent = presetDescriptions[id];
+                desc.style.display = 'block';
+            } else {
+                desc.style.display = 'none';
+            }
+
+            updateUI();
+            // Presets always use the overlay and re-process text
+            applyAnimations(true, true);
+        }
+
+        // --- Event Listeners ---
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                const key = e.target.id.replace('effect-', '');
+                state.effects[key] = e.target.checked;
+
+                updateUI();
+
+                // Manual toggles always use the blackout fade to hide the animation "snap"
+                applyAnimations(true, true);
+            });
+        });
+
+        document.getElementById('global-intensity').addEventListener('input', (e) => {
+            state.intensity = e.target.value / 100;
+            updateUI();
+            // Sliders use the transition to hide the GSAP rewrite snap
+            applyAnimations(true, false);
+        });
+
+        document.getElementById('global-speed').addEventListener('input', (e) => {
+            state.speed = e.target.value / 100;
+            updateUI();
+            // Sliders use the transition to hide the GSAP rewrite snap
+            applyAnimations(true, false);
+        });
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                const color = chip.dataset.color.startsWith('var') ? getComputedStyle(document.documentElement).getPropertyValue(chip.dataset.color.match(/\(([^)]+)\)/)[1]) : chip.dataset.color;
+                elements.readingBox.style.backgroundColor = color;
+                updateUIColors(color);
+            });
+        });
+
+        // Preset Handlers
+        document.getElementById('preset-subtle').onclick = () => setPreset("subtle", { effects: ['wobble', 'drift'], intensity: 0.25 });
+        document.getElementById('preset-mirror').onclick = () => setPreset("mirror", { effects: ['confusion', 'blur'], intensity: 0.7 });
+        document.getElementById('preset-jumble').onclick = () => setPreset("jumble", { effects: ['scramble', 'mixups'], intensity: 0.65 });
+        document.getElementById('preset-glare').onclick = () => setPreset("glare", { effects: ['shimmer', 'wobble', 'drift'], intensity: 0.6 });
+        document.getElementById('preset-crowding').onclick = () => setPreset("crowding", { effects: ['tracking', 'crowding'], intensity: 0.5 });
+        document.getElementById('btn-reset').onclick = () => setPreset("reset", { effects: [], intensity: 0.5, speed: 1.0 });
+
+        document.querySelectorAll('.passage-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.passage-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPassageKey = btn.dataset.passage;
+
+                // Important: for nature, we have an nested object in the mock, need to fix it
+                const passageData = passages[currentPassageKey];
+                originalText = (typeof passageData.full === 'object') ? passageData.full.content : passageData.full;
+
+                applyAnimations(true, true);
+            });
+        });
+
+        // --- Assistive Tool Events ---
+        document.getElementById('font-selector').addEventListener('change', (e) => {
+            state.assistive.font = e.target.value;
+            elements.surface.style.setProperty('font-family', state.assistive.font, 'important');
+
+        });
+
+        document.getElementById('text-size-slider').addEventListener('input', (e) => {
+            const size = e.target.value / 100;
+            state.assistive.fontSize = size;
+            elements.surface.style.fontSize = size + 'rem';
+            document.getElementById('text-size-label').textContent = `Text Size: ${size.toFixed(1)}rem`;
+
+        });
+
+        document.getElementById('line-height-slider').addEventListener('input', (e) => {
+            const spacing = e.target.value / 10;
+            state.assistive.lineHeight = spacing;
+            elements.surface.style.lineHeight = spacing;
+            document.getElementById('line-height-label').textContent = `Line Spacing: ${spacing.toFixed(1)}`;
+        });
+
+        document.getElementById('helper-ruler').addEventListener('change', (e) => {
+            state.assistive.ruler = e.target.checked;
+            elements.ruler.style.display = state.assistive.ruler ? 'block' : 'none';
+
+        });
+
+
+
+        document.getElementById('text-color-picker').addEventListener('input', (e) => {
+            state.assistive.textColor = e.target.value;
+            elements.surface.style.color = state.assistive.textColor;
+        });
+
+        document.getElementById('bg-color-picker').addEventListener('input', (e) => {
+            const color = e.target.value;
+            elements.readingBox.style.backgroundColor = color;
+            updateUIColors(color);
+        });
+
+        document.getElementById('helper-left-align').addEventListener('change', (e) => {
+            state.assistive.leftAlign = e.target.checked;
+            elements.surface.style.textAlign = state.assistive.leftAlign ? 'left' : 'justify';
+
+        });
+
+        document.getElementById('helper-indent').addEventListener('change', (e) => {
+            state.assistive.indent = e.target.checked;
+            applyAnimations(true, true);
+
+        });
+
+        document.querySelectorAll('input[name="text-layout"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                state.assistive.layout = e.target.value;
+
+                // UX: Disable indent if in summary mode
+                const indentSwitch = document.getElementById('helper-indent');
+                if (state.assistive.layout === 'summary') {
+                    indentSwitch.disabled = true;
+                    indentSwitch.parentElement.style.opacity = '0.5';
+                } else {
+                    indentSwitch.disabled = false;
+                    indentSwitch.parentElement.style.opacity = '1';
+                }
+
+                applyAnimations(true, true);
+            });
+        });
+
+
+
+        // Ruler movement (Attached to readingBox for better coverage)
+        elements.readingBox.addEventListener('mousemove', (e) => {
+            if (state.assistive.ruler) {
+                const rect = elements.readingBox.getBoundingClientRect();
+                const y = e.clientY - rect.top;
+                elements.ruler.style.top = y + 'px';
+            }
+        });
+
+
+
+        // --- Initialization ---
+        window.onload = () => {
+            // Set initial font from state
+            elements.surface.style.setProperty('font-family', state.assistive.font, 'important');
+            processText();
+            updateUI();
+            applyAnimations();
+        };
+    </script>
+</body>
+
+</html>

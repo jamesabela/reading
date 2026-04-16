@@ -304,6 +304,14 @@
         "desc": "Personalized offline Text to Speech application for reading any text aloud. (Note: Windows Executable)",
         "tag": "Accessibility / Windows",
         "isExternal": true
+      },
+      {
+        "title": "Reading Experience Demo",
+        "emoji": "📖",
+        "url": "reading-demo.html",
+        "desc": "An interactive simulator showing various reading challenges and text accessibility settings.",
+        "tag": "Simulator / Literacy",
+        "isExternal": false
       }
     ]
   }
