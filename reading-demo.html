@@ -770,10 +770,13 @@
             "was": "saw", "saw": "was",
             "from": "form", "form": "from",
             "there": "three", "three": "there",
-            "quite": "quiet", "quiet": "quite"
+            "quite": "quiet", "quiet": "quite",
+            "now": "won", "won": "now",
+            "no": "on", "on": "no",
+            "but": "tub", "tub": "but"
         };
 
-        const smallWords = new Set(["the", "and", "to", "of", "in", "a", "is", "it", "on", "at", "or"]);
+        const smallWords = new Set(["a", "act", "all", "an", "and", "are", "as", "at", "be", "but", "by", "can", "far", "for", "gas", "had", "has", "hot", "if", "in", "is", "it", "its", "law", "not", "of", "on", "one", "or", "our", "sat", "see", "so", "sun", "the", "to", "try", "up", "us", "use", "was", "way", "we"]);
 
         function chance(prob) { return Math.random() < prob; }
 
@@ -788,10 +791,10 @@
                 const stripped = word.toLowerCase().replace(/[^a-z]/g, "");
 
                 // 1. Small Word Skip
-                if (state.effects.skipping && smallWords.has(stripped) && chance(0.3 * intensity)) return "";
+                if (state.effects.skipping && smallWords.has(stripped) && chance(0.4 * intensity)) return "";
 
                 // 2. Word Mix-up
-                if (state.effects.mixups && wordSubstitutions[stripped] && chance(0.4 * intensity)) {
+                if (state.effects.mixups && wordSubstitutions[stripped] && chance(0.6 * intensity)) {
                     const sub = wordSubstitutions[stripped];
                     word = word[0] === word[0].toUpperCase() ? sub.charAt(0).toUpperCase() + sub.slice(1) : sub;
                 }
@@ -801,7 +804,7 @@
                     const swaps = { "b": "d", "d": "b", "p": "q", "q": "p" };
                     word = word.split('').map(c => {
                         const low = c.toLowerCase();
-                        if (swaps[low] && chance(0.35 * intensity)) {
+                        if (swaps[low] && chance(0.5 * intensity)) {
                             return c === low ? swaps[low] : swaps[low].toUpperCase();
                         }
                         return c;
@@ -809,7 +812,7 @@
                 }
 
                 // 4. Scramble
-                if (state.effects.scramble && word.length > 3 && chance(0.2 * intensity)) {
+                if (state.effects.scramble && word.length > 3 && chance(0.3 * intensity)) {
                     let chars = word.split('');
                     let idx = 1 + Math.floor(Math.random() * (chars.length - 3));
                     [chars[idx], chars[idx + 1]] = [chars[idx + 1], chars[idx]];
@@ -827,8 +830,8 @@
             let textChunks = [];
 
             if (state.assistive.layout === 'summary') {
-                // Use the summary array as chunks
-                textChunks = passages[currentPassageKey].summary;
+                // Apply transformation to each summary bullet point
+                textChunks = passages[currentPassageKey].summary.map(bullet => transformText(bullet));
             } else {
                 const transformed = transformText(originalText);
                 const rawSentences = transformed.split(/(?<=\.)\s+/);
