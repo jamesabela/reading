@@ -280,6 +280,30 @@
         "desc": "A typeface designed against some common symptoms of dyslexia—integrated into Concept Grid.",
         "tag": "Accessibility / Typeface",
         "isExternal": true
+      },
+      {
+        "title": "Gemini Storybook",
+        "emoji": "📚",
+        "url": "https://gemini.google/overview/storybook/",
+        "desc": "Create personalized, illustrated stories. Describe your idea and get a unique 10-page book with read-aloud narration.",
+        "tag": "AI / Storytelling",
+        "isExternal": true
+      },
+      {
+        "title": "Simple English News",
+        "emoji": "📰",
+        "url": "https://simpleenglishnews.com/",
+        "desc": "Current events and news stories written in accessible, simplified language for English learners.",
+        "tag": "Reading / Literacy",
+        "isExternal": true
+      },
+      {
+        "title": "Arctic Text to Speech",
+        "emoji": "🔊",
+        "url": "https://jabela.itch.io/texttospeech",
+        "desc": "Personalized offline Text to Speech application for reading any text aloud. (Note: Windows Executable)",
+        "tag": "Accessibility / Windows",
+        "isExternal": true
       }
     ]
   }
