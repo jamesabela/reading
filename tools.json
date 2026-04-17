@@ -306,10 +306,10 @@
         "isExternal": true
       },
       {
-        "title": "Reading Experience Demo",
+        "title": "Optical Reading Simulator",
         "emoji": "📖",
-        "url": "reading-demo.html",
-        "desc": "An interactive simulator showing various reading challenges and text accessibility settings.",
+        "url": "reading-experience.html",
+        "desc": "An interactive experience showing various reading challenges and text accessibility settings.",
         "tag": "Simulator / Literacy",
         "isExternal": false
       }
