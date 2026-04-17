@@ -128,10 +128,10 @@
         }
 
         input[type="range"] {
-            width: 200px;
+            width: 150px;
         }
 
-        /* Text Editor Panel */
+        /* Hide furniture in fullscreen mode */
         .text-editor {
             position: fixed;
             top: 8rem; /* Moved down to avoid navbar */
@@ -233,9 +233,14 @@
             <button id="speed-btn" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem; min-width: 60px;">1x</button>
         </div>
         <button id="fullscreen-btn" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: var(--accent);">⛶ Full Screen</button>
+        <button id="music-btn" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">🎵 On</button>
         <button id="share-btn" class="btn btn-secondary" style="padding: 0.5rem 1.5rem; font-size: 0.8rem; border-color: var(--accent); color: var(--accent);">🔗 Share</button>
         <button id="edit-btn" class="btn btn-secondary" style="padding: 0.5rem 1.5rem; font-size: 0.8rem;">Edit Text</button>
     </div>
+
+    <audio id="background-music" loop>
+        <source src="assets/luis_humanoide-star-wars-style-march-165111.mp3" type="audio/mpeg">
+    </audio>
 
     <div id="copy-toast">Link copied to clipboard!</div>
 
@@ -257,8 +262,10 @@
         const speedBtn = document.getElementById('speed-btn');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
         const editBtn = document.getElementById('edit-btn');
+        const musicBtn = document.getElementById('music-btn');
         const editor = document.getElementById('text-editor');
         const closeEditor = document.getElementById('close-editor');
+        const bgMusic = document.getElementById('background-music');
         
         const displayEpisode = document.getElementById('display-episode');
         const displayTitle = document.getElementById('display-title');
@@ -274,6 +281,7 @@
         let crawlSpeedMultiplier = 1;
         const speedPresets = [1, 1.5, 2, 3, 0.5];
         let speedIndex = 0;
+        let isMusicOn = true;
 
         // --- URL UTILS ---
         function encodeData(text) {
@@ -361,7 +369,20 @@
             autoplayBtn.innerText = isAutoplay ? "Pause" : "Auto Play";
             if (isAutoplay) {
                 lastTime = performance.now();
+                if (isMusicOn) bgMusic.play().catch(e => console.log("Audio play blocked by browser."));
                 requestAnimationFrame(autoMove);
+            } else {
+                bgMusic.pause();
+            }
+        });
+
+        musicBtn.addEventListener('click', () => {
+            isMusicOn = !isMusicOn;
+            musicBtn.innerText = isMusicOn ? "🎵 On" : "🎵 Off";
+            if (isMusicOn && isAutoplay) {
+                bgMusic.play();
+            } else {
+                bgMusic.pause();
             }
         });
 
