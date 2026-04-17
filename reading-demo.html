@@ -10,6 +10,14 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;500;700&family=Lexend:wght@300;400;500;600&family=Roboto:wght@400;500;700&display=swap"
         rel="stylesheet">
+    <!-- OpenDyslexic Webfont -->
+    <style>
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('https://cdn.jsdelivr.net/gh/madjeek-web/open-dyslexic@main/OpenDyslexic-2025/OpenDyslexic-Regular.woff2') format('woff2');
+            font-display: swap;
+        }
+    </style>
     <!-- GSAP for smooth animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
@@ -37,6 +45,49 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        /* Assistive Info Styling */
+        .assistive-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: -0.5rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.35;
+            padding-left: 2px;
+            font-weight: 500;
+        }
+
+        .tint-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.4s ease, background-color 0.4s ease;
+            border-radius: 24px;
+        }
+
+        .tint-chip {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 2px solid var(--card-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tint-chip:hover {
+            transform: scale(1.1);
+            border-color: var(--secondary);
+        }
+
+        .tint-chip.active {
+            border-color: var(--secondary);
+            box-shadow: 0 0 8px rgba(251, 176, 59, 0.4);
         }
 
         .simulator-layout {
@@ -549,6 +600,9 @@
                         Simulator...</span>
                 </div>
 
+                <!-- Global Tint Overlay Layer -->
+                <div class="tint-overlay" id="global-tint-layer"></div>
+
                 <div id="reading-surface">
                     <!-- Text will be processed and injected here -->
                     The student sat at their desk, looking at the page filled with black text. At first, the words
@@ -575,8 +629,9 @@
                     <label>Reading Font</label>
                     <select id="font-selector" class="btn btn-secondary btn-sm"
                         style="width: 100%; text-align: left; margin-top: 0.5rem; border-radius: 12px; padding: 0.8rem;">
-                        <option value="'Times New Roman', Times, serif" selected>Times New Roman / Serif (Professional)</option>
+                        <option value="'Times New Roman', Times, serif" selected>Times New Roman / Serif (Newspaper)</option>
                         <option value="'Lexend', sans-serif">Lexend (Highly Recommended)</option>
+                        <option value="'OpenDyslexic', sans-serif">OpenDyslexic (Heavy Bottoms)</option>
                         <option value="'Quicksand', sans-serif">Quicksand (Default Round)</option>
                         <option value="'Arial', sans-serif">Arial / Helvetica (Standard)</option>
                         <option value="'Verdana', sans-serif">Verdana (Wide Spacing)</option>
@@ -585,15 +640,40 @@
                         <option value="'Roboto', sans-serif">Roboto (Clean Modern)</option>
                     </select>
                 </div>
+                <p class="assistive-info">
+                    Standard "Newspaper" fonts like Times New Roman are <strong>not recommended</strong> for accessible reading. Instead, specialized fonts like <a href="https://fonts.google.com/specimen/Lexend?preview.script=Latn" target="_blank" style="color: var(--secondary); text-decoration: underline;">Lexend</a> and <a href="https://opendyslexic.org/" target="_blank" style="color: var(--secondary); text-decoration: underline;">OpenDyslexic</a> reduce visual clutter and improve focus.</p>
 
                 <div class="slider-row">
                     <label id="text-size-label">Text Size: 1.4rem</label>
                     <input type="range" id="text-size-slider" min="100" max="250" value="140">
                 </div>
+                <p class="assistive-info">
+                    Increasing text size reduces the precision required for eye tracking and allows users to process word shapes more easily.</p>
 
                 <div class="slider-row">
                     <label id="line-height-label">Line Spacing: 1.5</label>
                     <input type="range" id="line-height-slider" min="10" max="25" value="15">
+                </div>
+                <p class="assistive-info">
+                    Increased line spacing creates a clear visual gap between rows, preventing the eye from accidentally skipping to the wrong line.</p>
+
+                <!-- Visual Stress Tools (Tint) -->
+                <div class="panel-section">
+                    <label
+                        style="display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--primary);">Global Tint (Overlay)</label>
+                    <div class="toggle-row">
+                        <label for="helper-tint">Enable Overlay</label>
+                        <input type="checkbox" id="helper-tint">
+                    </div>
+                    <div id="tint-selector-grid" style="display: flex; gap: 0.5rem; margin-top: 0.5rem; opacity: 0.5; pointer-events: none; transition: opacity 0.3s ease;">
+                        <div class="tint-chip active" data-color="rgba(255, 235, 59, 0.15)" style="background: rgba(255, 235, 59, 0.3);" title="Yellow"></div>
+                        <div class="tint-chip" data-color="rgba(76, 175, 80, 0.15)" style="background: rgba(76, 175, 80, 0.3);" title="Mint"></div>
+                        <div class="tint-chip" data-color="rgba(33, 150, 243, 0.15)" style="background: rgba(33, 150, 243, 0.3);" title="Sky Blue"></div>
+                        <div class="tint-chip" data-color="rgba(233, 30, 99, 0.15)" style="background: rgba(233, 30, 99, 0.3);" title="Rose"></div>
+                        <div class="tint-chip" data-color="rgba(255, 152, 0, 0.15)" style="background: rgba(255, 152, 0, 0.3);" title="Peach"></div>
+                    </div>
+                    <p class="assistive-info" style="margin-top: 0.8rem;">
+                        A global tint filters specific light wavelengths, reducing the "glare" that causes text to shimmer or move for many with visual stress.</p>
                 </div>
 
                 <!-- Formatting Tools -->
@@ -613,6 +693,8 @@
                         <label for="layout-summary">Summary View</label>
                         <input type="radio" name="text-layout" id="layout-summary" value="summary">
                     </div>
+                    <p class="assistive-info">
+                        Breaking long text into shorter segments or summaries helps reduce cognitive load and makes content easier to process.</p>
 
                     <label
                         style="display: block; font-size: 0.9rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.8rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.4rem; color: var(--primary);">Additional
@@ -621,10 +703,15 @@
                         <label for="helper-left-align">Left Align (vs Justify)</label>
                         <input type="checkbox" id="helper-left-align">
                     </div>
+                    <p class="assistive-info">
+                        Left alignment prevents "rivers of white" which can be visually confusing when text is spaced unevenly.</p>
+
                     <div class="toggle-row">
                         <label for="helper-indent">First-Line Indent</label>
                         <input type="checkbox" id="helper-indent">
                     </div>
+                    <p class="assistive-info">
+                        First-line indents create a clear visual anchor, helping the eyes return to the start of the correct line after a break.</p>
                 </div>
 
                 <!-- Protective Tools -->
@@ -636,6 +723,8 @@
                         <label for="helper-ruler">Reading Ruler</label>
                         <input type="checkbox" id="helper-ruler">
                     </div>
+                    <p class="assistive-info">
+                        A reading ruler isolates a single line, preventing vertical "eye jumping" and helping users maintain their place.</p>
                 </div>
 
 
@@ -652,6 +741,8 @@
                             style="width: 100%; height: 35px; border: 2px solid var(--card-border); border-radius: 8px; cursor: pointer; padding: 2px; background: white;">
                     </div>
                 </div>
+                <p class="assistive-info">
+                    Low contrast themes (like cream and grey) can significantly reduce the eye strain caused by bright screen glare.</p>
 
             </div>
         </aside>
@@ -750,15 +841,6 @@
             'effect-scramble': '<strong>Letter Scrambling</strong>: Internal letters of a word appear to switch places.',
             'effect-mixups': '<strong>Word Mix-ups</strong>: Confusion between similar word shapes like "was" and "saw".',
             'effect-skipping': '<strong>Small Word Skipping</strong>: Moments where short function words are overlooked.'
-        };
-
-        const solutionTips = {
-            'ruler': 'A <strong>Reading Ruler</strong> isolates a single line, preventing vertical "eye jumping" and helping students keep their place in long paragraphs.',
-            'tint': 'A <strong>Global Tint</strong> filters specific light wavelengths, reducing the "glare" that causes text to shimmer or move for many with visual stress.',
-            'font': '<strong>Lexend</strong> was uniquely designed to improve reading fluency by using distinct character widths that reduce visual "clutter".',
-            'size': '<strong>Increasing text size</strong> reduces the precision required for eye tracking and allows users to process word shapes more easily.',
-            'align': '<strong>Left justification</strong> prevents "rivers of white" which can be visually confusing when text is fully justified.',
-            'indent': '<strong>First-line indents</strong> create a clear visual anchor, helping the eyes return to the start of the correct line when reading long paragraphs.'
         };
 
         let gsapCtx = null;
@@ -1116,6 +1198,26 @@
             state.assistive.lineHeight = spacing;
             elements.surface.style.lineHeight = spacing;
             document.getElementById('line-height-label').textContent = `Line Spacing: ${spacing.toFixed(1)}`;
+        });
+
+        // --- Global Tint Logic ---
+        const tintLayer = document.getElementById('global-tint-layer');
+        const tintToggle = document.getElementById('helper-tint');
+        const tintGrid = document.getElementById('tint-selector-grid');
+
+        tintToggle.addEventListener('change', (e) => {
+            state.assistive.tint = e.target.checked;
+            tintLayer.style.opacity = state.assistive.tint ? 1 : 0;
+            tintGrid.style.opacity = state.assistive.tint ? 1 : 0.5;
+            tintGrid.style.pointerEvents = state.assistive.tint ? 'all' : 'none';
+        });
+
+        document.querySelectorAll('.tint-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.tint-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                tintLayer.style.backgroundColor = chip.dataset.color;
+            });
         });
 
         document.getElementById('helper-ruler').addEventListener('change', (e) => {
