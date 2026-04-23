@@ -544,7 +544,7 @@
                 </div>
                 <p
                     style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 0.8rem; line-height: 1.3;">
-                    Visually similar letters like 'b', 'd', 'p', 'q', 'n', 'u', 'f', 'j', 't', 'g', and 'y' are frequently swapped or misread.</p>
+                    Visually similar letters like 'b', 'd', 'p', 'q', 'n', 'u', 'm', 'v', 'w', 'f', 'j', 't', 'l', 'i', 'g', and 'y' are frequently swapped or misread.</p>
 
                 <div class="toggle-row">
                     <label for="effect-scramble">Letter Scrambling</label>
@@ -885,8 +885,11 @@
                 if (state.effects.confusion) {
                     const swaps = {
                         "b": ["d", "p"], "d": ["b", "q"], "p": ["q", "b"], "q": ["p", "d"],
-                        "n": ["u"], "u": ["n"], "f": ["j", "t"], "j": ["f"], "t": ["f"],
-                        "g": ["y"], "y": ["g"]
+                        "n": ["u", "m"], "u": ["n"], "m": ["n"],
+                        "f": ["j", "t"], "j": ["f"], "t": ["f"],
+                        "g": ["y"], "y": ["g"],
+                        "v": ["w"], "w": ["v"],
+                        "l": ["i", "1"], "i": ["l", "1"]
                     };
                     word = word.split('').map(c => {
                         const low = c.toLowerCase();
