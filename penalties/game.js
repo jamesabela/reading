@@ -39,6 +39,9 @@ let canSelectShot = false;
 let soundVolume = 0.3;
 let menuMusic = null;
 let activeQuestionSetName = 'Default set';
+let allowClues = false;
+let clueUsedThisRound = false;
+let clueSaveTriggered = false;
 const MAX_QUESTIONS = 50;
 const EDITOR_SET_KEY = 'penaltyQuestionEditorSet';
 
@@ -51,7 +54,7 @@ const colors = [
 ];
 
 // Assets
-let ball, ballShadow, goalie, background;
+let ball, ballShadow, goalie, background, keeperThoughtText;
 const goalChoicePoints = {
     'TL': { x: 250, y: 275 },
     'TR': { x: 550, y: 275 },
@@ -103,6 +106,7 @@ function create() {
 
     setupAudioControls();
     setupQuestionSetLoader();
+    setupClueControls();
 
     isGameReady = true;
     if (pendingStartGame) {
@@ -112,6 +116,29 @@ function create() {
 
     // Initial nav state
     toggleMainNav(true);
+}
+
+function setupClueControls() {
+    const cluesToggle = document.getElementById('clues-toggle');
+    const clueBtn = document.getElementById('clue-btn');
+    const clueText = document.getElementById('clue-text');
+
+    if (cluesToggle) {
+        allowClues = cluesToggle.checked;
+        cluesToggle.onchange = () => {
+            allowClues = cluesToggle.checked;
+        };
+    }
+
+    if (clueBtn && clueText) {
+        clueBtn.onclick = () => {
+            if (!currentWord?.clue) return;
+            clueUsedThisRound = true;
+            clueBtn.style.display = 'none';
+            clueText.innerText = `${currentWord.clue}\n\nGoalkeeper read: the hint gives away part of your thinking.`;
+            clueText.style.display = 'block';
+        };
+    }
 }
 
 function toggleMainNav(visible) {
@@ -436,6 +463,7 @@ async function startGame() {
 
     document.getElementById('setup-overlay').style.display = 'none';
     document.getElementById('question-overlay').style.display = 'none';
+    document.getElementById('clue-overlay').style.display = 'none';
     document.getElementById('result-overlay').style.display = 'none';
     document.getElementById('gameover-overlay').style.display = 'none';
     document.getElementById('scoreboard').style.display = 'flex';
@@ -475,6 +503,10 @@ async function initPitch() {
     const scene = game.scene.scenes[0];
     if (goalie) goalie.destroy();
     if (ball) ball.destroy();
+    if (keeperThoughtText) {
+        keeperThoughtText.destroy();
+        keeperThoughtText = null;
+    }
 
     const defender = (currentPlayer === player1) ? player2 : player1;
     await applyRecolor(defender);
@@ -487,6 +519,25 @@ async function initPitch() {
 
     ball = scene.add.sprite(400, 580, 'ball').setScale(0.2);
     ballShadow.setVisible(true).setX(400).setY(590).setScale(0.2);
+}
+
+function showKeeperThought(message) {
+    const scene = game.scene.scenes[0];
+    if (!scene) return;
+
+    if (keeperThoughtText) keeperThoughtText.destroy();
+    keeperThoughtText = scene.add.text(400, 218, message, {
+        fontSize: '15px',
+        fontFamily: 'Outfit',
+        fontWeight: 'bold',
+        color: '#fff7c2',
+        backgroundColor: 'rgba(0, 0, 0, 0.68)',
+        stroke: '#000',
+        strokeThickness: 4,
+        align: 'center',
+        padding: { x: 12, y: 8 },
+        wordWrap: { width: 330 }
+    }).setOrigin(0.5).setDepth(30);
 }
 
 async function applyRecolor(player) {
@@ -607,8 +658,25 @@ function showQuestion() {
     const target = words[Math.floor(Math.random() * words.length)];
     currentWord = target;
     selectedAnswer = null;
+    clueUsedThisRound = false;
+    clueSaveTriggered = false;
 
     document.getElementById('question-def').innerText = target.definition;
+    const clueBtn = document.getElementById('clue-btn');
+    const clueText = document.getElementById('clue-text');
+    const clueOverlay = document.getElementById('clue-overlay');
+    
+    if (clueBtn && clueText && clueOverlay) {
+        clueText.innerText = '';
+        clueText.style.display = 'none';
+        const hasClue = target.clue && target.clue.trim().length > 0;
+        clueBtn.style.display = (allowClues && hasClue) ? 'inline-block' : 'none';
+        clueOverlay.style.display = (allowClues && hasClue) ? 'flex' : 'none';
+    }
+    if (keeperThoughtText) {
+        keeperThoughtText.destroy();
+        keeperThoughtText = null;
+    }
 
     const choices = [target.word];
     while (choices.length < 4) {
@@ -618,7 +686,7 @@ function showQuestion() {
     shuffleArray(choices);
     currentChoices = choices;
     stopMenuMusic(); // Stop music when question appears
-    overlay.style.display = 'block';
+    overlay.style.display = 'flex';
     enterShotMode();
 }
 
@@ -627,7 +695,7 @@ function showBlockingMessage(title, message) {
     overlay.style.borderColor = '#e74c3c';
     document.getElementById('question-title').innerText = title;
     document.getElementById('question-def').innerText = message;
-    overlay.style.display = 'block';
+    overlay.style.display = 'flex';
 }
 
 function enterShotMode() {
@@ -683,14 +751,21 @@ function performKick(corner, selectedChoice) {
 
     selectedAnswer = selectedChoice;
     isAnswerCorrect = (selectedChoice === currentWord.word);
+    clueSaveTriggered = isAnswerCorrect && clueUsedThisRound && Math.random() < 0.5;
+    const isGoal = isAnswerCorrect && !clueSaveTriggered;
     document.getElementById('question-overlay').style.display = 'none';
+    document.getElementById('clue-overlay').style.display = 'none';
 
-    const targetPos = { ...(isAnswerCorrect ? goalShotTargets[corner] : goalSaveTargets[corner]) };
-    const targetScale = isAnswerCorrect ? 0.025 : 0.085;
+    if (clueSaveTriggered) {
+        showKeeperThought('The goalkeeper read the clue and guessed your shot.');
+    }
+
+    const targetPos = { ...(isGoal ? goalShotTargets[corner] : goalSaveTargets[corner]) };
+    const targetScale = isGoal ? 0.025 : 0.085;
     const defender = (currentPlayer === player1) ? player2 : player1;
     
     let goalieAction = 'idle';
-    if (!isAnswerCorrect) {
+    if (!isGoal) {
         goalieAction = corner.includes('L') ? 'left' : 'right';
     } else {
         goalieAction = corner.includes('L') ? 'right' : 'left';
@@ -703,9 +778,10 @@ function performKick(corner, selectedChoice) {
         ballShadow.setScale(ball.scale);
     };
     const finishShot = () => {
-        const isGoal = isAnswerCorrect;
         const answerDetail = selectedAnswer === currentWord.word
-            ? `Correct answer: ${currentWord.word}`
+            ? clueSaveTriggered
+                ? `Correct answer: ${currentWord.word}  |  The clue helped the goalkeeper read the shot.`
+                : `Correct answer: ${currentWord.word}`
             : `Your answer: ${selectedAnswer}  |  Correct answer: ${currentWord.word}`;
 
         if (isGoal) {
@@ -717,6 +793,9 @@ function performKick(corner, selectedChoice) {
             }
             playResultSound('goal-sfx');
             showResultOverlay("GOAL!", "#2ecc71", answerDetail, currentWord.explanation);
+        } else if (clueSaveTriggered) {
+            playResultSound('miss-sfx');
+            showResultOverlay("SAVED!", "#f1c40f", answerDetail, currentWord.explanation);
         } else {
             playResultSound('miss-sfx');
             showResultOverlay("MISS / WRONG!", "#e74c3c", answerDetail, currentWord.explanation);
