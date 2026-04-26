@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Question Set Editor</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -245,7 +245,7 @@
                 <button id="show-import-btn" type="button">Import Text</button>
                 <button id="load-btn" type="button">Load JSON</button>
                 <button id="save-btn" class="primary" type="button">Save JSON</button>
-                <a class="link-btn" href="../penalties/index.html" id="back-to-game">Back to Game</a>
+                <a class="link-btn" href="penalties.html" id="back-to-game">Back to Game</a>
                 <input id="file-input" type="file" accept="application/json,.json" hidden>
             </div>
         </div>
@@ -301,7 +301,7 @@
         </section>
     </main>
 
-    <script src="../components.js"></script>
+    <script src="components.js"></script>
     <script>
         const fields = {
             answer: document.getElementById('answer-input'),
@@ -327,40 +327,40 @@
         const EDITOR_SET_KEY = 'penaltyQuestionEditorSet';
         const SAMPLE_SETS = {
             Vocabulary: [
-                { topic: 'General', file: '../penalties/penaltyshootout.json' }
+                { topic: 'General', file: 'penalties/penaltyshootout.json' }
             ],
             'iGCSE Computing': [
-                { topic: 'General', file: 'samples/igcse-computing-sample.json' },
-                { topic: 'Data Representation', file: 'samples/igcse-computing-data-representation.json' },
-                { topic: 'Data Transmission', file: 'samples/igcse-computing-data-transmission.json' },
-                { topic: 'Hardware', file: 'samples/igcse-computing-hardware.json' },
-                { topic: 'Software', file: 'samples/igcse-computing-software.json' },
-                { topic: 'Internet', file: 'samples/igcse-computing-internet.json' },
-                { topic: 'Databases', file: 'samples/igcse-computing-databases.json' }
+                { topic: 'General', file: 'editor/samples/igcse-computing-sample.json' },
+                { topic: 'Data Representation', file: 'editor/samples/igcse-computing-data-representation.json' },
+                { topic: 'Data Transmission', file: 'editor/samples/igcse-computing-data-transmission.json' },
+                { topic: 'Hardware', file: 'editor/samples/igcse-computing-hardware.json' },
+                { topic: 'Software', file: 'editor/samples/igcse-computing-software.json' },
+                { topic: 'Internet', file: 'editor/samples/igcse-computing-internet.json' },
+                { topic: 'Databases', file: 'editor/samples/igcse-computing-databases.json' }
             ],
             'iGCSE Biology': [
-                { topic: 'General', file: 'samples/igcse-biology-sample.json' }
+                { topic: 'General', file: 'editor/samples/igcse-biology-sample.json' }
             ],
             'iGCSE Psychology': [
-                { topic: 'General', file: 'samples/igcse-psychology-sample.json' }
+                { topic: 'General', file: 'editor/samples/igcse-psychology-sample.json' }
             ],
             'iGCSE Business Studies': [
-                { topic: 'General', file: 'samples/igcse-business-studies-sample.json' }
+                { topic: 'General', file: 'editor/samples/igcse-business-studies-sample.json' }
             ],
             'iGCSE Economics': [
-                { topic: 'General', file: 'samples/igcse-economics-sample.json' }
+                { topic: 'General', file: 'editor/samples/igcse-economics-sample.json' }
             ],
             'iGCSE Geography': [
-                { topic: 'General', file: 'samples/igcse-geography-sample.json' }
+                { topic: 'General', file: 'editor/samples/igcse-geography-sample.json' }
             ],
             'iGCSE History': [
-                { topic: 'Second World War', file: 'samples/igcse-history-ww2-sample.json' }
+                { topic: 'Second World War', file: 'editor/samples/igcse-history-ww2-sample.json' }
             ],
             'iGCSE Physics': [
-                { topic: 'General', file: 'samples/igcse-physics-sample.json' }
+                { topic: 'General', file: 'editor/samples/igcse-physics-sample.json' }
             ],
             'iGCSE Chemistry': [
-                { topic: 'General', file: 'samples/igcse-chemistry-sample.json' }
+                { topic: 'General', file: 'editor/samples/igcse-chemistry-sample.json' }
             ]
         };
 
@@ -663,7 +663,7 @@
             }
 
             localStorage.setItem(EDITOR_SET_KEY, JSON.stringify(buildQuestionSet()));
-            window.location.href = '../penalties/index.html?editorSet=1';
+            window.location.href = 'penalties.html?editorSet=1';
         };
 
         render();

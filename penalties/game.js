@@ -75,6 +75,7 @@ const GOALIE_DIVE_DISTANCE = 45;
 const GOALIE_Y = 330;
 
 function preload() {
+    this.load.setPath('penalties/');
     this.load.json('words', 'penaltyshootout.json');
     this.load.image('background', 'assets/stadium_background_v2_1776206365228.png');
     this.load.image('ball', 'assets/ball.png');

@@ -204,6 +204,14 @@
         "desc": "Reveal tiles one by one — who can guess the hidden image first?",
         "tag": "Visual / Starter",
         "isExternal": true
+      },
+      {
+        "title": "Penalty Shootout",
+        "emoji": "⚽",
+        "url": "penalties.html",
+        "desc": "Master vocabulary definitions with this high-stakes penalty game. Score goals by picking the right words!",
+        "tag": "Game / Vocab",
+        "isExternal": false
       }
     ]
   },
