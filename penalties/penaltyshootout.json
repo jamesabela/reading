@@ -1,0 +1,258 @@
+{
+  "metadata": {
+    "total_questions": 50,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "accurate",
+      "definition": "Correct in every detail.",
+      "clue": "Not like: wrong, mistaken"
+    },
+    {
+      "word": "ancient",
+      "definition": "Very old; from a long time ago.",
+      "clue": "Not like: modern, recent"
+    },
+    {
+      "word": "apology",
+      "definition": "A statement that says you are sorry.",
+      "clue": "Not like: praise, celebration"
+    },
+    {
+      "word": "balance",
+      "definition": "A steady state in which things are even or stable.",
+      "clue": "Not like: chaos, instability"
+    },
+    {
+      "word": "brilliant",
+      "definition": "Extremely clever or impressive.",
+      "clue": "Not like: dull, ordinary"
+    },
+    {
+      "word": "capture",
+      "definition": "To catch and take control of something.",
+      "clue": "Not like: release, lose"
+    },
+    {
+      "word": "cautious",
+      "definition": "Careful to avoid danger or mistakes.",
+      "clue": "Not like: reckless, careless"
+    },
+    {
+      "word": "combine",
+      "definition": "To join two or more things together.",
+      "clue": "Not like: separate, divide"
+    },
+    {
+      "word": "comfort",
+      "definition": "A state of physical ease or relief.",
+      "clue": "Not like: pain, distress"
+    },
+    {
+      "word": "compare",
+      "definition": "To examine how two things are similar or different.",
+      "clue": "Not like: ignore, overlook"
+    },
+    {
+      "word": "confident",
+      "definition": "Sure of yourself and your abilities.",
+      "clue": "Not like: doubtful, insecure"
+    },
+    {
+      "word": "curious",
+      "definition": "Eager to know or learn something.",
+      "clue": "Not like: uninterested, bored"
+    },
+    {
+      "word": "declare",
+      "definition": "To announce something clearly and officially.",
+      "clue": "Not like: hide, deny"
+    },
+    {
+      "word": "delicate",
+      "definition": "Easily damaged or needing careful handling.",
+      "clue": "Not like: tough, sturdy"
+    },
+    {
+      "word": "discover",
+      "definition": "To find something for the first time.",
+      "clue": "Not like: miss, overlook"
+    },
+    {
+      "word": "eager",
+      "definition": "Very excited and ready to do something.",
+      "clue": "Not like: reluctant, unwilling"
+    },
+    {
+      "word": "enormous",
+      "definition": "Very large in size.",
+      "clue": "Not like: tiny, miniature"
+    },
+    {
+      "word": "essential",
+      "definition": "Absolutely necessary; very important.",
+      "clue": "Not like: optional, unnecessary"
+    },
+    {
+      "word": "fragile",
+      "definition": "Easy to break or damage.",
+      "clue": "Not like: durable, strong"
+    },
+    {
+      "word": "frequent",
+      "definition": "Happening often.",
+      "clue": "Not like: rare, unusual"
+    },
+    {
+      "word": "generous",
+      "definition": "Willing to give more than is expected.",
+      "clue": "Not like: selfish, stingy"
+    },
+    {
+      "word": "genuine",
+      "definition": "Real and not fake.",
+      "clue": "Not like: false, fake"
+    },
+    {
+      "word": "gradual",
+      "definition": "Happening slowly over time.",
+      "clue": "Not like: sudden, instant"
+    },
+    {
+      "word": "harvest",
+      "definition": "To gather crops when they are ready.",
+      "clue": "Not like: plant, scatter"
+    },
+    {
+      "word": "identify",
+      "definition": "To recognize and name someone or something.",
+      "clue": "Not like: confuse, mislabel"
+    },
+    {
+      "word": "improve",
+      "definition": "To make something better.",
+      "clue": "Not like: worsen, damage"
+    },
+    {
+      "word": "include",
+      "definition": "To have something as part of a whole.",
+      "clue": "Not like: exclude, omit"
+    },
+    {
+      "word": "indicate",
+      "definition": "To point out or show something.",
+      "clue": "Not like: conceal, hide"
+    },
+    {
+      "word": "invest",
+      "definition": "To put time, effort, or money into something for future benefit.",
+      "clue": "Not like: waste, withdraw"
+    },
+    {
+      "word": "journey",
+      "definition": "The act of travelling from one place to another.",
+      "clue": "Not like: stay, remain"
+    },
+    {
+      "word": "justice",
+      "definition": "Fair treatment based on what is right.",
+      "clue": "Not like: unfairness, bias"
+    },
+    {
+      "word": "loyal",
+      "definition": "Faithful and supportive over time.",
+      "clue": "Not like: disloyal, unreliable"
+    },
+    {
+      "word": "measure",
+      "definition": "To find the size, amount, or degree of something.",
+      "clue": "Not like: guess, ignore"
+    },
+    {
+      "word": "modify",
+      "definition": "To change something slightly.",
+      "clue": "Not like: preserve, keep"
+    },
+    {
+      "word": "observe",
+      "definition": "To watch carefully.",
+      "clue": "Not like: ignore, neglect"
+    },
+    {
+      "word": "patient",
+      "definition": "Able to stay calm while waiting.",
+      "clue": "Not like: impatient, restless"
+    },
+    {
+      "word": "predict",
+      "definition": "To say what you think will happen in the future.",
+      "clue": "Not like: doubt, misunderstand"
+    },
+    {
+      "word": "prevent",
+      "definition": "To stop something from happening.",
+      "clue": "Not like: allow, cause"
+    },
+    {
+      "word": "reduce",
+      "definition": "To make something smaller or less.",
+      "clue": "Not like: increase, expand"
+    },
+    {
+      "word": "refuse",
+      "definition": "To say no to something offered or requested.",
+      "clue": "Not like: accept, approve"
+    },
+    {
+      "word": "remain",
+      "definition": "To stay in the same place or condition.",
+      "clue": "Not like: leave, change"
+    },
+    {
+      "word": "rescue",
+      "definition": "To save someone from danger.",
+      "clue": "Not like: abandon, endanger"
+    },
+    {
+      "word": "resource",
+      "definition": "Something useful that can help you achieve a goal.",
+      "clue": "Not like: obstacle, burden"
+    },
+    {
+      "word": "sincere",
+      "definition": "Honest and genuine in feeling.",
+      "clue": "Not like: dishonest, fake"
+    },
+    {
+      "word": "solution",
+      "definition": "An answer to a problem.",
+      "clue": "Not like: problem, obstacle"
+    },
+    {
+      "word": "stubborn",
+      "definition": "Unwilling to change your mind.",
+      "clue": "Not like: flexible, yielding"
+    },
+    {
+      "word": "sudden",
+      "definition": "Happening quickly and without warning.",
+      "clue": "Not like: gradual, expected"
+    },
+    {
+      "word": "support",
+      "definition": "To help or give assistance.",
+      "clue": "Not like: oppose, hinder"
+    },
+    {
+      "word": "translate",
+      "definition": "To change words from one language into another.",
+      "clue": "Not like: copy, repeat"
+    },
+    {
+      "word": "valuable",
+      "definition": "Worth a lot or very useful.",
+      "clue": "Not like: worthless, useless"
+    }
+  ]
+}
