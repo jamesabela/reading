@@ -6,25 +6,39 @@
     <title>Penalty Shootout: Definition Master</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser-arcade-physics.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
     <style>
         body {
             margin: 0;
-            padding: 0;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            padding: 76px 16px 16px;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%) !important;
             color: #fff;
             font-family: 'Outfit', sans-serif;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+        }
+        #main-nav {
+            display: none; /* Hidden by default, shown when menu is on */
+        }
+        #main-nav.visible {
+            display: block;
         }
         #game-container {
+            width: min(800px, 96vw, calc((100vh - 92px) * 4 / 3));
+            aspect-ratio: 4 / 3;
             box-shadow: 0 20px 80px rgba(0,0,0,0.8);
             border-radius: 16px;
             overflow: hidden;
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        #game-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
         }
         /* UI Overlays */
         #ui-layer {
@@ -43,11 +57,13 @@
             transform: translate(-50%, -50%);
             background: rgba(10, 10, 10, 0.85);
             backdrop-filter: blur(20px) saturate(180%);
-            padding: 40px;
+            padding: clamp(30px, 5vw, 45px);
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 85%;
-            max-width: 550px;
+            width: 90%;
+            max-width: 650px;
+            max-height: calc(100% - 40px);
+            overflow-y: auto;
             text-align: center;
             pointer-events: auto;
             display: none;
@@ -60,7 +76,8 @@
         }
         .overlay h2 {
             margin-top: 0;
-            font-size: 32px;
+            margin-bottom: 0;
+            font-size: clamp(24px, 4vw, 32px);
             letter-spacing: -1px;
             background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
             -webkit-background-clip: text;
@@ -71,7 +88,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-top: 24px;
+            margin-top: 18px;
         }
         button {
             padding: 18px;
@@ -101,24 +118,197 @@
         }
         #scoreboard {
             position: absolute;
-            top: 20px;
+            top: 12px;
+            left: 0;
             width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            font-size: 24px;
+            height: 0;
+            font-size: 15px;
             font-weight: bold;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .score-unit {
+            position: absolute;
             background: rgba(0,0,0,0.5);
-            padding: 10px 20px;
-            border-radius: 10px;
-            border-bottom: 3px solid #00d2ff;
+            padding: 7px 10px;
+            border-radius: 8px;
+            border-bottom: 2px solid #00d2ff;
+        }
+        #p1-score-unit {
+            left: 12px;
+        }
+        #p2-score-unit,
+        #solo-score-unit {
+            right: 12px;
+        }
+        .mode-options {
+            grid-template-columns: 1fr;
+        }
+        .mode-btn {
+            padding: clamp(16px, 3vw, 22px);
+            font-size: clamp(16px, 2.5vw, 20px);
+        }
+        .audio-controls {
+            margin-top: 18px;
+            text-align: left;
+            pointer-events: auto;
+        }
+        .menu-tools {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .menu-tools button,
+        .menu-tools a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .menu-tools button:hover,
+        .menu-tools a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        #loaded-set-label {
+            display: block;
+            margin-top: 10px;
+            min-height: 18px;
+            font-size: 13px;
+            color: #b7f5c8;
+            text-align: left;
+        }
+        .linked-set-hint {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.56);
+            text-align: left;
+        }
+        .audio-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        #mute-toggle-btn {
+            flex: 0 0 auto;
+            padding: 10px 14px;
+        }
+        #volume-label {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+        #volume-slider {
+            width: 100%;
+        }
+        #setup-overlay {
+            width: 88%;
+            max-width: 760px;
+            padding: 24px 40px;
+        }
+        #setup-title {
+            margin-bottom: 16px;
+        }
+        #team-name-input {
+            margin-bottom: 16px !important;
+        }
+        #color-picker {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+        #color-picker button {
+            height: 46px;
+            min-height: 46px;
+            padding: 0;
+        }
+        .setup-section-title {
+            margin: 14px 0 10px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        #gk-picker {
+            margin-top: 0;
+        }
+        #gk-picker .gk-opt {
+            min-height: 50px;
+        }
+        #next-setup-btn {
+            margin-top: 14px !important;
+            padding: 14px;
+        }
+
+        @media (max-height: 720px) and (min-width: 800px) {
+            body {
+                padding-top: 66px;
+                padding-bottom: 10px;
+            }
+            #game-container {
+                width: min(800px, calc((100vh - 76px) * 4 / 3), 96vw);
+                border-radius: 12px;
+            }
+            .overlay {
+                padding: 20px 26px;
+                max-width: 500px;
+                border-radius: 18px;
+            }
+            .options-grid {
+                gap: 10px;
+                margin-top: 14px;
+            }
+            .mode-btn {
+                padding: 16px;
+            }
+            .audio-controls {
+                margin-top: 14px;
+            }
+            #setup-overlay {
+                max-width: 820px;
+                padding: 18px 36px;
+            }
+            #setup-title {
+                margin-bottom: 10px;
+            }
+            #team-name-input {
+                margin-bottom: 12px !important;
+            }
+            #color-picker {
+                grid-template-columns: repeat(6, minmax(0, 1fr));
+                gap: 8px;
+            }
+            #color-picker button {
+                height: 38px;
+                min-height: 38px;
+            }
+            .setup-section-title {
+                margin: 10px 0 8px;
+            }
+            #gk-picker .gk-opt {
+                min-height: 44px;
+            }
+            #next-setup-btn {
+                margin-top: 12px !important;
+                padding: 12px;
+            }
         }
     </style>
 </head>
 <body>
+    <nav id="main-nav"></nav>
     <div id="game-container">
         <div id="ui-layer">
             <div id="scoreboard" style="display: none;">
@@ -130,16 +320,23 @@
             <!-- Mode Selection Overlay -->
             <div id="mode-overlay" class="overlay" style="display: block;">
                 <h2>SELECT GAME MODE</h2>
-                <div class="options-grid" style="grid-template-columns: 1fr;">
-                    <button onclick="selectMode('1P')" style="font-size: 20px; padding: 25px;">👤 SINGLE PLAYER vs CPU</button>
-                    <button onclick="selectMode('2P')" style="font-size: 20px; padding: 25px;">👥 2 PLAYER (LOCAL)</button>
+                <div class="options-grid mode-options">
+                    <button class="mode-btn" onclick="selectMode('1P')">👤 SINGLE PLAYER vs CPU</button>
+                    <button class="mode-btn" onclick="selectMode('2P')">👥 2 PLAYER (LOCAL)</button>
                 </div>
-                <div style="margin-top: 22px; text-align: left; pointer-events: auto;">
-                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
-                        <button id="mute-toggle-btn" style="flex: 0 0 auto; padding: 12px 16px;">MUTE</button>
-                        <span id="volume-label" style="font-size: 14px; opacity: 0.85;">VOLUME: 30%</span>
+                <div class="menu-tools">
+                    <button id="load-json-btn" type="button">LOAD JSON FILE</button>
+                    <a href="../editor/" target="_blank" rel="noopener">QUESTION EDITOR</a>
+                </div>
+                <input id="question-json-input" type="file" accept="application/json,.json" hidden>
+                <span id="loaded-set-label"></span>
+                <span class="linked-set-hint">Shareable set link: ?set=../editor/samples/igcse-computing-sample.json</span>
+                <div class="audio-controls">
+                    <div class="audio-row">
+                        <button id="mute-toggle-btn">MUTE</button>
+                        <span id="volume-label">VOLUME: 30%</span>
                     </div>
-                    <input id="volume-slider" type="range" min="0" max="100" value="30" style="width: 100%;">
+                    <input id="volume-slider" type="range" min="0" max="100" value="30">
                 </div>
             </div>
 
@@ -151,7 +348,7 @@
                     <!-- Colors added via JS -->
                 </div>
                 
-                <h3 style="margin-top: 20px; font-size: 14px; opacity: 0.8;">CHOOSE GOALKEEPER</h3>
+                <h3 class="setup-section-title">CHOOSE GOALKEEPER</h3>
                 <div class="options-grid" id="gk-picker" style="grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button class="gk-opt" id="gk-female" onclick="selectGK('female')" style="padding: 10px; border: 2px solid #3498db; border-radius: 8px; background: rgba(52, 152, 219, 0.2); color: #fff;">👩 FEMALE</button>
                     <button class="gk-opt" id="gk-male" onclick="selectGK('male')" style="padding: 10px; border: 2px solid transparent; border-radius: 8px; background: rgba(255, 255, 255, 0.1); color: #fff;">👨 MALE</button>
@@ -160,7 +357,7 @@
             </div>
 
             <!-- Question Overlay -->
-            <div id="question-overlay" class="overlay" style="top: 110px; left: 50%; transform: translateX(-50%); width: 70%; max-width: 620px; padding: 24px 32px; pointer-events: none;">
+            <div id="question-overlay" class="overlay" style="top: 78px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 650px; padding: 18px 28px; pointer-events: none;">
                 <h3 id="question-title" style="margin-top: 0; font-size: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; color: #fff;">Pick the correct word!</h3>
                 <h3 id="question-def">Definition goes here...</h3>
             </div>
@@ -168,7 +365,8 @@
             <div id="result-overlay" class="overlay">
                 <h2 id="result-title">RESULT</h2>
                 <h3 id="result-answer">Correct answer goes here...</h3>
-                <button id="result-continue-btn" style="width:100%; background: #00d2ff; color: #000; font-weight: bold;">CONTINUE</button>
+                <p id="result-explanation" style="margin-top: 18px; font-size: 18px; line-height: 1.6; color: #eee; text-align: left;"></p>
+                <button id="result-continue-btn" style="width:100%; margin-top: 30px; background: #00d2ff; color: #000; font-weight: bold; padding: 20px;">CONTINUE</button>
             </div>
 
             <!-- Game Over Overlay -->
@@ -179,6 +377,7 @@
             </div>
         </div>
     </div>
+    <script src="../components.js"></script>
     <script src="game.js?v=20260426-4"></script>
 </body>
 </html>

@@ -38,6 +38,9 @@ let currentChoices = [];
 let canSelectShot = false;
 let soundVolume = 0.3;
 let menuMusic = null;
+let activeQuestionSetName = 'Default set';
+const MAX_QUESTIONS = 50;
+const EDITOR_SET_KEY = 'penaltyQuestionEditorSet';
 
 const colors = [
     { name: 'Red', hex: '#ff0000' }, { name: 'Blue', hex: '#3498db' },
@@ -50,10 +53,10 @@ const colors = [
 // Assets
 let ball, ballShadow, goalie, background;
 const goalChoicePoints = {
-    'TL': { x: 310, y: 280 },
-    'TR': { x: 490, y: 280 },
-    'BL': { x: 310, y: 360 },
-    'BR': { x: 490, y: 360 }
+    'TL': { x: 250, y: 275 },
+    'TR': { x: 550, y: 275 },
+    'BL': { x: 250, y: 385 },
+    'BR': { x: 550, y: 385 }
 };
 const goalShotTargets = {
     'TL': { x: 310, y: 285 },
@@ -62,13 +65,13 @@ const goalShotTargets = {
     'BR': { x: 485, y: 335 }
 };
 const goalSaveTargets = {
-    'TL': { x: 315, y: 255 },
-    'TR': { x: 485, y: 255 },
-    'BL': { x: 315, y: 330 },
-    'BR': { x: 485, y: 330 }
+    'TL': { x: 355, y: 306 },
+    'TR': { x: 445, y: 306 },
+    'BL': { x: 355, y: 352 },
+    'BR': { x: 445, y: 352 }
 };
 const GOALIE_SCALE = 0.26;
-const GOALIE_DIVE_DISTANCE = 35;
+const GOALIE_DIVE_DISTANCE = 45;
 const GOALIE_Y = 330;
 
 function preload() {
@@ -98,11 +101,23 @@ function create() {
     startMenuMusic(this);
 
     setupAudioControls();
+    setupQuestionSetLoader();
 
     isGameReady = true;
     if (pendingStartGame) {
         pendingStartGame = false;
         startGame();
+    }
+
+    // Initial nav state
+    toggleMainNav(true);
+}
+
+function toggleMainNav(visible) {
+    const nav = document.getElementById('main-nav');
+    if (nav) {
+        if (visible) nav.classList.add('visible');
+        else nav.classList.remove('visible');
     }
 }
 
@@ -110,20 +125,41 @@ function update() {}
 
 function startMenuMusic(scene) {
     if (!scene || !scene.sound || !scene.cache.audio.exists('menu-music')) return;
-    if (menuMusic && menuMusic.isPlaying) return;
+    
+    if (!menuMusic) {
+        menuMusic = scene.sound.add('menu-music', {
+            loop: true,
+            volume: 1
+        });
+    }
 
-    menuMusic = scene.sound.add('menu-music', {
-        loop: true,
-        volume: 1
-    });
-    menuMusic.play();
+    if (menuMusic.isPlaying) return;
+
+    const playMusic = () => {
+        if (game.sound.context.state === 'suspended') {
+            game.sound.context.resume();
+        }
+        
+        if (!menuMusic.isPlaying) {
+            menuMusic.play();
+        }
+        
+        window.removeEventListener('click', playMusic);
+        window.removeEventListener('keydown', playMusic);
+    };
+
+    if (game.sound.context.state === 'running') {
+        playMusic();
+    } else {
+        window.addEventListener('click', playMusic);
+        window.addEventListener('keydown', playMusic);
+    }
 }
 
 function stopMenuMusic() {
-    if (!menuMusic) return;
-    menuMusic.stop();
-    menuMusic.destroy();
-    menuMusic = null;
+    if (menuMusic && menuMusic.isPlaying) {
+        menuMusic.stop();
+    }
 }
 
 function setupAudioControls() {
@@ -157,6 +193,133 @@ function setupAudioControls() {
     syncAudioUI();
 }
 
+function setupQuestionSetLoader() {
+    const loadBtn = document.getElementById('load-json-btn');
+    const fileInput = document.getElementById('question-json-input');
+    const status = document.getElementById('loaded-set-label');
+
+    if (!loadBtn || !fileInput || !status) return;
+
+    if (!loadLinkedQuestionSet(status)) {
+        loadEditorQuestionSet(status);
+    }
+
+    loadBtn.onclick = () => fileInput.click();
+    fileInput.onchange = async (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        try {
+            const data = JSON.parse(await file.text());
+            wordsData = normalizeQuestionSet(data);
+            activeQuestionSetName = file.name;
+            status.style.color = '#b7f5c8';
+            status.innerText = `Loaded: ${file.name} (${wordsData.questions.length} questions)`;
+        } catch (error) {
+            console.error(error);
+            status.style.color = '#ffb4b4';
+            status.innerText = error.message || 'Could not load JSON file.';
+        } finally {
+            fileInput.value = '';
+        }
+    };
+}
+
+function getSafeQuestionSetUrl(rawUrl) {
+    if (!rawUrl) return '';
+
+    const decodedUrl = decodeURIComponent(rawUrl).trim();
+    if (
+        decodedUrl.startsWith('/') ||
+        (decodedUrl.startsWith('../') && !decodedUrl.startsWith('../editor/samples/')) ||
+        decodedUrl.includes('://') ||
+        decodedUrl.includes('\\') ||
+        !decodedUrl.endsWith('.json')
+    ) {
+        throw new Error('Question set links must use a relative .json file.');
+    }
+
+    return decodedUrl;
+}
+
+function loadLinkedQuestionSet(status) {
+    const params = new URLSearchParams(window.location.search);
+    const rawSetUrl = params.get('set');
+    if (!rawSetUrl) return false;
+
+    try {
+        const setUrl = getSafeQuestionSetUrl(rawSetUrl);
+        fetch(setUrl)
+            .then((response) => {
+                if (!response.ok) throw new Error(`Could not load ${setUrl}.`);
+                return response.json();
+            })
+            .then((data) => {
+                wordsData = normalizeQuestionSet(data);
+                activeQuestionSetName = setUrl;
+                status.style.color = '#b7f5c8';
+                status.innerText = `Loaded from link: ${setUrl} (${wordsData.questions.length} questions)`;
+            })
+            .catch((error) => {
+                console.error(error);
+                status.style.color = '#ffb4b4';
+                status.innerText = error.message || 'Linked question set could not be loaded.';
+            });
+        return true;
+    } catch (error) {
+        console.error(error);
+        status.style.color = '#ffb4b4';
+        status.innerText = error.message || 'Invalid question set link.';
+        return true;
+    }
+}
+
+function loadEditorQuestionSet(status) {
+    const savedSet = localStorage.getItem(EDITOR_SET_KEY);
+    if (!savedSet) return;
+
+    try {
+        wordsData = normalizeQuestionSet(JSON.parse(savedSet));
+        activeQuestionSetName = 'Editor set';
+        status.style.color = '#b7f5c8';
+        status.innerText = `Loaded from editor (${wordsData.questions.length} questions)`;
+    } catch (error) {
+        console.error(error);
+        localStorage.removeItem(EDITOR_SET_KEY);
+        status.style.color = '#ffb4b4';
+        status.innerText = 'Editor set could not be loaded.';
+    }
+}
+
+function normalizeQuestionSet(data) {
+    if (!data || !Array.isArray(data.questions)) {
+        throw new Error('JSON must contain a questions array.');
+    }
+
+    const validQuestions = data.questions
+        .map((item) => ({
+            word: String(item.word || item.answer || '').trim(),
+            definition: String(item.definition || item.question || '').trim(),
+            clue: String(item.clue || '').trim(),
+            explanation: String(item.explanation || '').trim()
+        }))
+        .filter((item) => item.word && item.definition);
+    const questions = validQuestions.slice(0, MAX_QUESTIONS);
+
+    if (questions.length < 4) {
+        throw new Error('Question sets need at least 4 valid word/definition pairs.');
+    }
+
+    return {
+        metadata: {
+            ...(data.metadata || {}),
+            total_questions: questions.length,
+            format: data.metadata?.format || 'flat'
+        },
+        questions
+    };
+}
+
 function playResultSound(key) {
     const scene = game.scene.scenes[0];
     if (!scene || !scene.sound || !scene.cache.audio.exists(key)) return;
@@ -180,9 +343,9 @@ function selectGK(type) {
 
 function selectMode(mode) {
     gameMode = mode;
-    stopMenuMusic();
     document.getElementById('mode-overlay').style.display = 'none';
     showSetup(1);
+    toggleMainNav(true); // Still in menu (setup)
 }
 
 function showSetup(step) {
@@ -252,14 +415,18 @@ async function startGame() {
     document.getElementById('p2-score').innerText = '0';
     document.getElementById('solo-score').innerText = '0';
 
-    const scene = game.scene.scenes[0];
-    wordsData = scene.cache.json.get('words');
-    
     if (!wordsData) {
+        const scene = game.scene.scenes[0];
         try {
-            const response = await fetch('penaltyshootout.json');
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            wordsData = await response.json();
+            const cachedWords = scene.cache.json.get('words');
+            if (cachedWords) {
+                wordsData = normalizeQuestionSet(cachedWords);
+            } else {
+                const response = await fetch('penaltyshootout.json');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                wordsData = normalizeQuestionSet(await response.json());
+            }
+            activeQuestionSetName = 'Default set';
         } catch (error) {
             console.error("Vocabulary data not loaded yet.", error);
             return;
@@ -273,9 +440,13 @@ async function startGame() {
     document.getElementById('scoreboard').style.display = 'flex';
     
     if (gameMode === '1P') {
-        document.getElementById('p1-score-unit').style.display = 'none';
-        document.getElementById('p2-score-unit').style.display = 'none';
-        document.getElementById('solo-score-unit').style.display = 'block';
+        document.getElementById('p1-score-unit').style.display = 'block';
+        document.getElementById('p2-score-unit').style.display = 'block';
+        document.getElementById('solo-score-unit').style.display = 'none';
+        document.getElementById('p1-name-display').innerText = player1.name;
+        document.getElementById('p2-name-display').innerText = 'CPU';
+        document.getElementById('p1-name-display').parentElement.style.borderBottomColor = player1.color;
+        document.getElementById('p2-name-display').parentElement.style.borderBottomColor = player2.color;
     } else {
         document.getElementById('p1-score-unit').style.display = 'block';
         document.getElementById('p2-score-unit').style.display = 'block';
@@ -287,11 +458,13 @@ async function startGame() {
     }
 
     currentPlayer = player1;
+    toggleMainNav(false); // Hide nav when actual gameplay starts
     try {
         await initPitch();
     } catch (error) {
         console.error("Could not set up the pitch.", error);
         showBlockingMessage("Could not start round", "The goalkeeper assets could not be prepared. Check the browser console for details.");
+        toggleMainNav(true); // Show nav if error
         return;
     }
     nextRound();
@@ -443,6 +616,7 @@ function showQuestion() {
     }
     shuffleArray(choices);
     currentChoices = choices;
+    stopMenuMusic(); // Stop music when question appears
     overlay.style.display = 'block';
     enterShotMode();
 }
@@ -477,14 +651,14 @@ function enterShotMode() {
         zones.push(zone);
 
         const label = scene.add.text(pos.x, pos.y, currentChoices[index], {
-            fontSize: '18px',
+            fontSize: '16px',
             fontFamily: 'Outfit',
             fontWeight: 'bold',
             color: '#ffffff',
             stroke: '#000',
             strokeThickness: 5,
             align: 'center',
-            wordWrap: { width: 110 }
+            wordWrap: { width: 180 }
         }).setOrigin(0.5).setDepth(20);
         markers.push(label);
     });
@@ -495,6 +669,9 @@ function enterShotMode() {
 function performKick(corner, selectedChoice) {
     if (!canSelectShot) return;
     canSelectShot = false;
+
+    // Resume music immediately when answer is clicked
+    startMenuMusic(game.scene.scenes[0]);
 
     const scene = game.scene.scenes[0];
     scene.zones.forEach(z => z.destroy());
@@ -508,6 +685,7 @@ function performKick(corner, selectedChoice) {
     document.getElementById('question-overlay').style.display = 'none';
 
     const targetPos = { ...(isAnswerCorrect ? goalShotTargets[corner] : goalSaveTargets[corner]) };
+    const targetScale = isAnswerCorrect ? 0.025 : 0.085;
     const defender = (currentPlayer === player1) ? player2 : player1;
     
     let goalieAction = 'idle';
@@ -517,33 +695,39 @@ function performKick(corner, selectedChoice) {
         goalieAction = corner.includes('L') ? 'right' : 'left';
     }
 
+    const syncBallShadow = () => {
+        if (!ball || !ballShadow) return;
+        ballShadow.x = ball.x;
+        ballShadow.y = 400 + (ball.y - 400) * 1.05;
+        ballShadow.setScale(ball.scale);
+    };
+    const finishShot = () => {
+        const isGoal = isAnswerCorrect;
+        const answerDetail = selectedAnswer === currentWord.word
+            ? `Correct answer: ${currentWord.word}`
+            : `Your answer: ${selectedAnswer}  |  Correct answer: ${currentWord.word}`;
+
+        if (isGoal) {
+            currentPlayer.score++;
+            if (gameMode === '1P') {
+                document.getElementById('p1-score').innerText = currentPlayer.score;
+            } else {
+                document.getElementById(currentPlayer === player1 ? 'p1-score' : 'p2-score').innerText = currentPlayer.score;
+            }
+            playResultSound('goal-sfx');
+            showResultOverlay("GOAL!", "#2ecc71", answerDetail, currentWord.explanation);
+        } else {
+            playResultSound('miss-sfx');
+            showResultOverlay("MISS / WRONG!", "#e74c3c", answerDetail, currentWord.explanation);
+        }
+    };
+
     scene.tweens.add({
         targets: ball,
-        x: targetPos.x, y: targetPos.y, scale: 0.025, duration: 900, ease: 'Quad.out',
-        onUpdate: () => {
-            ballShadow.x = ball.x;
-            ballShadow.y = 400 + (ball.y - 400) * 1.05;
-            ballShadow.setScale(ball.scale);
-        },
+        x: targetPos.x, y: targetPos.y, scale: targetScale, duration: 900, ease: 'Quad.out',
+        onUpdate: syncBallShadow,
         onComplete: () => {
-            const isGoal = isAnswerCorrect;
-            const answerDetail = selectedAnswer === currentWord.word
-                ? `Correct answer: ${currentWord.word}`
-                : `Your answer: ${selectedAnswer}  |  Correct answer: ${currentWord.word}`;
-
-            if (isGoal) {
-                currentPlayer.score++;
-                if (gameMode === '1P') {
-                    document.getElementById('solo-score').innerText = currentPlayer.score;
-                } else {
-                    document.getElementById(currentPlayer === player1 ? 'p1-score' : 'p2-score').innerText = currentPlayer.score;
-                }
-                playResultSound('goal-sfx');
-                showResultOverlay("GOAL!", "#2ecc71", answerDetail);
-            } else {
-                playResultSound('miss-sfx');
-                showResultOverlay("MISS / WRONG!", "#e74c3c", answerDetail);
-            }
+            finishShot();
         }
     });
 
@@ -561,15 +745,18 @@ function performKick(corner, selectedChoice) {
     }
 }
 
-function showResultOverlay(text, color, detail = '') {
+function showResultOverlay(text, color, detail = '', explanation = '') {
     const overlay = document.getElementById('result-overlay');
     const title = document.getElementById('result-title');
     const answer = document.getElementById('result-answer');
+    const explanationEl = document.getElementById('result-explanation');
     const continueBtn = document.getElementById('result-continue-btn');
 
     title.innerText = text;
     title.style.color = color;
     answer.innerText = detail;
+    const linkedExplanation = explanation.replace(/Concept Grid/g, '<a href="../videos.html" style="color: #00d2ff; text-decoration: underline;" target="_blank">Concept Grid</a>');
+    explanationEl.innerHTML = linkedExplanation;
     overlay.style.borderColor = color;
     overlay.style.display = 'block';
 
@@ -586,6 +773,7 @@ function showResultOverlay(text, color, detail = '') {
 
 function endGame() {
     document.getElementById('gameover-overlay').style.display = 'block';
+    toggleMainNav(true); // Show nav on game over screen
     
     if (gameMode === '1P') {
         document.getElementById('final-result').innerText = "GAME OVER";

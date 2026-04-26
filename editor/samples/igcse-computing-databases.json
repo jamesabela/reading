@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "title": "iGCSE Computing: Databases",
+    "total_questions": 27,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "Database",
+      "definition": "A collection of data stored and organised as interrelated information in one or more tables.",
+      "clue": "Stores organised data.",
+      "explanation": "A database stores related data in a structured way so it can be searched, sorted, updated, and reported on efficiently."
+    },
+    {
+      "word": "Table",
+      "definition": "A structure that contains sets of records in a database.",
+      "clue": "Made of rows and columns.",
+      "explanation": "A table stores data about one type of thing, such as customers, products, or students."
+    },
+    {
+      "word": "Record",
+      "definition": "All of the data or information about one person or thing.",
+      "clue": "One row in a table.",
+      "explanation": "A record contains all field values for one item, such as all details about one student."
+    },
+    {
+      "word": "Field",
+      "definition": "One piece of data or information about a person or thing.",
+      "clue": "One column in a table.",
+      "explanation": "Fields store individual categories of data, such as surname, date of birth, or price."
+    },
+    {
+      "word": "Primary key",
+      "definition": "A field used to uniquely identify every record in a table.",
+      "clue": "No two records should share this value.",
+      "explanation": "A primary key prevents records from being confused because each record has a unique identifier."
+    },
+    {
+      "word": "Field length",
+      "definition": "The number of characters that can be stored in each text field.",
+      "clue": "Maximum size of a field.",
+      "explanation": "Field length controls how much text can be entered, helping reduce storage use and limit invalid entries."
+    },
+    {
+      "word": "Text",
+      "definition": "A data type used to store character strings, such as words or sentences.",
+      "clue": "Stores letters and symbols.",
+      "explanation": "Text fields store non-numeric strings, such as names, addresses, and descriptions."
+    },
+    {
+      "word": "Ascending",
+      "definition": "A sorting order from A-Z or from the smallest number to the largest number.",
+      "clue": "Low to high.",
+      "explanation": "Ascending order sorts text alphabetically and numbers from smallest to largest."
+    },
+    {
+      "word": "Descending",
+      "definition": "A sorting order from Z-A or from the largest number to the smallest number.",
+      "clue": "High to low.",
+      "explanation": "Descending order sorts text reverse alphabetically and numbers from largest to smallest."
+    },
+    {
+      "word": "Integer",
+      "definition": "A data type for whole numbers, including positive numbers, negative numbers, and zero.",
+      "clue": "No decimal places.",
+      "explanation": "Integers are used when values must be whole numbers, such as quantity, score, or number of items."
+    },
+    {
+      "word": "Real",
+      "definition": "A data type that includes numbers with decimals.",
+      "clue": "Can store decimal values.",
+      "explanation": "Real numbers are used for values that may include fractions or decimal places, such as measurements."
+    },
+    {
+      "word": "Boolean",
+      "definition": "A data type used to store true or false values.",
+      "clue": "Two possible values.",
+      "explanation": "Boolean fields are useful for yes/no or true/false data, such as whether a fee has been paid."
+    },
+    {
+      "word": "presence check",
+      "definition": "A validation technique that requires a field to be completed.",
+      "clue": "Prevents blank required fields.",
+      "explanation": "A presence check ensures important fields, such as surname or ID number, are not left empty."
+    },
+    {
+      "word": "Length check",
+      "definition": "A validation technique that checks the number of characters entered in a field.",
+      "clue": "Checks input length.",
+      "explanation": "A length check can ensure data has the expected number of characters, such as a phone number or password."
+    },
+    {
+      "word": "Format check",
+      "definition": "A validation check that confirms the correct combination of characters has been entered.",
+      "clue": "Checks a pattern such as a postcode.",
+      "explanation": "A format check ensures data follows a required pattern, such as a date or postcode format."
+    },
+    {
+      "word": "SELECT",
+      "definition": "The SQL command used to retrieve specific data from one or more tables in a database.",
+      "clue": "Chooses fields to return.",
+      "explanation": "SELECT specifies which fields should appear in the query result."
+    },
+    {
+      "word": "FROM",
+      "definition": "The SQL keyword used to specify the table or tables from which data is being queried.",
+      "clue": "Names the source table.",
+      "explanation": "FROM tells the database which table should be searched."
+    },
+    {
+      "word": "WHERE",
+      "definition": "The SQL clause used to filter records based on specified conditions.",
+      "clue": "Adds criteria.",
+      "explanation": "WHERE limits results to records that meet a condition, such as price greater than 10."
+    },
+    {
+      "word": "ORDER BY",
+      "definition": "The SQL clause used to sort the result set by one or more columns in ascending or descending order.",
+      "clue": "Sorts query results.",
+      "explanation": "ORDER BY controls the order in which matching records are displayed."
+    },
+    {
+      "word": "SUM",
+      "definition": "The SQL aggregate function used to calculate the total of a numeric column.",
+      "clue": "Adds values together.",
+      "explanation": "SUM returns the total of selected numeric values, such as total sales."
+    },
+    {
+      "word": "COUNT",
+      "definition": "The SQL aggregate function used to count the number of records that meet specified criteria.",
+      "clue": "Counts matching records.",
+      "explanation": "COUNT returns how many records match a query or how many values exist in a field."
+    },
+    {
+      "word": "Date/time",
+      "definition": "A data type used to store dates or times in a format set by the database creator.",
+      "clue": "Can store values such as 14/04/07.",
+      "explanation": "Date/time fields allow databases to sort, compare, and validate dates and times properly."
+    },
+    {
+      "word": "Flat-file database",
+      "definition": "A database that contains only one table.",
+      "clue": "Single-table database.",
+      "explanation": "Flat-file databases are simpler than relational databases but can lead to repeated data."
+    },
+    {
+      "word": "Query",
+      "definition": "A search or request for information from a database using set criteria.",
+      "clue": "Asks the database for matching data.",
+      "explanation": "Queries retrieve records that match criteria, such as all horror films or all customers in one city."
+    },
+    {
+      "word": "Character",
+      "definition": "A single letter, symbol, or number.",
+      "clue": "One individual text item.",
+      "explanation": "Characters are the building blocks of text strings, such as letters, digits, punctuation, and symbols."
+    },
+    {
+      "word": "Alphanumeric",
+      "definition": "A data type used to store character strings, such as words or sentences.",
+      "clue": "Letters and numbers.",
+      "explanation": "Alphanumeric data can include letters, digits, and sometimes symbols, depending on the database."
+    }
+  ]
+}

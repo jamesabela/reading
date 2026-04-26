@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "title": "iGCSE Computing Sample",
+    "total_questions": 20,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "algorithm",
+      "definition": "A step-by-step method for solving a problem or completing a task.",
+      "clue": "Often written before coding begins.",
+      "explanation": "An algorithm describes the logical steps needed to solve a problem. It can be shown using pseudocode, flowcharts, or structured English before it is turned into program code."
+    },
+    {
+      "word": "binary",
+      "definition": "A number system that uses only 0 and 1.",
+      "clue": "Computers store data using this system.",
+      "explanation": "Binary is base 2. Computers use binary because digital circuits can reliably represent two states, such as on and off."
+    },
+    {
+      "word": "bit",
+      "definition": "The smallest unit of data in a computer.",
+      "clue": "It stores one binary digit.",
+      "explanation": "A bit can hold either 0 or 1. Larger units such as bytes are made from groups of bits."
+    },
+    {
+      "word": "byte",
+      "definition": "A unit of data usually made up of 8 bits.",
+      "clue": "Often used to store one character.",
+      "explanation": "A byte contains 8 bits. File sizes and memory capacity are often measured in bytes, kilobytes, megabytes, and gigabytes."
+    },
+    {
+      "word": "variable",
+      "definition": "A named storage location whose value can change while a program runs.",
+      "clue": "Used to hold data in a program.",
+      "explanation": "A variable stores a value that a program can read or update. For example, a score variable may increase during a game."
+    },
+    {
+      "word": "constant",
+      "definition": "A named value that should not change while a program runs.",
+      "clue": "The opposite of a variable.",
+      "explanation": "A constant is useful for values that stay the same, such as VAT rate or maximum score. Naming constants makes code easier to read and maintain."
+    },
+    {
+      "word": "iteration",
+      "definition": "Repeating a set of instructions in a program.",
+      "clue": "Loops are used for this.",
+      "explanation": "Iteration means repetition. A program may use a for loop, while loop, or repeat loop to run instructions more than once."
+    },
+    {
+      "word": "selection",
+      "definition": "Choosing which instructions to run based on a condition.",
+      "clue": "Uses IF, THEN, ELSE logic.",
+      "explanation": "Selection lets a program make decisions. For example, an if statement can check whether a password is correct before allowing access."
+    },
+    {
+      "word": "sequence",
+      "definition": "Instructions carried out one after another in order.",
+      "clue": "The simplest programming structure.",
+      "explanation": "Sequence means the order of steps matters. Programs normally execute instructions from top to bottom unless selection or iteration changes the flow."
+    },
+    {
+      "word": "pseudocode",
+      "definition": "A way of planning an algorithm using code-like language that is not tied to one programming language.",
+      "clue": "Readable by humans, not normally run by a computer.",
+      "explanation": "Pseudocode helps programmers focus on logic before syntax. It is commonly used in exams to describe algorithms clearly."
+    },
+    {
+      "word": "flowchart",
+      "definition": "A diagram that shows the steps and decisions in an algorithm.",
+      "clue": "Uses symbols such as process boxes and decision diamonds.",
+      "explanation": "A flowchart is a visual way to represent an algorithm. It shows the order of steps and where decisions or loops occur."
+    },
+    {
+      "word": "input",
+      "definition": "Data entered into a computer system.",
+      "clue": "A keyboard and mouse can provide this.",
+      "explanation": "Input is data provided to a system for processing. Examples include typed text, sensor readings, and button presses."
+    },
+    {
+      "word": "output",
+      "definition": "Information produced by a computer system after processing.",
+      "clue": "A monitor or printer can display this.",
+      "explanation": "Output is the result produced by a computer. It might be shown on screen, printed, stored, or sent to another device."
+    },
+    {
+      "word": "processor",
+      "definition": "The component that executes instructions and processes data.",
+      "clue": "Also called the CPU.",
+      "explanation": "The processor, or CPU, fetches, decodes, and executes instructions. It is a central part of a computer system."
+    },
+    {
+      "word": "RAM",
+      "definition": "Temporary memory used to store programs and data currently in use.",
+      "clue": "Its contents are lost when power is turned off.",
+      "explanation": "RAM is volatile memory. It allows quick access to data and instructions while a computer is running."
+    },
+    {
+      "word": "ROM",
+      "definition": "Non-volatile memory that stores instructions needed to start a computer.",
+      "clue": "Its contents remain when power is turned off.",
+      "explanation": "ROM keeps its data without power. It often stores firmware or boot instructions used when a device starts."
+    },
+    {
+      "word": "compiler",
+      "definition": "A translator that converts a whole program into machine code before it is run.",
+      "clue": "Produces executable code.",
+      "explanation": "A compiler translates source code into machine code. Errors are usually reported after compilation, before the program runs."
+    },
+    {
+      "word": "interpreter",
+      "definition": "A translator that runs a program one instruction at a time.",
+      "clue": "Often used while testing code.",
+      "explanation": "An interpreter translates and executes code line by line. This can make testing easier, but execution may be slower than compiled code."
+    },
+    {
+      "word": "validation",
+      "definition": "Checking that data is reasonable and follows expected rules.",
+      "clue": "For example, checking a date is in the correct range.",
+      "explanation": "Validation checks whether input is acceptable, such as ensuring a number is within a range. It does not prove the data is true."
+    },
+    {
+      "word": "verification",
+      "definition": "Checking that data has been copied or entered accurately.",
+      "clue": "Double entry is one method.",
+      "explanation": "Verification checks that data matches the original source. For example, entering an email address twice can help detect typing errors."
+    }
+  ]
+}

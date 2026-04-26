@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "title": "iGCSE Biology Sample",
+    "total_questions": 12,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "diffusion",
+      "definition": "The net movement of particles from a region of higher concentration to a region of lower concentration.",
+      "clue": "Particles move down a concentration gradient.",
+      "explanation": "Diffusion is a passive process, so it does not require energy from respiration. Oxygen moving into cells is a common biological example."
+    },
+    {
+      "word": "osmosis",
+      "definition": "The movement of water molecules through a partially permeable membrane from a dilute solution to a more concentrated solution.",
+      "clue": "Only water is moving.",
+      "explanation": "Osmosis is important in plant and animal cells because water movement can affect cell volume and pressure."
+    },
+    {
+      "word": "enzyme",
+      "definition": "A biological catalyst that speeds up chemical reactions without being used up.",
+      "clue": "Its activity is affected by temperature and pH.",
+      "explanation": "Enzymes have active sites that fit specific substrates. High temperatures can denature enzymes by changing their shape."
+    },
+    {
+      "word": "photosynthesis",
+      "definition": "The process by which plants use light energy to make glucose from carbon dioxide and water.",
+      "clue": "Chlorophyll absorbs light for this process.",
+      "explanation": "Photosynthesis occurs in chloroplasts. It produces glucose and oxygen, and it requires light, carbon dioxide, and water."
+    },
+    {
+      "word": "respiration",
+      "definition": "The chemical reactions in cells that release energy from glucose.",
+      "clue": "Can be aerobic or anaerobic.",
+      "explanation": "Aerobic respiration uses oxygen and releases more energy than anaerobic respiration. The energy released is used for cell processes."
+    },
+    {
+      "word": "mitosis",
+      "definition": "Cell division that produces two genetically identical daughter cells.",
+      "clue": "Used for growth and repair.",
+      "explanation": "Mitosis keeps the chromosome number the same. It is important for growth, repair, and asexual reproduction."
+    },
+    {
+      "word": "meiosis",
+      "definition": "Cell division that produces gametes with half the normal chromosome number.",
+      "clue": "Used in sexual reproduction.",
+      "explanation": "Meiosis creates genetic variation and produces haploid gametes such as sperm and egg cells."
+    },
+    {
+      "word": "transpiration",
+      "definition": "The loss of water vapour from plant leaves.",
+      "clue": "Mainly happens through stomata.",
+      "explanation": "Transpiration helps move water and mineral ions through the xylem. It is affected by light, temperature, humidity, and wind."
+    },
+    {
+      "word": "xylem",
+      "definition": "Plant tissue that transports water and mineral ions from roots to leaves.",
+      "clue": "Moves water mostly upward.",
+      "explanation": "Xylem vessels are strengthened with lignin and help support the plant as well as transport water."
+    },
+    {
+      "word": "phloem",
+      "definition": "Plant tissue that transports sugars and other dissolved substances around the plant.",
+      "clue": "Carries products of photosynthesis.",
+      "explanation": "Phloem transports sucrose from sources, such as leaves, to sinks, such as roots or growing tissues."
+    },
+    {
+      "word": "homeostasis",
+      "definition": "The maintenance of a constant internal environment.",
+      "clue": "Temperature and blood glucose are examples.",
+      "explanation": "Homeostasis uses control systems with receptors, coordination centres, and effectors to keep conditions stable."
+    },
+    {
+      "word": "pathogen",
+      "definition": "A microorganism or virus that causes disease.",
+      "clue": "Bacteria, viruses, fungi, and protoctists can be examples.",
+      "explanation": "Pathogens can spread by direct contact, contaminated food or water, droplets, or vectors such as insects."
+    }
+  ]
+}

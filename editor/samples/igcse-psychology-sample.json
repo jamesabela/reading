@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "title": "iGCSE Psychology Sample",
+    "total_questions": 12,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "hypothesis",
+      "definition": "A testable prediction about what a study expects to find.",
+      "clue": "Often written before data is collected.",
+      "explanation": "A hypothesis gives a clear prediction that can be supported or not supported by evidence from a study."
+    },
+    {
+      "word": "experiment",
+      "definition": "A research method where variables are controlled to test cause and effect.",
+      "clue": "Uses an independent and dependent variable.",
+      "explanation": "Experiments are useful for testing causal relationships because the researcher manipulates one variable and measures another."
+    },
+    {
+      "word": "independent variable",
+      "definition": "The variable that is changed or manipulated by the researcher.",
+      "clue": "This is what the researcher controls.",
+      "explanation": "The independent variable is changed to see whether it affects the dependent variable."
+    },
+    {
+      "word": "dependent variable",
+      "definition": "The variable that is measured in an experiment.",
+      "clue": "This is the outcome.",
+      "explanation": "The dependent variable should be measured consistently so results can be compared between conditions."
+    },
+    {
+      "word": "memory",
+      "definition": "The process of encoding, storing, and retrieving information.",
+      "clue": "Can be short-term or long-term.",
+      "explanation": "Psychologists study how information enters memory, how it is stored, and why forgetting may occur."
+    },
+    {
+      "word": "conditioning",
+      "definition": "Learning through association or consequences.",
+      "clue": "Classical and operant are two types.",
+      "explanation": "Classical conditioning links stimuli together, while operant conditioning learns through rewards and punishments."
+    },
+    {
+      "word": "conformity",
+      "definition": "Changing behaviour or beliefs to match a group.",
+      "clue": "Linked to social influence.",
+      "explanation": "People may conform because they want to be accepted or because they believe the group is correct."
+    },
+    {
+      "word": "obedience",
+      "definition": "Following an order from an authority figure.",
+      "clue": "Different from conformity.",
+      "explanation": "Obedience involves responding to a direct command, often from someone perceived to have authority."
+    },
+    {
+      "word": "sampling",
+      "definition": "Selecting participants from a target population for a study.",
+      "clue": "Opportunity and random are examples.",
+      "explanation": "A sample should represent the target population as well as possible, but some sampling methods can introduce bias."
+    },
+    {
+      "word": "validity",
+      "definition": "The extent to which a study measures what it claims to measure.",
+      "clue": "A valid test is accurate for its purpose.",
+      "explanation": "Validity is important because a study may be reliable but still fail to measure the intended behaviour or process."
+    },
+    {
+      "word": "reliability",
+      "definition": "The consistency of a measure or research finding.",
+      "clue": "Repeatable results suggest this.",
+      "explanation": "A reliable study should produce similar results when repeated under the same conditions."
+    },
+    {
+      "word": "ethics",
+      "definition": "Rules and principles that protect participants in psychological research.",
+      "clue": "Includes consent and confidentiality.",
+      "explanation": "Ethical guidelines help ensure participants are treated fairly, protected from harm, and allowed to withdraw."
+    }
+  ]
+}

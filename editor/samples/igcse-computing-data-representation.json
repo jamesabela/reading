@@ -1,0 +1,213 @@
+{
+  "metadata": {
+    "title": "iGCSE Computing: Data Representation",
+    "total_questions": 34,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "Hexadecimal",
+      "definition": "A base-16 number system that uses the values 0-9 and characters A-F.",
+      "clue": "Often used as a shorter way to write binary values.",
+      "explanation": "Hexadecimal uses sixteen symbols. Each hexadecimal digit represents four binary bits, which makes long binary values easier to read."
+    },
+    {
+      "word": "Binary",
+      "definition": "A base-2 number system that uses the values 0 and 1.",
+      "clue": "Computers store data using this system.",
+      "explanation": "Binary is used by computers because digital circuits can represent two states reliably, such as on and off."
+    },
+    {
+      "word": "Denary",
+      "definition": "Base 10 number system, how we normally count, using digits 0 to 9.",
+      "clue": "The everyday number system.",
+      "explanation": "Denary is the number system most people use in daily life. It has ten possible digits in each place value."
+    },
+    {
+      "word": "ASCII",
+      "definition": "A code for representing English characters as numbers, with each character assigned a value from 0 to 127.",
+      "clue": "An older character encoding system.",
+      "explanation": "ASCII represents letters, digits, punctuation, and control characters using numeric codes. Standard ASCII uses 7 bits."
+    },
+    {
+      "word": "Unicode",
+      "definition": "A character code that enables most of the languages of the world to be represented with unique character identifiers.",
+      "clue": "Supports far more characters than ASCII.",
+      "explanation": "Unicode can represent characters from many writing systems, as well as symbols and emoji, making it suitable for global text."
+    },
+    {
+      "word": "overflow",
+      "definition": "An error that results when the number of bits is not enough to hold the number.",
+      "clue": "The value is too large for the available bits.",
+      "explanation": "Overflow happens when a calculation produces a value outside the range that can be represented with the available number of bits."
+    },
+    {
+      "word": "two's complement",
+      "definition": "A method of representing negative numbers in the binary system.",
+      "clue": "The most significant bit indicates the sign.",
+      "explanation": "Two's complement allows computers to represent positive and negative integers and makes binary arithmetic with negative values simpler."
+    },
+    {
+      "word": "resolution",
+      "definition": "The dimensions of an image.",
+      "clue": "Often given as width by height.",
+      "explanation": "Image resolution describes how many pixels an image has horizontally and vertically, such as 1920 by 1080."
+    },
+    {
+      "word": "metadata",
+      "definition": "Additional data stored with an image, such as its dimensions or the time and date it was taken.",
+      "clue": "Data about data.",
+      "explanation": "Metadata gives extra information about a file. For images, it may include resolution, camera model, location, or date taken."
+    },
+    {
+      "word": "colour depth",
+      "definition": "The number of bits used to create each colour in an image.",
+      "clue": "More bits allow more possible colours.",
+      "explanation": "Higher colour depth increases the number of colours that can be represented, but it also increases file size."
+    },
+    {
+      "word": "sound sampling",
+      "definition": "A small piece of sound recorded at regular time intervals.",
+      "clue": "Used when converting analogue sound to digital data.",
+      "explanation": "Sampling measures the amplitude of sound at regular intervals so the sound can be stored digitally."
+    },
+    {
+      "word": "sample rate",
+      "definition": "The number of sound samples recorded each second.",
+      "clue": "Measured in hertz.",
+      "explanation": "A higher sample rate captures more detail from the original sound, but it also increases file size."
+    },
+    {
+      "word": "sample resolution",
+      "definition": "The number of bits used to record each sound sample.",
+      "clue": "Also called bit depth.",
+      "explanation": "Higher sample resolution records each sample more precisely, improving sound quality but increasing file size."
+    },
+    {
+      "word": "Bitmap",
+      "definition": "An image composed of pixels with a fixed resolution.",
+      "clue": "Each pixel stores colour information.",
+      "explanation": "Bitmap images are made from individual pixels. Enlarging them too much can make them appear pixelated."
+    },
+    {
+      "word": "Bit",
+      "definition": "The smallest measurement for data.",
+      "clue": "It can hold 0 or 1.",
+      "explanation": "A bit is a single binary digit. Larger units such as nibbles, bytes, and kibibytes are built from bits."
+    },
+    {
+      "word": "Nibble",
+      "definition": "4 bits or half a byte.",
+      "clue": "One hexadecimal digit is one of these.",
+      "explanation": "A nibble contains four bits, which is exactly enough to represent one hexadecimal digit."
+    },
+    {
+      "word": "Byte",
+      "definition": "8 bits, enough for one letter in many English character encodings.",
+      "clue": "Two nibbles make this.",
+      "explanation": "A byte contains eight bits. File sizes and memory capacity are commonly measured using bytes and larger units."
+    },
+    {
+      "word": "Kibibyte (KiB)",
+      "definition": "1024 bytes.",
+      "clue": "A binary data size unit.",
+      "explanation": "A kibibyte is based on powers of 2, unlike a kilobyte in decimal notation, which is often treated as 1000 bytes."
+    },
+    {
+      "word": "Mebibyte (MiB)",
+      "definition": "1024 kibibytes.",
+      "clue": "Larger than a KiB.",
+      "explanation": "A mebibyte is a binary unit of storage equal to 1024 KiB."
+    },
+    {
+      "word": "Gibibyte (GiB)",
+      "definition": "1024 mebibytes.",
+      "clue": "Larger than a MiB.",
+      "explanation": "A gibibyte is a binary unit of storage equal to 1024 MiB."
+    },
+    {
+      "word": "Tebibyte (TiB)",
+      "definition": "1024 gibibytes.",
+      "clue": "Larger than a GiB.",
+      "explanation": "A tebibyte is a binary unit of storage equal to 1024 GiB."
+    },
+    {
+      "word": "Pebibyte (PiB)",
+      "definition": "1024 tebibytes.",
+      "clue": "Larger than a TiB.",
+      "explanation": "A pebibyte is a binary unit of storage equal to 1024 TiB."
+    },
+    {
+      "word": "Exbibyte (EiB)",
+      "definition": "1024 pebibytes.",
+      "clue": "Larger than a PiB.",
+      "explanation": "An exbibyte is a binary unit of storage equal to 1024 PiB."
+    },
+    {
+      "word": "Compression",
+      "definition": "A method that uses an algorithm to reduce the size of a file.",
+      "clue": "Can be lossy or lossless.",
+      "explanation": "Compression reduces file size to save storage space or transmission time. Some methods preserve all data, while others remove data."
+    },
+    {
+      "word": "lossy",
+      "definition": "A compression method that reduces file size by permanently removing data.",
+      "clue": "Often used for media files.",
+      "explanation": "Lossy compression can greatly reduce file size, but some original data is lost and cannot be restored exactly."
+    },
+    {
+      "word": "lossless",
+      "definition": "A compression method that reduces file size without permanently removing data.",
+      "clue": "The original file can be restored exactly.",
+      "explanation": "Lossless compression preserves all original data, making it suitable where exact recovery is important."
+    },
+    {
+      "word": "perceptual music shaping",
+      "definition": "A process used in lossy compression that removes sounds not normally heard by the human ear.",
+      "clue": "Used to reduce audio file size.",
+      "explanation": "Perceptual music shaping removes less noticeable sounds, such as sounds masked by louder ones, to reduce audio file size."
+    },
+    {
+      "word": "Run Length Encoding (RLE)",
+      "definition": "An algorithm that groups together repeating patterns and indexes them.",
+      "clue": "Works well with repeated values.",
+      "explanation": "Run Length Encoding stores repeated data as a value and a count, which can reduce the size of simple images or repeated sequences."
+    },
+    {
+      "word": "PDF",
+      "definition": "A fixed-layout document format that maintains its original appearance regardless of the software used to view it.",
+      "clue": "Often used for documents to share or print.",
+      "explanation": "PDF files preserve layout, fonts, and formatting, making them useful when documents need to look the same on different devices."
+    },
+    {
+      "word": "JPG",
+      "definition": "A lossy compressed file format commonly used for website images.",
+      "clue": "Often used for photographs.",
+      "explanation": "JPG reduces image file size using lossy compression, which is useful for photos but can reduce quality if compressed heavily."
+    },
+    {
+      "word": "GIF",
+      "definition": "A compressed image format using only 256 colours, used for simple web graphics.",
+      "clue": "Can support simple animations.",
+      "explanation": "GIF is suitable for simple graphics with limited colours, but it is not ideal for high-quality photographs."
+    },
+    {
+      "word": "PNG",
+      "definition": "A lossless compressed format using an alpha channel to preserve transparent backgrounds.",
+      "clue": "Often used when transparency is needed.",
+      "explanation": "PNG preserves image quality and can store transparency, making it useful for logos, icons, and web graphics."
+    },
+    {
+      "word": "MP3",
+      "definition": "A lossy compressed music format.",
+      "clue": "Common for audio files.",
+      "explanation": "MP3 reduces audio file size by removing less noticeable sound data, making it convenient for storing and streaming music."
+    },
+    {
+      "word": "MP4",
+      "definition": "A lossy compressed file format that can be used for audio and video and is appropriate for streaming.",
+      "clue": "Common for video files.",
+      "explanation": "MP4 is widely used for video and audio because it balances file size, quality, and streaming compatibility."
+    }
+  ]
+}

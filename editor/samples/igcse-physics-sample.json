@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "title": "iGCSE Physics Sample",
+    "total_questions": 12,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "velocity",
+      "definition": "Speed in a given direction.",
+      "clue": "It is a vector quantity.",
+      "explanation": "Velocity includes both magnitude and direction, so changing direction means velocity changes even if speed stays the same."
+    },
+    {
+      "word": "acceleration",
+      "definition": "The rate of change of velocity.",
+      "clue": "Measured in metres per second squared.",
+      "explanation": "Acceleration occurs when an object speeds up, slows down, or changes direction."
+    },
+    {
+      "word": "resultant force",
+      "definition": "The single overall force acting on an object after all forces are combined.",
+      "clue": "Also called net force.",
+      "explanation": "If the resultant force is not zero, an object will accelerate in the direction of that force."
+    },
+    {
+      "word": "momentum",
+      "definition": "The product of mass and velocity.",
+      "clue": "Calculated using p = mv.",
+      "explanation": "Momentum is conserved in a closed system, which is useful when analysing collisions."
+    },
+    {
+      "word": "density",
+      "definition": "Mass per unit volume.",
+      "clue": "Calculated using density = mass divided by volume.",
+      "explanation": "Density tells us how much mass is packed into a given volume and is measured in kg/m3 or g/cm3."
+    },
+    {
+      "word": "pressure",
+      "definition": "Force per unit area.",
+      "clue": "Calculated using pressure = force divided by area.",
+      "explanation": "A smaller area produces greater pressure for the same force, such as a sharp knife cutting more easily."
+    },
+    {
+      "word": "current",
+      "definition": "The rate of flow of electric charge.",
+      "clue": "Measured in amperes.",
+      "explanation": "Current is the amount of charge passing a point each second. It is measured with an ammeter."
+    },
+    {
+      "word": "voltage",
+      "definition": "The energy transferred per unit charge.",
+      "clue": "Also called potential difference.",
+      "explanation": "Voltage is measured in volts and provides the push that drives charge around a circuit."
+    },
+    {
+      "word": "resistance",
+      "definition": "A measure of how difficult it is for current to flow through a component.",
+      "clue": "Measured in ohms.",
+      "explanation": "Resistance depends on the material and dimensions of a conductor and can change with temperature."
+    },
+    {
+      "word": "wavelength",
+      "definition": "The distance from one point on a wave to the same point on the next wave.",
+      "clue": "Crest to crest is one example.",
+      "explanation": "Wavelength is measured in metres and is related to wave speed and frequency."
+    },
+    {
+      "word": "frequency",
+      "definition": "The number of waves passing a point each second.",
+      "clue": "Measured in hertz.",
+      "explanation": "Frequency is measured in Hz. Higher frequency sound waves have a higher pitch."
+    },
+    {
+      "word": "half-life",
+      "definition": "The time taken for half the unstable nuclei in a radioactive sample to decay.",
+      "clue": "Used in radioactivity calculations.",
+      "explanation": "Half-life is constant for a particular isotope and helps predict how activity changes over time."
+    }
+  ]
+}

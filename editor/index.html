@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Set Editor</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding-top: 174px;
+            background: #101418;
+            color: #f8fafc;
+            font-family: 'Outfit', system-ui, sans-serif;
+        }
+        header {
+            position: sticky;
+            top: 174px;
+            z-index: 5;
+            background: rgba(16, 20, 24, 0.94);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(14px);
+        }
+        .bar,
+        main {
+            width: min(1180px, calc(100vw - 32px));
+            margin: 0 auto;
+        }
+        .bar {
+            display: grid;
+            grid-template-columns: minmax(220px, auto) 1fr;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 0;
+        }
+        h1,
+        h2,
+        p {
+            margin: 0;
+        }
+        h1 {
+            font-size: 28px;
+            color: #00d2ff;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        button,
+        .link-btn {
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 700;
+            padding: 10px 14px;
+            text-decoration: none;
+        }
+        button:hover,
+        .link-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .primary {
+            background: #00d2ff;
+            border-color: #00d2ff;
+            color: #061016;
+        }
+        .danger {
+            color: #ffb4b4;
+        }
+        main {
+            display: grid;
+            grid-template-columns: minmax(320px, 420px) 1fr;
+            gap: 18px;
+            padding: 22px 0 40px;
+        }
+        section {
+            background: rgba(255, 255, 255, 0.055);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 18px;
+        }
+        label {
+            display: block;
+            margin-top: 14px;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        input,
+        textarea,
+        select {
+            width: 100%;
+            margin-top: 6px;
+            padding: 11px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.28);
+            color: #fff;
+            font: inherit;
+        }
+        textarea {
+            min-height: 86px;
+            resize: vertical;
+        }
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .status {
+            min-height: 22px;
+            margin-top: 12px;
+            color: #b7f5c8;
+            font-size: 14px;
+        }
+        .import-panel {
+            display: none;
+            grid-column: 1 / -1;
+        }
+        .import-panel.active {
+            display: block;
+        }
+        .import-grid {
+            display: grid;
+            grid-template-columns: minmax(240px, 0.8fr) 1.2fr;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .import-help {
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .import-help code {
+            color: #fff;
+            background: rgba(0, 0, 0, 0.28);
+            border-radius: 4px;
+            padding: 2px 5px;
+        }
+        #import-text {
+            min-height: 170px;
+        }
+        .sample-row {
+            display: grid;
+            grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr) auto;
+            gap: 10px;
+            width: min(100%, 620px);
+        }
+        .sample-row select {
+            margin-top: 0;
+        }
+        .question-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+            max-height: calc(100vh - 180px);
+            overflow: auto;
+            padding-right: 4px;
+        }
+        .question-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 8px;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.22);
+        }
+        .question-row strong {
+            display: block;
+            font-size: 16px;
+        }
+        .question-row span {
+            display: block;
+            margin-top: 4px;
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+        .count {
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+        @media (max-width: 860px) {
+            body {
+                padding-top: 86px;
+            }
+            header {
+                top: 86px;
+            }
+            .bar,
+            main {
+                width: min(100vw - 20px, 680px);
+            }
+            main {
+                display: block;
+            }
+            .bar {
+                display: block;
+            }
+            .actions {
+                justify-content: flex-start;
+                margin-top: 14px;
+            }
+            .import-grid {
+                grid-template-columns: 1fr;
+            }
+            section + section {
+                margin-top: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="main-nav"></nav>
+    <header>
+        <div class="bar">
+            <div>
+                <h1>Question Set Editor</h1>
+                <p class="count" id="question-count">0 questions</p>
+            </div>
+            <div class="actions">
+                <div class="sample-row">
+                    <select id="sample-subject-select" aria-label="Sample subject">
+                        <option value="">Subject</option>
+                    </select>
+                    <select id="sample-topic-select" aria-label="Sample topic">
+                        <option value="">Topic</option>
+                    </select>
+                    <button id="sample-btn" type="button">Load Sample</button>
+                </div>
+                <button id="show-import-btn" type="button">Import Text</button>
+                <button id="load-btn" type="button">Load JSON</button>
+                <button id="save-btn" class="primary" type="button">Save JSON</button>
+                <a class="link-btn" href="../penalties/index.html" id="back-to-game">Back to Game</a>
+                <input id="file-input" type="file" accept="application/json,.json" hidden>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="import-panel" id="import-panel">
+            <h2>Import From Quizlet</h2>
+            <div class="import-grid">
+                <div class="import-help">
+                    <p>In Quizlet export, use these settings:</p>
+                    <p><strong>Between term and definition:</strong> Tab</p>
+                    <p><strong>Between rows:</strong> New Line</p>
+                    <p>Then paste the copied text here. Each row should look like:</p>
+                    <p><code>algorithm    step-by-step method for solving a problem</code></p>
+                    <p>The importer uses the term as the answer and the definition as the question prompt. Clues and explanations can be added after import.</p>
+                </div>
+                <div>
+                    <textarea id="import-text" placeholder="term	definition&#10;binary	a number system that uses only 0 and 1"></textarea>
+                    <div class="form-actions">
+                        <button id="import-replace-btn" class="primary" type="button">Replace Set</button>
+                        <button id="import-add-btn" type="button">Add to Set</button>
+                    </div>
+                    <button id="close-import-btn" type="button" style="margin-top: 10px;">Close Import</button>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 id="form-title">Add Question</h2>
+            <label for="answer-input">Answer</label>
+            <input id="answer-input" type="text" placeholder="e.g. accurate">
+
+            <label for="question-input">Question / Definition</label>
+            <textarea id="question-input" placeholder="e.g. Correct in every detail."></textarea>
+
+            <label for="clue-input">Clue</label>
+            <input id="clue-input" type="text" placeholder="Optional">
+
+            <label for="explanation-input">Explanation</label>
+            <textarea id="explanation-input" placeholder="Explain why this answer is correct."></textarea>
+
+            <div class="form-actions">
+                <button id="add-update-btn" class="primary" type="button">Add Question</button>
+                <button id="clear-btn" type="button">Clear</button>
+            </div>
+            <p class="status" id="status"></p>
+        </section>
+
+        <section>
+            <h2>Questions</h2>
+            <div class="question-list" id="question-list"></div>
+        </section>
+    </main>
+
+    <script src="../components.js"></script>
+    <script>
+        const fields = {
+            answer: document.getElementById('answer-input'),
+            question: document.getElementById('question-input'),
+            clue: document.getElementById('clue-input'),
+            explanation: document.getElementById('explanation-input')
+        };
+        const listEl = document.getElementById('question-list');
+        const countEl = document.getElementById('question-count');
+        const statusEl = document.getElementById('status');
+        const formTitle = document.getElementById('form-title');
+        const addUpdateBtn = document.getElementById('add-update-btn');
+        const fileInput = document.getElementById('file-input');
+        const sampleSubjectSelect = document.getElementById('sample-subject-select');
+        const sampleTopicSelect = document.getElementById('sample-topic-select');
+        const importPanel = document.getElementById('import-panel');
+        const importText = document.getElementById('import-text');
+
+        let questions = [];
+        let editingIndex = -1;
+        let downloadedSinceChange = false;
+        const MAX_QUESTIONS = 50;
+        const EDITOR_SET_KEY = 'penaltyQuestionEditorSet';
+        const SAMPLE_SETS = {
+            Vocabulary: [
+                { topic: 'General', file: '../penalties/penaltyshootout.json' }
+            ],
+            'iGCSE Computing': [
+                { topic: 'General', file: 'samples/igcse-computing-sample.json' },
+                { topic: 'Data Representation', file: 'samples/igcse-computing-data-representation.json' },
+                { topic: 'Data Transmission', file: 'samples/igcse-computing-data-transmission.json' },
+                { topic: 'Hardware', file: 'samples/igcse-computing-hardware.json' },
+                { topic: 'Software', file: 'samples/igcse-computing-software.json' },
+                { topic: 'Internet', file: 'samples/igcse-computing-internet.json' },
+                { topic: 'Databases', file: 'samples/igcse-computing-databases.json' }
+            ],
+            'iGCSE Biology': [
+                { topic: 'General', file: 'samples/igcse-biology-sample.json' }
+            ],
+            'iGCSE Psychology': [
+                { topic: 'General', file: 'samples/igcse-psychology-sample.json' }
+            ],
+            'iGCSE Business Studies': [
+                { topic: 'General', file: 'samples/igcse-business-studies-sample.json' }
+            ],
+            'iGCSE Economics': [
+                { topic: 'General', file: 'samples/igcse-economics-sample.json' }
+            ],
+            'iGCSE Geography': [
+                { topic: 'General', file: 'samples/igcse-geography-sample.json' }
+            ],
+            'iGCSE History': [
+                { topic: 'Second World War', file: 'samples/igcse-history-ww2-sample.json' }
+            ],
+            'iGCSE Physics': [
+                { topic: 'General', file: 'samples/igcse-physics-sample.json' }
+            ],
+            'iGCSE Chemistry': [
+                { topic: 'General', file: 'samples/igcse-chemistry-sample.json' }
+            ]
+        };
+
+        function setStatus(message, isError = false) {
+            statusEl.textContent = message;
+            statusEl.style.color = isError ? '#ffb4b4' : '#b7f5c8';
+        }
+
+        function normalizeQuestion(item) {
+            return {
+                word: String(item.word || item.answer || '').trim(),
+                definition: String(item.definition || item.question || '').trim(),
+                clue: String(item.clue || '').trim(),
+                explanation: String(item.explanation || '').trim()
+            };
+        }
+
+        function parseImportedText(text) {
+            return text
+                .split(/\r?\n/)
+                .map((line) => line.trim())
+                .filter(Boolean)
+                .map((line) => {
+                    const usesTabs = line.includes('\t');
+                    const parts = usesTabs ? line.split('\t') : line.split(',');
+                    const word = parts.shift();
+                    const definition = parts.join(usesTabs ? ' ' : ',').trim();
+                    return normalizeQuestion({ word, definition });
+                })
+                .filter((item) => item.word && item.definition);
+        }
+
+        function importQuestions(mode) {
+            const imported = parseImportedText(importText.value);
+            if (!imported.length) {
+                setStatus('Paste rows in the format: term, tab, definition.', true);
+                return;
+            }
+
+            const previousCount = questions.length;
+            let importedCount = 0;
+            if (mode === 'replace') {
+                questions = imported.slice(0, MAX_QUESTIONS);
+                importedCount = questions.length;
+            } else {
+                const remainingSlots = MAX_QUESTIONS - questions.length;
+                if (remainingSlots <= 0) {
+                    setStatus(`This set already has ${MAX_QUESTIONS} questions.`, true);
+                    return;
+                }
+                const importedSlice = imported.slice(0, remainingSlots);
+                questions = questions.concat(importedSlice);
+                importedCount = questions.length - previousCount;
+            }
+
+            clearForm();
+            markChanged();
+            render();
+            setStatus(`Imported ${importedCount} question${importedCount === 1 ? '' : 's'}.`);
+        }
+
+        function render() {
+            countEl.textContent = `${questions.length} / ${MAX_QUESTIONS} questions`;
+            listEl.innerHTML = '';
+
+            questions.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'question-row';
+
+                const summary = document.createElement('div');
+                const title = document.createElement('strong');
+                const detail = document.createElement('span');
+                title.textContent = item.word;
+                detail.textContent = item.definition;
+                summary.append(title, detail);
+
+                const editBtn = document.createElement('button');
+                editBtn.type = 'button';
+                editBtn.textContent = 'Edit';
+                editBtn.onclick = () => editQuestion(index);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'danger';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = () => deleteQuestion(index);
+
+                row.append(summary, editBtn, deleteBtn);
+                listEl.appendChild(row);
+            });
+        }
+
+        function readForm() {
+            const item = normalizeQuestion({
+                word: fields.answer.value,
+                definition: fields.question.value,
+                clue: fields.clue.value,
+                explanation: fields.explanation.value
+            });
+
+            if (!item.word || !item.definition) {
+                throw new Error('Answer and question/definition are required.');
+            }
+
+            return item;
+        }
+
+        function buildQuestionSet() {
+            return {
+                metadata: {
+                    total_questions: questions.length,
+                    format: 'flat',
+                    source: 'editor'
+                },
+                questions
+            };
+        }
+
+        function markChanged() {
+            downloadedSinceChange = false;
+        }
+
+        function clearForm() {
+            Object.values(fields).forEach((field) => {
+                field.value = '';
+            });
+            editingIndex = -1;
+            formTitle.textContent = 'Add Question';
+            addUpdateBtn.textContent = 'Add Question';
+        }
+
+        function editQuestion(index) {
+            const item = questions[index];
+            fields.answer.value = item.word;
+            fields.question.value = item.definition;
+            fields.clue.value = item.clue;
+            fields.explanation.value = item.explanation;
+            editingIndex = index;
+            formTitle.textContent = 'Edit Question';
+            addUpdateBtn.textContent = 'Update Question';
+            setStatus(`Editing question ${index + 1}.`);
+        }
+
+        function deleteQuestion(index) {
+            questions.splice(index, 1);
+            if (editingIndex === index) clearForm();
+            markChanged();
+            render();
+            setStatus('Question deleted.');
+        }
+
+        addUpdateBtn.onclick = () => {
+            try {
+                const item = readForm();
+                if (editingIndex < 0 && questions.length >= MAX_QUESTIONS) {
+                    throw new Error(`Question sets can contain up to ${MAX_QUESTIONS} questions.`);
+                }
+                if (editingIndex >= 0) {
+                    questions[editingIndex] = item;
+                    setStatus('Question updated.');
+                } else {
+                    questions.push(item);
+                    setStatus('Question added.');
+                }
+                markChanged();
+                clearForm();
+                render();
+            } catch (error) {
+                setStatus(error.message, true);
+            }
+        };
+
+        document.getElementById('clear-btn').onclick = () => {
+            clearForm();
+            setStatus('');
+        };
+
+        document.getElementById('show-import-btn').onclick = () => {
+            importPanel.classList.add('active');
+            importText.focus();
+        };
+
+        document.getElementById('close-import-btn').onclick = () => {
+            importPanel.classList.remove('active');
+        };
+
+        document.getElementById('import-replace-btn').onclick = () => importQuestions('replace');
+        document.getElementById('import-add-btn').onclick = () => importQuestions('add');
+
+        document.getElementById('load-btn').onclick = () => fileInput.click();
+        Object.keys(SAMPLE_SETS).forEach((subject) => {
+            const option = document.createElement('option');
+            option.value = subject;
+            option.textContent = subject;
+            sampleSubjectSelect.appendChild(option);
+        });
+
+        function populateSampleTopics() {
+            const subject = sampleSubjectSelect.value;
+            sampleTopicSelect.innerHTML = '<option value="">Topic</option>';
+
+            if (!subject || !SAMPLE_SETS[subject]) return;
+
+            SAMPLE_SETS[subject].forEach((sample) => {
+                const option = document.createElement('option');
+                option.value = sample.file;
+                option.textContent = sample.topic;
+                sampleTopicSelect.appendChild(option);
+            });
+
+            if (SAMPLE_SETS[subject].length === 1) {
+                sampleTopicSelect.value = SAMPLE_SETS[subject][0].file;
+            }
+        }
+
+        sampleSubjectSelect.onchange = populateSampleTopics;
+
+        document.getElementById('sample-btn').onclick = async () => {
+            const subject = sampleSubjectSelect.value;
+            const file = sampleTopicSelect.value;
+            const selected = SAMPLE_SETS[subject]?.find((sample) => sample.file === file);
+            if (!selected) {
+                setStatus('Choose a sample subject and topic first.', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(file);
+                if (!response.ok) throw new Error(`Could not load ${subject}: ${selected.topic}.`);
+                const data = await response.json();
+                if (!Array.isArray(data.questions)) {
+                    throw new Error('Sample JSON must contain a questions array.');
+                }
+                questions = data.questions
+                    .map(normalizeQuestion)
+                    .filter((item) => item.word && item.definition)
+                    .slice(0, MAX_QUESTIONS);
+                clearForm();
+                markChanged();
+                render();
+                setStatus(`Loaded ${subject} - ${selected.topic} sample (${questions.length} questions).`);
+            } catch (error) {
+                setStatus(error.message || 'Could not load sample set.', true);
+            }
+        };
+
+        fileInput.onchange = async (event) => {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            try {
+                const data = JSON.parse(await file.text());
+                if (!Array.isArray(data.questions)) {
+                    throw new Error('JSON must contain a questions array.');
+                }
+                questions = data.questions
+                    .map(normalizeQuestion)
+                    .filter((item) => item.word && item.definition)
+                    .slice(0, MAX_QUESTIONS);
+                clearForm();
+                markChanged();
+                render();
+                setStatus(`Loaded ${questions.length} questions from ${file.name}.`);
+            } catch (error) {
+                setStatus(error.message || 'Could not load JSON file.', true);
+            } finally {
+                fileInput.value = '';
+            }
+        };
+
+        document.getElementById('save-btn').onclick = () => {
+            if (questions.length < 4) {
+                setStatus('Add at least 4 questions before saving for the penalty game.', true);
+                return;
+            }
+
+            const output = buildQuestionSet();
+            const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'question-set.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            downloadedSinceChange = true;
+            setStatus('JSON file saved.');
+        };
+
+        document.getElementById('back-to-game').onclick = (event) => {
+            event.preventDefault();
+
+            if (questions.length < 4) {
+                setStatus('Add at least 4 questions before going back to the game.', true);
+                return;
+            }
+
+            if (!downloadedSinceChange) {
+                const shouldContinue = window.confirm('These questions will be sent to the game in this browser. Download a JSON file if you want to keep a permanent copy. Continue to the game?');
+                if (!shouldContinue) return;
+            }
+
+            localStorage.setItem(EDITOR_SET_KEY, JSON.stringify(buildQuestionSet()));
+            window.location.href = '../penalties/index.html?editorSet=1';
+        };
+
+        render();
+    </script>
+</body>
+</html>

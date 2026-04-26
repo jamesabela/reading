@@ -1,0 +1,285 @@
+{
+  "metadata": {
+    "title": "iGCSE Computing: Internet",
+    "total_questions": 46,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "active script",
+      "definition": "A script used to produce interactive elements of a web page.",
+      "clue": "Runs code for web page interaction.",
+      "explanation": "Active scripts add behaviour to web pages, such as responding to clicks, validating forms, or updating page content."
+    },
+    {
+      "word": "bookmark",
+      "definition": "A link that can be created to allow you to quickly find a web page again.",
+      "clue": "Saved link in a browser.",
+      "explanation": "Bookmarks help users return to useful web pages without having to remember or retype the full address."
+    },
+    {
+      "word": "cascading style sheet (CSS)",
+      "definition": "A language used to create the presentation template for a web page, including fonts, colours, and layout.",
+      "clue": "Controls web page appearance.",
+      "explanation": "CSS separates presentation from structure, allowing the same HTML content to be styled in different ways."
+    },
+    {
+      "word": "certificate authority",
+      "definition": "An organisation that checks whether another organisation is real and secure before awarding a digital certificate.",
+      "clue": "Issues digital certificates.",
+      "explanation": "Certificate authorities help users trust secure websites by verifying identities and issuing certificates."
+    },
+    {
+      "word": "cookie",
+      "definition": "A small text file used by a web browser to store personal or session data.",
+      "clue": "Stored by websites in the browser.",
+      "explanation": "Cookies can remember login sessions, preferences, shopping baskets, or tracking information."
+    },
+    {
+      "word": "digital certificate",
+      "definition": "A certificate awarded to a website if it can prove it is a real organisation and transmits data securely.",
+      "clue": "Used with secure websites.",
+      "explanation": "Digital certificates help prove website identity and support encrypted communication."
+    },
+    {
+      "word": "domain name server (DNS)",
+      "definition": "A special server that contains a database of domain names and their corresponding IP addresses.",
+      "clue": "Translates names to IP addresses.",
+      "explanation": "DNS allows users to type domain names instead of numeric IP addresses when visiting websites."
+    },
+    {
+      "word": "hypertext markup language (HTML)",
+      "definition": "A web authoring language used to create web pages.",
+      "clue": "Defines web page structure.",
+      "explanation": "HTML marks up content such as headings, paragraphs, links, images, and forms on a web page."
+    },
+    {
+      "word": "hypertext transfer protocol (HTTP)",
+      "definition": "A protocol used for transmitting web pages and related data across the internet.",
+      "clue": "Web page transfer protocol.",
+      "explanation": "HTTP defines how browsers and web servers request and send web content."
+    },
+    {
+      "word": "hypertext transfer protocol secure (HTTPS)",
+      "definition": "A secure version of HTTP that encrypts data for transmission.",
+      "clue": "Secure web protocol.",
+      "explanation": "HTTPS combines HTTP with encryption so data sent between browser and server is protected."
+    },
+    {
+      "word": "infrastructure",
+      "definition": "The physical structure, such as components and cables, used to connect devices.",
+      "clue": "Physical network structure.",
+      "explanation": "Infrastructure includes hardware such as cables, routers, switches, servers, and other network equipment."
+    },
+    {
+      "word": "navigate",
+      "definition": "To move around web pages or move back or forward to previous web pages.",
+      "clue": "Browsing through pages.",
+      "explanation": "Navigation lets users move between pages using links, buttons, tabs, or browser controls."
+    },
+    {
+      "word": "protocol",
+      "definition": "A set of rules for transmitting data.",
+      "clue": "Rules for communication.",
+      "explanation": "Protocols define how devices format, send, receive, and interpret data."
+    },
+    {
+      "word": "secure sockets layer (SSL) protocol",
+      "definition": "A protocol that encrypts data for transmission and is combined with HTTP to create HTTPS.",
+      "clue": "Older secure communication protocol.",
+      "explanation": "SSL helped secure data sent over networks, though it has largely been replaced by TLS."
+    },
+    {
+      "word": "tab",
+      "definition": "A browser function that allows multiple web pages to be opened in the same window.",
+      "clue": "Multiple pages in one browser window.",
+      "explanation": "Tabs make it easier to switch between several open web pages without opening separate windows."
+    },
+    {
+      "word": "uniform resource locator (URL)",
+      "definition": "The text-based address for a website or web resource.",
+      "clue": "A web address.",
+      "explanation": "A URL tells the browser where to find a resource, such as a web page, image, or file."
+    },
+    {
+      "word": "username",
+      "definition": "A text-based identification given to a user that identifies their level of access to stored data and resources.",
+      "clue": "Used to identify an account.",
+      "explanation": "A username identifies a user and is often used with a password or other authentication method."
+    },
+    {
+      "word": "web page",
+      "definition": "A single page within a website.",
+      "clue": "One page on the web.",
+      "explanation": "A web page is usually written in HTML and may include CSS, scripts, images, and links."
+    },
+    {
+      "word": "web server",
+      "definition": "A network component where the web pages for a website are stored.",
+      "clue": "Stores and serves web pages.",
+      "explanation": "A web server responds to browser requests by sending web pages and related files."
+    },
+    {
+      "word": "website",
+      "definition": "A collection of web pages, normally about a related topic or purpose.",
+      "clue": "A group of related pages.",
+      "explanation": "Websites are hosted on web servers and accessed through web browsers."
+    },
+    {
+      "word": "world wide web",
+      "definition": "The collection of all the web pages and websites that have been made available.",
+      "clue": "Runs on the internet.",
+      "explanation": "The World Wide Web is a service on the internet that uses web pages, links, browsers, and web servers."
+    },
+    {
+      "word": "blockchain",
+      "definition": "A method used to track all the transactions made with a cryptocurrency.",
+      "clue": "A distributed transaction record.",
+      "explanation": "A blockchain stores transaction records in linked blocks, making changes difficult without detection."
+    },
+    {
+      "word": "cryptocurrency",
+      "definition": "A type of digital currency that uses encryption procedures.",
+      "clue": "Digital money using cryptography.",
+      "explanation": "Cryptocurrencies use cryptographic methods to secure transactions and control ownership."
+    },
+    {
+      "word": "digital currency",
+      "definition": "A currency that exists electronically rather than physically.",
+      "clue": "Money without physical coins or notes.",
+      "explanation": "Digital currency is stored and transferred electronically, rather than being exchanged as physical cash."
+    },
+    {
+      "word": "access levels",
+      "definition": "The amount of direct access a user is given to data and resources.",
+      "clue": "Controls what users can access.",
+      "explanation": "Access levels restrict users to only the data or resources they are authorised to use."
+    },
+    {
+      "word": "adware",
+      "definition": "A software-based cyber issue that automatically creates popup advertisements.",
+      "clue": "Unwanted advertising software.",
+      "explanation": "Adware displays adverts and may track user behaviour or slow down a device."
+    },
+    {
+      "word": "anti-malware",
+      "definition": "Software that scans a computer or device to find and remove malware.",
+      "clue": "Protects against malicious software.",
+      "explanation": "Anti-malware tools detect, quarantine, and remove harmful software."
+    },
+    {
+      "word": "anti-virus",
+      "definition": "Software that scans a computer for viruses to find and remove them.",
+      "clue": "Targets viruses.",
+      "explanation": "Anti-virus software helps detect and remove viruses before they damage files or spread."
+    },
+    {
+      "word": "biometric device",
+      "definition": "A device that allows a user to record and input a biometric password.",
+      "clue": "Uses body features for authentication.",
+      "explanation": "Biometric devices can scan fingerprints, faces, eyes, or other biological features."
+    },
+    {
+      "word": "biometric password",
+      "definition": "A type of password that uses a person's biological data, such as their fingerprint.",
+      "clue": "Authentication using body data.",
+      "explanation": "Biometric passwords are based on unique biological characteristics and can be harder to guess than text passwords."
+    },
+    {
+      "word": "bot",
+      "definition": "A computer that has had malware downloaded onto it so it can be used in a DDoS attack.",
+      "clue": "Compromised computer.",
+      "explanation": "A bot is an infected device controlled by an attacker, often without the user's knowledge."
+    },
+    {
+      "word": "botnet",
+      "definition": "A network of bots created to carry out a DDoS attack.",
+      "clue": "Many compromised devices working together.",
+      "explanation": "Botnets can generate huge amounts of traffic to overwhelm a target server or network."
+    },
+    {
+      "word": "brute-force attack",
+      "definition": "A cyber threat where passwords are repeatedly tried until the correct one is found.",
+      "clue": "Guessing again and again.",
+      "explanation": "Brute-force attacks try many password combinations, so strong passwords and lockout systems help reduce risk."
+    },
+    {
+      "word": "data interception",
+      "definition": "Intercepting non-public transmissions of digital data by technical means.",
+      "clue": "Capturing data in transit.",
+      "explanation": "Data interception can expose sensitive information if transmissions are not protected by encryption."
+    },
+    {
+      "word": "distributed denial of service (DDoS) attack",
+      "definition": "A cyber threat that targets a web server to cause it to crash and prevent access to its web pages.",
+      "clue": "Overwhelms a server with traffic.",
+      "explanation": "A DDoS attack uses many devices to flood a target with requests, making services unavailable."
+    },
+    {
+      "word": "packet sniffer",
+      "definition": "Software used to examine the contents of a packet of data.",
+      "clue": "Inspects network packets.",
+      "explanation": "Packet sniffers can be used for legitimate network analysis or malicious data interception."
+    },
+    {
+      "word": "pharming",
+      "definition": "A cyber threat where malicious software redirects a request for a genuine website to a fake website.",
+      "clue": "Redirects users to fake sites.",
+      "explanation": "Pharming tricks users into entering personal data on a fake website that appears genuine."
+    },
+    {
+      "word": "phishing",
+      "definition": "A cyber threat where a fake email encourages a user to provide personal data through a fake website or reply.",
+      "clue": "Fake message asking for details.",
+      "explanation": "Phishing relies on deception, often pretending to be a trusted organisation to steal data."
+    },
+    {
+      "word": "proxy server",
+      "definition": "A cyber security method that examines requests sent by devices to access web pages on a web server.",
+      "clue": "Acts between user and server.",
+      "explanation": "A proxy server can filter, cache, or monitor web requests before forwarding them."
+    },
+    {
+      "word": "ransomware",
+      "definition": "A cyber threat that encrypts a user's data to stop access until a ransom is paid.",
+      "clue": "Demands money to restore access.",
+      "explanation": "Ransomware locks or encrypts files and demands payment, but payment does not guarantee recovery."
+    },
+    {
+      "word": "spyware",
+      "definition": "A cyber threat that spies on a user's actions, such as logging key presses.",
+      "clue": "Secretly monitors users.",
+      "explanation": "Spyware collects information without permission and may steal passwords or browsing data."
+    },
+    {
+      "word": "transport layer security (TLS) protocol",
+      "definition": "An updated version of the SSL protocol.",
+      "clue": "Modern secure communication protocol.",
+      "explanation": "TLS encrypts data in transit and is widely used to secure HTTPS connections."
+    },
+    {
+      "word": "trojan horse",
+      "definition": "A cyber threat that disguises other malware to smuggle it into a computer or network.",
+      "clue": "Malware hidden as something harmless.",
+      "explanation": "A trojan appears legitimate but contains harmful code or installs other malware."
+    },
+    {
+      "word": "virus",
+      "definition": "A cyber threat that replicates itself to corrupt data or fill memory space, causing a computer to crash.",
+      "clue": "Malware that attaches and spreads.",
+      "explanation": "Viruses replicate by attaching to files or programs and can damage data or disrupt systems."
+    },
+    {
+      "word": "worm",
+      "definition": "A cyber threat that replicates itself across a network using vulnerabilities, aiming to clog bandwidth.",
+      "clue": "Self-spreading malware.",
+      "explanation": "Worms spread without needing to attach to a host file and can rapidly consume network resources."
+    },
+    {
+      "word": "zombie",
+      "definition": "A dormant bot with malware installed that can be used in a DDoS attack but is not currently active.",
+      "clue": "Sleeping compromised computer.",
+      "explanation": "A zombie is an infected device waiting for commands from an attacker, often as part of a botnet."
+    }
+  ]
+}

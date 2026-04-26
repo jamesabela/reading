@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "title": "iGCSE Chemistry Sample",
+    "total_questions": 12,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "atom",
+      "definition": "The smallest particle of an element that can take part in chemical reactions.",
+      "clue": "Contains protons, neutrons, and electrons.",
+      "explanation": "Atoms have a nucleus containing protons and neutrons, with electrons arranged in shells around the nucleus."
+    },
+    {
+      "word": "element",
+      "definition": "A substance made of only one type of atom.",
+      "clue": "Found on the periodic table.",
+      "explanation": "Elements cannot be broken down into simpler substances by chemical means."
+    },
+    {
+      "word": "compound",
+      "definition": "A substance made from two or more elements chemically bonded together.",
+      "clue": "Water is one example.",
+      "explanation": "Compounds have fixed ratios of elements and properties that are different from the elements they contain."
+    },
+    {
+      "word": "mixture",
+      "definition": "Two or more substances together that are not chemically bonded.",
+      "clue": "Can often be separated physically.",
+      "explanation": "Mixtures can be separated using methods such as filtration, distillation, chromatography, or crystallisation."
+    },
+    {
+      "word": "isotope",
+      "definition": "Atoms of the same element with different numbers of neutrons.",
+      "clue": "Same proton number, different mass number.",
+      "explanation": "Isotopes have the same chemical properties because they have the same number of electrons."
+    },
+    {
+      "word": "ionic bond",
+      "definition": "A strong electrostatic attraction between oppositely charged ions.",
+      "clue": "Often forms between metals and non-metals.",
+      "explanation": "Ionic bonding happens when electrons are transferred and ions form a giant lattice structure."
+    },
+    {
+      "word": "covalent bond",
+      "definition": "A bond formed when atoms share pairs of electrons.",
+      "clue": "Often forms between non-metal atoms.",
+      "explanation": "Covalent bonding allows atoms to achieve more stable outer electron shells by sharing electrons."
+    },
+    {
+      "word": "electrolysis",
+      "definition": "The decomposition of an ionic compound using electricity.",
+      "clue": "Requires a molten or aqueous electrolyte.",
+      "explanation": "During electrolysis, ions move to electrodes where they gain or lose electrons."
+    },
+    {
+      "word": "oxidation",
+      "definition": "A reaction where a substance gains oxygen or loses electrons.",
+      "clue": "Opposite of reduction.",
+      "explanation": "In redox reactions, oxidation and reduction happen together. Electron loss is oxidation."
+    },
+    {
+      "word": "reduction",
+      "definition": "A reaction where a substance loses oxygen or gains electrons.",
+      "clue": "Opposite of oxidation.",
+      "explanation": "Reduction is important in extracting metals from their ores, such as removing oxygen from metal oxides."
+    },
+    {
+      "word": "catalyst",
+      "definition": "A substance that speeds up a chemical reaction without being used up.",
+      "clue": "Lowers activation energy.",
+      "explanation": "Catalysts provide an alternative reaction pathway with lower activation energy and can be reused."
+    },
+    {
+      "word": "chromatography",
+      "definition": "A separation technique used to separate substances in a mixture based on their movement through a medium.",
+      "clue": "Often used with inks or dyes.",
+      "explanation": "Different substances move different distances depending on their solubility and attraction to the stationary phase."
+    }
+  ]
+}

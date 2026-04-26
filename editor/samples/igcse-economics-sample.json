@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "title": "iGCSE Economics Sample",
+    "total_questions": 12,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "scarcity",
+      "definition": "The basic economic problem that resources are limited but wants are unlimited.",
+      "clue": "Leads to choices and opportunity cost.",
+      "explanation": "Scarcity means societies must decide how to allocate limited resources between competing uses."
+    },
+    {
+      "word": "opportunity cost",
+      "definition": "The next best alternative given up when a choice is made.",
+      "clue": "The cost of choosing one option over another.",
+      "explanation": "Opportunity cost exists because resources are scarce and choosing one use means sacrificing another."
+    },
+    {
+      "word": "demand",
+      "definition": "The quantity of a good or service consumers are willing and able to buy at a given price.",
+      "clue": "Usually falls as price rises.",
+      "explanation": "Demand depends on factors such as price, income, tastes, substitutes, and complements."
+    },
+    {
+      "word": "supply",
+      "definition": "The quantity of a good or service producers are willing and able to sell at a given price.",
+      "clue": "Usually rises as price rises.",
+      "explanation": "Supply can change because of production costs, technology, taxes, subsidies, or the number of firms."
+    },
+    {
+      "word": "equilibrium price",
+      "definition": "The price where quantity demanded equals quantity supplied.",
+      "clue": "The market clears at this price.",
+      "explanation": "At equilibrium there is no shortage or surplus, so market forces are balanced."
+    },
+    {
+      "word": "inflation",
+      "definition": "A sustained increase in the general price level of goods and services.",
+      "clue": "Reduces purchasing power.",
+      "explanation": "Inflation means money buys less over time. It is often measured using a consumer price index."
+    },
+    {
+      "word": "unemployment",
+      "definition": "People who are willing and able to work but do not have a job.",
+      "clue": "Can be caused by changes in demand or technology.",
+      "explanation": "Unemployment can reduce output and incomes, and governments often aim to keep it low."
+    },
+    {
+      "word": "exchange rate",
+      "definition": "The price of one currency in terms of another currency.",
+      "clue": "Affects imports and exports.",
+      "explanation": "If a currency appreciates, imports may become cheaper and exports may become more expensive for foreign buyers."
+    },
+    {
+      "word": "taxation",
+      "definition": "Money collected by the government from households and firms.",
+      "clue": "Can be direct or indirect.",
+      "explanation": "Governments use tax revenue to fund public services and influence economic behaviour."
+    },
+    {
+      "word": "subsidy",
+      "definition": "A payment from the government to reduce production costs or encourage consumption.",
+      "clue": "Can increase supply.",
+      "explanation": "Subsidies can lower prices and encourage output, but they also require government spending."
+    },
+    {
+      "word": "specialisation",
+      "definition": "Focusing on producing a limited range of goods or tasks.",
+      "clue": "Can increase efficiency.",
+      "explanation": "Specialisation can raise productivity, but workers or countries may become dependent on fewer activities."
+    },
+    {
+      "word": "gross domestic product",
+      "definition": "The total value of goods and services produced in an economy over a period of time.",
+      "clue": "Often abbreviated to GDP.",
+      "explanation": "GDP is a common measure of economic output and is often used to compare economic growth."
+    }
+  ]
+}

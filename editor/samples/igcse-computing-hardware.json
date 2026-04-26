@@ -1,0 +1,310 @@
+{
+  "metadata": {
+    "title": "iGCSE Computing: Hardware",
+    "total_questions": 50,
+    "format": "flat",
+    "selection_note": "Curated to the 50 strongest hardware-focused terms from the supplied list."
+  },
+  "questions": [
+    {
+      "word": "central processing unit (CPU)",
+      "definition": "A component in a computer system that processes data and instructions.",
+      "clue": "Often called the processor.",
+      "explanation": "The CPU fetches, decodes, and executes instructions. It contains components such as the ALU, control unit, and registers."
+    },
+    {
+      "word": "arithmetic logic unit (ALU)",
+      "definition": "The component in the CPU that performs mathematical and logical operations.",
+      "clue": "Part of the CPU.",
+      "explanation": "The ALU performs calculations such as addition and logic operations such as comparisons."
+    },
+    {
+      "word": "control unit (CU)",
+      "definition": "The component in the CPU that controls all operations in the CPU.",
+      "clue": "Coordinates the CPU.",
+      "explanation": "The control unit decodes instructions and sends control signals to coordinate the fetch-decode-execute cycle."
+    },
+    {
+      "word": "core",
+      "definition": "The part of the CPU that contains the components used to perform the fetch-decode-execute cycle.",
+      "clue": "A CPU may contain more than one.",
+      "explanation": "Each core can process instructions. More cores can improve performance when software can use them effectively."
+    },
+    {
+      "word": "clock speed",
+      "definition": "The number of fetch-decode-execute cycles that can be performed in a second.",
+      "clue": "Measured in hertz.",
+      "explanation": "Higher clock speed can increase the number of instructions processed per second, though it is not the only factor affecting performance."
+    },
+    {
+      "word": "cache",
+      "definition": "A type of storage built into or close to the CPU that stores frequently used data and instructions.",
+      "clue": "Very fast CPU memory.",
+      "explanation": "Cache reduces the time the CPU waits for data by keeping frequently used instructions and data nearby."
+    },
+    {
+      "word": "register",
+      "definition": "A small component in a computer system used to temporarily store data.",
+      "clue": "Very fast storage inside the CPU.",
+      "explanation": "Registers hold small amounts of data, addresses, or instructions needed immediately by the CPU."
+    },
+    {
+      "word": "accumulator (ACC)",
+      "definition": "A register built into the ALU that stores the result of interim calculations.",
+      "clue": "Stores calculation results.",
+      "explanation": "The accumulator temporarily stores results while the ALU carries out arithmetic and logical operations."
+    },
+    {
+      "word": "program counter (PC)",
+      "definition": "A CPU register that stores the address of the next instruction to be processed.",
+      "clue": "Points to the next instruction.",
+      "explanation": "The program counter helps the CPU fetch instructions in the correct order."
+    },
+    {
+      "word": "memory address register (MAR)",
+      "definition": "A CPU register that stores the address of the next instruction or data to be accessed.",
+      "clue": "Holds a memory address.",
+      "explanation": "The MAR stores the memory location that the CPU wants to read from or write to."
+    },
+    {
+      "word": "memory data register (MDR)",
+      "definition": "A CPU register that holds data or instructions fetched from RAM.",
+      "clue": "Holds data moving to or from memory.",
+      "explanation": "The MDR temporarily stores data or instructions being transferred between the CPU and memory."
+    },
+    {
+      "word": "current instruction register (CIR)",
+      "definition": "A register built into the control unit that holds the current instruction being processed.",
+      "clue": "Stores the current instruction.",
+      "explanation": "The CIR holds the instruction currently being decoded or executed by the CPU."
+    },
+    {
+      "word": "fetch-decode-execute cycle",
+      "definition": "The cycle through which data and instructions are processed.",
+      "clue": "The CPU instruction cycle.",
+      "explanation": "The CPU fetches an instruction from memory, decodes what it means, and then executes it."
+    },
+    {
+      "word": "instruction set",
+      "definition": "A set of commands that can be processed by a certain CPU.",
+      "clue": "The commands a CPU understands.",
+      "explanation": "The instruction set defines the operations a CPU can decode and execute."
+    },
+    {
+      "word": "address bus",
+      "definition": "Wires used for the transmission of addresses between components in a computer.",
+      "clue": "Carries memory locations.",
+      "explanation": "The address bus carries the address of the memory location the CPU wants to access."
+    },
+    {
+      "word": "data bus",
+      "definition": "Wires used for the transmission of data and instructions between components in a computer.",
+      "clue": "Carries data values.",
+      "explanation": "The data bus transfers data and instructions between the CPU, memory, and other components."
+    },
+    {
+      "word": "control bus",
+      "definition": "Wires used for the transmission of control signals between components in a computer.",
+      "clue": "Carries control signals.",
+      "explanation": "The control bus carries signals such as read, write, and timing signals to coordinate components."
+    },
+    {
+      "word": "architecture",
+      "definition": "The design of a computer system, including the components it contains.",
+      "clue": "The structure of a computer system.",
+      "explanation": "Computer architecture describes how components such as the CPU, memory, buses, and input/output devices are organised."
+    },
+    {
+      "word": "microprocessor",
+      "definition": "An integrated circuit that is able to perform many of the functions of a CPU.",
+      "clue": "A processor on a chip.",
+      "explanation": "A microprocessor contains processing circuitry on a chip and is used in computers and embedded systems."
+    },
+    {
+      "word": "embedded system",
+      "definition": "A computer system that performs a dedicated function.",
+      "clue": "Built into another device.",
+      "explanation": "Embedded systems are found in devices such as washing machines, traffic lights, vehicles, and appliances."
+    },
+    {
+      "word": "Internet of Things",
+      "definition": "The connection of computer systems and everyday devices using the internet to allow data to be exchanged.",
+      "clue": "Often shortened to IoT.",
+      "explanation": "IoT devices collect and exchange data, such as smart thermostats, fitness trackers, and connected appliances."
+    },
+    {
+      "word": "RAM (random access memory)",
+      "definition": "A component that holds data and programs currently in use.",
+      "clue": "Volatile primary storage.",
+      "explanation": "RAM is fast temporary memory. Its contents are lost when the computer is switched off."
+    },
+    {
+      "word": "ROM (read only memory)",
+      "definition": "A type of primary storage that stores the start-up instructions for the computer.",
+      "clue": "Non-volatile memory.",
+      "explanation": "ROM keeps its contents without power and often stores firmware or boot instructions."
+    },
+    {
+      "word": "primary storage",
+      "definition": "A type of storage that is directly accessed by the CPU.",
+      "clue": "RAM and ROM are examples.",
+      "explanation": "Primary storage is used by the CPU for data and instructions needed while the computer runs."
+    },
+    {
+      "word": "secondary storage",
+      "definition": "A type of storage designed to store data permanently until it is deleted by the user.",
+      "clue": "Used for long-term storage.",
+      "explanation": "Secondary storage is non-volatile and includes magnetic, optical, and solid-state storage."
+    },
+    {
+      "word": "magnetic storage",
+      "definition": "A type of secondary storage that uses magnetism to store data.",
+      "clue": "Hard disk drives are an example.",
+      "explanation": "Magnetic storage records data by magnetising areas of a disk or tape."
+    },
+    {
+      "word": "optical storage",
+      "definition": "A type of secondary storage that uses lasers to store data.",
+      "clue": "CDs and DVDs are examples.",
+      "explanation": "Optical storage uses laser light to read marks on a disc surface."
+    },
+    {
+      "word": "Solid-state storage",
+      "definition": "A type of secondary storage that uses transistors to store data.",
+      "clue": "SSDs and flash drives use this.",
+      "explanation": "Solid-state storage has no moving parts and stores data using electronic circuits."
+    },
+    {
+      "word": "virtual memory",
+      "definition": "A type of memory that can be used as an extension to RAM.",
+      "clue": "Uses secondary storage when RAM is full.",
+      "explanation": "Virtual memory lets a system continue running when RAM is limited, but it is slower than RAM."
+    },
+    {
+      "word": "cloud storage",
+      "definition": "Data storage owned by a third party and accessed by the user using the internet.",
+      "clue": "Online storage.",
+      "explanation": "Cloud storage stores data on remote servers and allows access from different devices through the internet."
+    },
+    {
+      "word": "input device",
+      "definition": "A device that allows data to be entered into a computer system.",
+      "clue": "Keyboard and mouse are examples.",
+      "explanation": "Input devices provide data or commands for the computer to process."
+    },
+    {
+      "word": "output device",
+      "definition": "A device that can be used to obtain the results of processed data.",
+      "clue": "Monitor and printer are examples.",
+      "explanation": "Output devices present information from the computer to the user, such as images, sound, or printed text."
+    },
+    {
+      "word": "sensor",
+      "definition": "A type of input device used to capture data from its immediate environment.",
+      "clue": "Collects real-world measurements.",
+      "explanation": "Sensors measure physical conditions such as light, temperature, pressure, sound, or movement."
+    },
+    {
+      "word": "Temperature sensor",
+      "definition": "A sensor that measures the temperature of an object, substance, or surrounding environment.",
+      "clue": "Detects heat levels.",
+      "explanation": "Temperature sensors are used in heating systems, weather stations, engines, and medical devices."
+    },
+    {
+      "word": "Pressure sensor",
+      "definition": "A sensor that measures the force of pressure applied to the sensor or device.",
+      "clue": "Measures pressure from solids, liquids, or gases.",
+      "explanation": "Pressure sensors are used in tyres, weather systems, industrial machinery, and medical devices."
+    },
+    {
+      "word": "Light sensor",
+      "definition": "A sensor that measures ambient light or direct light.",
+      "clue": "Detects brightness.",
+      "explanation": "Light sensors are used in automatic lighting, cameras, and phones that adjust screen brightness."
+    },
+    {
+      "word": "Infra-red sensor",
+      "definition": "A sensor that measures infra-red radiation emitted by objects or people.",
+      "clue": "Can detect heat or movement.",
+      "explanation": "Infra-red sensors are used in remote controls, motion detectors, and thermal sensing."
+    },
+    {
+      "word": "Proximity sensor",
+      "definition": "A sensor that measures how close an object is in comparison to the sensor.",
+      "clue": "Detects nearby objects.",
+      "explanation": "Proximity sensors can detect objects without contact by emitting a field or radiation and measuring its return."
+    },
+    {
+      "word": "Accelerometer sensor",
+      "definition": "A sensor that measures acceleration forces, including gravity, movement, and vibrations.",
+      "clue": "Detects motion or tilt.",
+      "explanation": "Accelerometers are used in phones, vehicles, and game controllers to detect movement and orientation."
+    },
+    {
+      "word": "Acoustic sensor",
+      "definition": "A sensor that measures the level of sound in an environment.",
+      "clue": "Detects sound.",
+      "explanation": "Acoustic sensors can monitor noise levels or detect specific sounds."
+    },
+    {
+      "word": "Humidity sensor",
+      "definition": "A sensor that measures the level of moisture in the immediate atmosphere.",
+      "clue": "Measures water vapour in air.",
+      "explanation": "Humidity sensors are used in weather stations, greenhouses, and climate control systems."
+    },
+    {
+      "word": "Moisture sensor",
+      "definition": "A sensor that measures the amount of water present in a substance, such as soil.",
+      "clue": "Often used in soil monitoring.",
+      "explanation": "Moisture sensors can help automate watering systems by checking how wet soil is."
+    },
+    {
+      "word": "Gas sensor",
+      "definition": "A sensor that measures the presence and concentration of a gas in the immediate atmosphere.",
+      "clue": "Detects gases in air.",
+      "explanation": "Gas sensors can be used for safety systems, pollution monitoring, or industrial control."
+    },
+    {
+      "word": "Flow sensor",
+      "definition": "A sensor that measures the amount of liquid, gas, or steam flowing through or around an environment.",
+      "clue": "Measures fluid movement.",
+      "explanation": "Flow sensors are used in pipes, heating systems, and industrial processes."
+    },
+    {
+      "word": "pH sensor",
+      "definition": "A sensor that measures the pH level of a substance.",
+      "clue": "Measures acidity or alkalinity.",
+      "explanation": "pH sensors are used in laboratories, agriculture, water testing, and industrial processes."
+    },
+    {
+      "word": "network interface card (NIC)",
+      "definition": "The component in a computer that is used to connect it to a network.",
+      "clue": "Network hardware inside or attached to a device.",
+      "explanation": "A NIC allows a device to communicate over a wired or wireless network."
+    },
+    {
+      "word": "MAC address",
+      "definition": "A unique address given to a computer or network interface at the manufacturing stage.",
+      "clue": "A hardware address.",
+      "explanation": "A MAC address identifies a network interface and is usually assigned by the manufacturer."
+    },
+    {
+      "word": "server",
+      "definition": "A component that acts as a central resource for storing data, applications, or providing a service.",
+      "clue": "Provides services to clients.",
+      "explanation": "Servers can provide files, websites, email, authentication, or application services to other devices."
+    },
+    {
+      "word": "router",
+      "definition": "A network component that examines a data packet to obtain its destination address and forwards it to that address.",
+      "clue": "Directs packets between networks.",
+      "explanation": "Routers move data between networks and help packets reach their destination."
+    },
+    {
+      "word": "transmission media",
+      "definition": "The cables or wireless channels used to transfer data in a network.",
+      "clue": "How data physically travels.",
+      "explanation": "Transmission media includes cables such as copper or fibre optic, and wireless methods such as radio waves."
+    }
+  ]
+}

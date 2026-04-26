@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "title": "iGCSE Geography Sample",
+    "total_questions": 12,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "urbanisation",
+      "definition": "The increasing percentage of a population living in towns and cities.",
+      "clue": "Often linked to rural-to-urban migration.",
+      "explanation": "Urbanisation can create opportunities such as jobs and services, but it can also cause problems such as overcrowding."
+    },
+    {
+      "word": "migration",
+      "definition": "The movement of people from one place to another to live.",
+      "clue": "Can be internal or international.",
+      "explanation": "Migration is influenced by push factors, such as conflict, and pull factors, such as jobs."
+    },
+    {
+      "word": "population pyramid",
+      "definition": "A graph showing the age and sex structure of a population.",
+      "clue": "Wide bases often indicate high birth rates.",
+      "explanation": "Population pyramids help geographers compare countries and predict future needs for schools, jobs, or healthcare."
+    },
+    {
+      "word": "weathering",
+      "definition": "The breakdown of rocks in place at or near the Earth's surface.",
+      "clue": "No movement is involved.",
+      "explanation": "Weathering can be physical, chemical, or biological. It prepares material for erosion and transport."
+    },
+    {
+      "word": "erosion",
+      "definition": "The wearing away and removal of rock or soil by agents such as rivers, waves, wind, or ice.",
+      "clue": "Material is moved away.",
+      "explanation": "Erosion shapes landscapes by removing material from river channels, coastlines, and slopes."
+    },
+    {
+      "word": "deposition",
+      "definition": "The laying down of material that has been transported.",
+      "clue": "Often happens when energy decreases.",
+      "explanation": "Deposition forms features such as beaches, deltas, floodplains, and levees."
+    },
+    {
+      "word": "meander",
+      "definition": "A bend or curve in a river channel.",
+      "clue": "Common in the middle and lower course.",
+      "explanation": "Meanders form because erosion is stronger on the outside bend and deposition occurs on the inside bend."
+    },
+    {
+      "word": "delta",
+      "definition": "A landform made of deposited sediment where a river enters a sea or lake.",
+      "clue": "Forms at a river mouth.",
+      "explanation": "Deltas form when a river loses energy and drops sediment, often creating distributaries."
+    },
+    {
+      "word": "plate boundary",
+      "definition": "The zone where two tectonic plates meet.",
+      "clue": "Earthquakes and volcanoes often occur here.",
+      "explanation": "Different plate boundaries include constructive, destructive, and conservative margins."
+    },
+    {
+      "word": "sustainable development",
+      "definition": "Development that meets present needs without preventing future generations from meeting theirs.",
+      "clue": "Balances economic, social, and environmental needs.",
+      "explanation": "Sustainable development aims to improve quality of life while protecting resources and ecosystems."
+    },
+    {
+      "word": "ecosystem",
+      "definition": "A community of living organisms interacting with each other and their physical environment.",
+      "clue": "A rainforest or pond can be one.",
+      "explanation": "Ecosystems include biotic and abiotic components, such as plants, animals, soil, water, and climate."
+    },
+    {
+      "word": "globalisation",
+      "definition": "The increasing connections between countries through trade, communication, culture, and investment.",
+      "clue": "Transnational corporations are linked to this.",
+      "explanation": "Globalisation can create jobs and wider markets, but it can also increase inequality and environmental pressure."
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "title": "iGCSE Business Studies Sample",
+    "total_questions": 12,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "entrepreneur",
+      "definition": "A person who starts and runs a business, taking risks to do so.",
+      "clue": "Often identifies a business opportunity.",
+      "explanation": "Entrepreneurs combine resources, make decisions, and accept the risk that the business may fail."
+    },
+    {
+      "word": "stakeholder",
+      "definition": "A person or group with an interest in the activities of a business.",
+      "clue": "Employees, customers, and owners are examples.",
+      "explanation": "Stakeholders can be affected by business decisions and may have different objectives."
+    },
+    {
+      "word": "limited liability",
+      "definition": "The owners are not personally responsible for all business debts.",
+      "clue": "Common in limited companies.",
+      "explanation": "Limited liability protects shareholders because they can only lose the amount they invested."
+    },
+    {
+      "word": "cash flow",
+      "definition": "The movement of money into and out of a business over time.",
+      "clue": "Different from profit.",
+      "explanation": "A profitable business can still fail if it runs out of cash to pay bills when they are due."
+    },
+    {
+      "word": "revenue",
+      "definition": "The income earned from selling goods or services.",
+      "clue": "Calculated as price multiplied by quantity sold.",
+      "explanation": "Revenue is not the same as profit because costs still need to be subtracted."
+    },
+    {
+      "word": "profit",
+      "definition": "The amount left after total costs are subtracted from total revenue.",
+      "clue": "Revenue minus costs.",
+      "explanation": "Profit is a key objective for many private sector businesses and can be reinvested or paid to owners."
+    },
+    {
+      "word": "break-even",
+      "definition": "The level of output where total revenue equals total costs.",
+      "clue": "At this point there is no profit or loss.",
+      "explanation": "Break-even analysis helps businesses estimate the sales needed to cover all costs."
+    },
+    {
+      "word": "market research",
+      "definition": "The process of collecting information about customers, competitors, and markets.",
+      "clue": "Can be primary or secondary.",
+      "explanation": "Market research reduces risk by helping a business understand customer needs and demand."
+    },
+    {
+      "word": "marketing mix",
+      "definition": "The combination of product, price, place, and promotion used to market a product.",
+      "clue": "Known as the 4 Ps.",
+      "explanation": "A business adjusts the marketing mix to meet customer needs and compete effectively."
+    },
+    {
+      "word": "economies of scale",
+      "definition": "Cost advantages gained when a business grows and produces on a larger scale.",
+      "clue": "Average cost per unit falls.",
+      "explanation": "Larger firms may reduce unit costs through bulk buying, specialist workers, or more efficient equipment."
+    },
+    {
+      "word": "motivation",
+      "definition": "The reasons why employees work hard and remain committed.",
+      "clue": "Can be financial or non-financial.",
+      "explanation": "Motivated workers may be more productive, have lower absenteeism, and provide better customer service."
+    },
+    {
+      "word": "productivity",
+      "definition": "The output produced per worker or per unit of input.",
+      "clue": "Higher output from the same resources improves this.",
+      "explanation": "Businesses try to improve productivity to reduce costs and increase competitiveness."
+    }
+  ]
+}

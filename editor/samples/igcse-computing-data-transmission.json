@@ -1,0 +1,207 @@
+{
+  "metadata": {
+    "title": "iGCSE Computing: Data Transmission",
+    "total_questions": 36,
+    "format": "flat"
+  },
+  "questions": [
+    {
+      "word": "bandwidth",
+      "definition": "The maximum amount of data transmitted over an internet connection in a given amount of time.",
+      "clue": "Higher values allow more data to be sent per second.",
+      "explanation": "Bandwidth is a measure of data transfer capacity. It is often measured in bits per second, such as Mbps or Gbps."
+    },
+    {
+      "word": "full-duplex",
+      "definition": "A transmission method where data is transmitted in both directions at the same time.",
+      "clue": "Both devices can send and receive simultaneously.",
+      "explanation": "Full-duplex communication is efficient because both ends can transmit at once, such as during a telephone call."
+    },
+    {
+      "word": "half-duplex",
+      "definition": "A transmission method where data is transmitted in both directions, but only one direction at a time.",
+      "clue": "Both directions are possible, but not simultaneously.",
+      "explanation": "Half-duplex allows two-way communication, but devices must take turns transmitting, such as with walkie-talkies."
+    },
+    {
+      "word": "internet",
+      "definition": "A very large global network that allows users to access the World Wide Web and other services.",
+      "clue": "A network of networks.",
+      "explanation": "The internet connects many networks globally. The World Wide Web is one service that runs on the internet."
+    },
+    {
+      "word": "latency",
+      "definition": "The time taken for data to travel between its source and destination, usually measured in milliseconds.",
+      "clue": "A delay in data transmission.",
+      "explanation": "High latency can make online activities feel slow, especially video calls, gaming, or satellite internet connections."
+    },
+    {
+      "word": "packet header",
+      "definition": "A section of a data packet that contains information about the packet and its destination.",
+      "clue": "Contains addressing and control information.",
+      "explanation": "A packet header helps network devices route the packet correctly and may include source, destination, and sequence information."
+    },
+    {
+      "word": "packet switching",
+      "definition": "A method of transmitting data packets across a network where each packet can take an individual route.",
+      "clue": "Packets may arrive out of order.",
+      "explanation": "Packet switching splits data into packets. Each packet is routed independently and reassembled at the destination."
+    },
+    {
+      "word": "packet",
+      "definition": "A small unit of data sent across a network.",
+      "clue": "Part of a larger message.",
+      "explanation": "Large messages are split into packets for transmission, making network communication more reliable and efficient."
+    },
+    {
+      "word": "simplex",
+      "definition": "A transmission method where data is transmitted in a single direction only.",
+      "clue": "One-way communication.",
+      "explanation": "Simplex transmission allows data to flow from sender to receiver only, with no return communication on the same channel."
+    },
+    {
+      "word": "USB cable",
+      "definition": "A type of transmission medium that uses the USB standard to transmit data.",
+      "clue": "A physical cable for connecting devices.",
+      "explanation": "USB cables can transfer data and may also provide power between devices."
+    },
+    {
+      "word": "USB connection",
+      "definition": "Using a USB cable plugged into a USB port to transfer data from one device to another.",
+      "clue": "A cable and port working together.",
+      "explanation": "A USB connection allows devices such as phones, keyboards, and storage drives to communicate with a computer."
+    },
+    {
+      "word": "USB device",
+      "definition": "A device that plugs into a USB port on a computer.",
+      "clue": "Examples include keyboards and flash drives.",
+      "explanation": "USB devices use the USB standard to communicate with a host device such as a computer."
+    },
+    {
+      "word": "USB port",
+      "definition": "A socket on a device or computer that enables a USB cable or device to be inserted.",
+      "clue": "The physical socket.",
+      "explanation": "A USB port provides the connection point for USB devices and cables."
+    },
+    {
+      "word": "USB",
+      "definition": "An industry standard used to transmit data between devices.",
+      "clue": "Stands for Universal Serial Bus.",
+      "explanation": "USB defines how devices connect, communicate, and sometimes receive power."
+    },
+    {
+      "word": "automatic repeat request (ARQ)",
+      "definition": "An error detection method that uses acknowledgement and timeout to check whether data arrived correctly.",
+      "clue": "Often shortened to ARQ.",
+      "explanation": "If an acknowledgement is not received before timeout, the sender retransmits the data."
+    },
+    {
+      "word": "check digit",
+      "definition": "An error detection method for data entry where a calculated value is used to check whether entered data is correct.",
+      "clue": "Often used in barcodes or account numbers.",
+      "explanation": "A check digit is calculated from the original digits. If the recalculated value does not match, an error may have occurred."
+    },
+    {
+      "word": "checksum",
+      "definition": "An error detection method that performs a calculation on data to create a checksum value for comparison after transmission.",
+      "clue": "Used to detect transmission errors.",
+      "explanation": "The sender and receiver compare checksum values. If they differ, the data may have been corrupted."
+    },
+    {
+      "word": "echo check",
+      "definition": "An error detection method that sends a copy of transmitted data back to the sender for comparison.",
+      "clue": "The data is echoed back.",
+      "explanation": "The sender compares the returned data with the original. Differences suggest an error occurred during transmission."
+    },
+    {
+      "word": "parity check",
+      "definition": "An error detection method that adds an additional bit to each byte to create an odd or even sum.",
+      "clue": "Uses odd or even parity.",
+      "explanation": "A parity bit helps detect some errors by checking whether the number of 1s is odd or even as expected."
+    },
+    {
+      "word": "asymmetric",
+      "definition": "A type of encryption that uses two different keys to encrypt and decrypt data.",
+      "clue": "Uses public and private keys.",
+      "explanation": "Asymmetric encryption uses a public key and a private key. What one key encrypts, the paired key can decrypt."
+    },
+    {
+      "word": "cipher text",
+      "definition": "The name given to data after encryption.",
+      "clue": "Unreadable without the correct key.",
+      "explanation": "Cipher text is scrambled data produced by encryption. It should not reveal the original message without decryption."
+    },
+    {
+      "word": "encryption",
+      "definition": "A method of securing data for storage or transmission by scrambling it using an encryption key.",
+      "clue": "Makes data meaningless without a key.",
+      "explanation": "Encryption protects confidentiality by converting plain text into cipher text."
+    },
+    {
+      "word": "plain text",
+      "definition": "The name given to data before encryption.",
+      "clue": "Readable original data.",
+      "explanation": "Plain text is the original readable message before it is encrypted."
+    },
+    {
+      "word": "symmetric",
+      "definition": "A type of encryption that uses the same key to encrypt and decrypt data.",
+      "clue": "One shared secret key.",
+      "explanation": "Symmetric encryption can be fast, but the shared key must be exchanged securely."
+    },
+    {
+      "word": "payload",
+      "definition": "The actual data that the user is sending to the receiver.",
+      "clue": "The useful data inside a packet.",
+      "explanation": "The payload is the main content of a packet, separate from control information such as headers and trailers."
+    },
+    {
+      "word": "trailer",
+      "definition": "A section of a data packet that contains information about error checking methods that may be used.",
+      "clue": "Found at the end of a packet.",
+      "explanation": "A trailer may contain error-checking data so the receiver can detect whether the packet was corrupted."
+    },
+    {
+      "word": "ethernet",
+      "definition": "A system for connecting devices to form a local area network using cables.",
+      "clue": "A wired networking standard.",
+      "explanation": "Ethernet is commonly used in LANs because it provides reliable wired data transmission."
+    },
+    {
+      "word": "router",
+      "definition": "A network component that examines a data packet to obtain its destination address and forwards it to that address.",
+      "clue": "Directs packets between networks.",
+      "explanation": "Routers choose where packets should go next so data can travel across networks to its destination."
+    },
+    {
+      "word": "network",
+      "definition": "Computers and devices joined together using cables or wireless technology.",
+      "clue": "Allows communication and sharing resources.",
+      "explanation": "Networks allow devices to share data, printers, internet connections, and other resources."
+    },
+    {
+      "word": "internet protocol (IP) address",
+      "definition": "The unique address given to a device when it is connected to a network.",
+      "clue": "Used to identify devices on a network.",
+      "explanation": "An IP address helps data packets reach the correct device on a network."
+    },
+    {
+      "word": "skew",
+      "definition": "A disadvantage of parallel transmission where signals arrive at different times because wires have slightly different properties.",
+      "clue": "Signals do not arrive together.",
+      "explanation": "Skew can cause timing problems in parallel transmission because each signal may travel at a slightly different speed."
+    },
+    {
+      "word": "Public Key",
+      "definition": "The shared key in asymmetric cryptography that can be used with a matching private key.",
+      "clue": "This key can be shared.",
+      "explanation": "A public key can be distributed openly. Data encrypted with a public key can only be decrypted with its paired private key."
+    },
+    {
+      "word": "private key",
+      "definition": "The key in asymmetric cryptography that should not be shared with anyone.",
+      "clue": "Keep this key secret.",
+      "explanation": "A private key must be protected. It can decrypt data encrypted with the matching public key and can be used for digital signatures."
+    }
+  ]
+}
