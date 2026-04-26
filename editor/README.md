@@ -5,7 +5,7 @@ This folder contains the reusable JSON question editor and shared sample questio
 Open:
 
 ```text
-index.html
+../editor.html
 ```
 
 Sample sets live in:

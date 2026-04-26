@@ -7,7 +7,7 @@ This folder contains the Penalty Shootout vocabulary game. The reusable question
 Open:
 
 ```text
-index.html
+../penalties.html
 ```
 
 The game uses JSON question sets with 4 to 50 valid questions. Each round chooses one question and creates four answer choices automatically:
@@ -22,7 +22,7 @@ Distractors do not need to be written manually.
 Open:
 
 ```text
-../editor/index.html
+../editor.html
 ```
 
 The editor starts with a blank set. You can:
@@ -104,19 +104,3 @@ The original vocabulary set is:
 penaltyshootout.json
 ```
 
-## Shareable Links
-
-You can share a ready-made set by adding a relative JSON path to the game URL:
-
-```text
-index.html?set=../editor/samples/igcse-computing-sample.json
-```
-
-Examples:
-
-```text
-index.html?set=../editor/samples/igcse-biology-sample.json
-index.html?set=../editor/samples/igcse-history-ww2-sample.json
-```
-
-Only relative `.json` paths are allowed. External URLs are not loaded. Shared sample links should use `../editor/samples/`.
