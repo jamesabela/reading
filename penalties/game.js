@@ -85,7 +85,7 @@ function preload() {
     this.load.audio('goal-sfx', 'assets/goal.mp3');
     this.load.audio('miss-sfx', 'assets/booing.mp3');
     this.load.audio('menu-music', 'Match Of The Day.mp3');
-    
+
     // Load both types
     ['female', 'male'].forEach(t => {
         for (let i = 0; i < 3; i++) {
@@ -135,7 +135,7 @@ function setupClueControls() {
             if (!currentWord?.clue) return;
             clueUsedThisRound = true;
             clueBtn.style.display = 'none';
-            clueText.innerText = `${currentWord.clue}\n\nGoalkeeper read: the hint gives away part of your thinking.`;
+            clueText.innerText = `${currentWord.clue}\n\nThe keeper is reading the play - that hint might help them dive the right way.`;
             clueText.style.display = 'block';
         };
     }
@@ -149,11 +149,11 @@ function toggleMainNav(visible) {
     }
 }
 
-function update() {}
+function update() { }
 
 function startMenuMusic(scene) {
     if (!scene || !scene.sound || !scene.cache.audio.exists('menu-music')) return;
-    
+
     if (!menuMusic) {
         menuMusic = scene.sound.add('menu-music', {
             loop: true,
@@ -167,11 +167,11 @@ function startMenuMusic(scene) {
         if (game.sound.context.state === 'suspended') {
             game.sound.context.resume();
         }
-        
+
         if (!menuMusic.isPlaying) {
             menuMusic.play();
         }
-        
+
         window.removeEventListener('click', playMusic);
         window.removeEventListener('keydown', playMusic);
     };
@@ -359,7 +359,7 @@ function playResultSound(key) {
 function selectGK(type) {
     if (setupStep === 1) player1.goalieType = type;
     else player2.goalieType = type;
-    
+
     document.querySelectorAll('.gk-opt').forEach(btn => {
         btn.style.borderColor = 'transparent';
         btn.style.background = 'rgba(255, 255, 255, 0.1)';
@@ -381,7 +381,7 @@ function showSetup(step) {
     document.getElementById('setup-overlay').style.display = 'block';
     document.getElementById('setup-title').innerText = step === 1 ? "PLAYER 1 SETUP" : "PLAYER 2 SETUP";
     document.getElementById('team-name-input').value = "";
-    
+
     const picker = document.getElementById('color-picker');
     picker.innerHTML = '';
     colors.forEach(c => {
@@ -467,7 +467,7 @@ async function startGame() {
     document.getElementById('result-overlay').style.display = 'none';
     document.getElementById('gameover-overlay').style.display = 'none';
     document.getElementById('scoreboard').style.display = 'flex';
-    
+
     if (gameMode === '1P') {
         document.getElementById('p1-score-unit').style.display = 'block';
         document.getElementById('p2-score-unit').style.display = 'block';
@@ -510,10 +510,10 @@ async function initPitch() {
 
     const defender = (currentPlayer === player1) ? player2 : player1;
     await applyRecolor(defender);
-    
+
     const hexKey = defender.color.replace('#', '');
     const goalieType = defender.goalieType;
-    
+
     goalie = scene.add.sprite(400, GOALIE_Y, `goalie_tileset_${hexKey}_${goalieType}`).setScale(GOALIE_SCALE);
     goalie.play(`goalie_idle_anim_${hexKey}_${goalieType}`);
 
@@ -545,7 +545,7 @@ async function applyRecolor(player) {
     const hex = player.color;
     const hexKey = hex.replace('#', '');
     const type = player.goalieType;
-    
+
     if (scene.textures.exists(`goalie_tileset_${hexKey}_${type}`)) return;
 
     const baseSprites = [
@@ -566,23 +566,23 @@ async function applyRecolor(player) {
         tempCanvas.width = img.width; tempCanvas.height = img.height;
         const tctx = tempCanvas.getContext('2d');
         tctx.drawImage(img, 0, 0);
-        
+
         const imgData = tctx.getImageData(0, 0, img.width, img.height);
         const data = imgData.data;
         const targetRGB = Phaser.Display.Color.HexStringToColor(hex);
         const targetBrightness = (targetRGB.r + targetRGB.g + targetRGB.b) / (3 * 255);
 
         for (let j = 0; j < data.length; j += 4) {
-            if (data[j+3] < 10) continue;
+            if (data[j + 3] < 10) continue;
             // Orange jersey detection
-            if (data[j] > 150 && data[j+1] > 60 && data[j+1] < 180 && data[j+2] < 120) {
-                const lum = (data[j] + data[j+1] + data[j+2]) / (3 * 255);
+            if (data[j] > 150 && data[j + 1] > 60 && data[j + 1] < 180 && data[j + 2] < 120) {
+                const lum = (data[j] + data[j + 1] + data[j + 2]) / (3 * 255);
                 const minShade = 0.35 + (targetBrightness * 0.35);
                 const shade = minShade + (lum * (1 - minShade));
 
                 data[j] = Math.min(255, targetRGB.r * shade);
-                data[j+1] = Math.min(255, targetRGB.g * shade);
-                data[j+2] = Math.min(255, targetRGB.b * shade);
+                data[j + 1] = Math.min(255, targetRGB.g * shade);
+                data[j + 2] = Math.min(255, targetRGB.b * shade);
             }
         }
         tctx.putImageData(imgData, 0, 0);
@@ -665,7 +665,7 @@ function showQuestion() {
     const clueBtn = document.getElementById('clue-btn');
     const clueText = document.getElementById('clue-text');
     const clueOverlay = document.getElementById('clue-overlay');
-    
+
     if (clueBtn && clueText && clueOverlay) {
         clueText.innerText = '';
         clueText.style.display = 'none';
@@ -709,7 +709,7 @@ function enterShotMode() {
         const zone = scene.add.circle(pos.x, pos.y, 45, 0xffffff, 0.1)
             .setInteractive()
             .on('pointerdown', () => performKick(key, currentChoices[index]));
-        
+
         scene.tweens.add({
             targets: zone,
             alpha: 0.4,
@@ -763,7 +763,7 @@ function performKick(corner, selectedChoice) {
     const targetPos = { ...(isGoal ? goalShotTargets[corner] : goalSaveTargets[corner]) };
     const targetScale = isGoal ? 0.025 : 0.085;
     const defender = (currentPlayer === player1) ? player2 : player1;
-    
+
     let goalieAction = 'idle';
     if (!isGoal) {
         goalieAction = corner.includes('L') ? 'left' : 'right';
@@ -854,7 +854,7 @@ function showResultOverlay(text, color, detail = '', explanation = '') {
 function endGame() {
     document.getElementById('gameover-overlay').style.display = 'block';
     toggleMainNav(true); // Show nav on game over screen
-    
+
     if (gameMode === '1P') {
         document.getElementById('final-result').innerText = "GAME OVER";
         document.getElementById('final-score').innerText = `TOTAL GOALS: ${player1.score} / 5`;
@@ -862,7 +862,7 @@ function endGame() {
         let result = "DRAW!";
         if (player1.score > player2.score) result = `${player1.name} WINS!`;
         else if (player2.score > player1.score) result = `${player2.name} WINS!`;
-        
+
         document.getElementById('final-result').innerText = result;
         document.getElementById('final-score').innerText = `${player1.score} - ${player2.score}`;
     }
