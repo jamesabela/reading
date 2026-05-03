@@ -190,12 +190,12 @@
 
         .controls-overlay {
             position: fixed;
-            bottom: 40px;
+            bottom: clamp(20px, 5vh, 40px);
             left: 0;
             width: 100vw;
             display: flex;
             justify-content: space-between;
-            padding: 0 5%;
+            padding: 0 clamp(2%, 5%, 8%);
             box-sizing: border-box;
             pointer-events: none;
             z-index: 30;
@@ -203,9 +203,9 @@
 
         .control-hint {
             background: rgba(255, 255, 255, 0.15);
-            padding: 20px 40px;
-            border-radius: 40px;
-            font-size: 1.8rem;
+            padding: clamp(15px, 4vw, 22px) clamp(30px, 8vw, 45px);
+            border-radius: 50px;
+            font-size: clamp(1.3rem, 5vw, 1.8rem);
             font-weight: 900;
             color: white;
             border: 3px solid rgba(255, 255, 255, 0.4);
@@ -213,7 +213,7 @@
             pointer-events: auto;
             /* Make them clickable */
             user-select: none;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             transition: transform 0.1s, background 0.1s;
         }
@@ -225,18 +225,18 @@
 
         .control-btn-small {
             background: rgba(255, 255, 255, 0.15);
-            width: 65px;
-            height: 65px;
+            width: clamp(65px, 15vw, 85px);
+            height: clamp(65px, 15vw, 85px);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2rem;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
             color: white;
             border: 2px solid rgba(255, 255, 255, 0.4);
             pointer-events: auto;
             user-select: none;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             transition: transform 0.1s, background 0.1s;
         }
@@ -248,7 +248,7 @@
 
         .control-group {
             display: flex;
-            gap: 15px;
+            gap: clamp(8px, 2vw, 15px);
             align-items: center;
         }
 
@@ -322,8 +322,8 @@
         }
 
         #startTextBtn {
-            font-size: 2.5rem;
-            padding: 1.5rem 5rem;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            padding: clamp(1rem, 3vh, 1.5rem) clamp(2rem, 10vw, 5rem);
             background: linear-gradient(to right, #10b981, #059669);
             box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
             border: 4px solid #fff;
@@ -346,12 +346,47 @@
             }
         }
 
+        @keyframes roll {
+            0% { transform: rotate(0) scale(1); }
+            25% { transform: rotate(90deg) scale(1.2); }
+            50% { transform: rotate(180deg) scale(0.8); }
+            75% { transform: rotate(270deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .dice-btn {
+            font-size: 5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            box-shadow: none;
+            transition: transform 0.2s;
+            display: block;
+            margin: 0 auto;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .dice-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .dice-btn:active {
+            transform: scale(0.9);
+        }
+
         #startRandomBtn {
-            font-size: 1.3rem;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
             padding: 1rem 3rem;
             background: linear-gradient(to right, #64748b, #475569);
             width: 100%;
             max-width: 350px;
+        }
+
+        .game-over-btn {
+            font-size: clamp(1.5rem, 5vw, 2rem) !important;
+            padding: clamp(1rem, 3vh, 1.5rem) clamp(2rem, 8vw, 4rem) !important;
         }
     </style>
 </head>
@@ -396,6 +431,14 @@
         <div class="settings-panel"
             style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; width: 90%; max-width: 800px;">
             <div>
+                <label for="duckStyleSelect" style="color: white; margin-right: 10px; font-weight: bold;">Duck Gender:</label>
+                <select id="duckStyleSelect"
+                    style="padding: 8px; border-radius: 8px; font-family: 'Outfit'; font-size: 1.1rem;">
+                    <option value="male" selected>Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            <div>
                 <label for="timeLimitSelect" style="color: white; margin-right: 10px; font-weight: bold;">Time
                     Limit:</label>
                 <select id="timeLimitSelect"
@@ -422,16 +465,9 @@
         <div class="text-editor-container">
             <textarea id="customTextInput"
                 rows="4">Once upon a time, a brave little duck waddled through the tall green grass. He jumped over big logs and ducked under low branches, seeking the magical glowing pond to find the bright yellow frog.</textarea>
-            <div class="sample-buttons">
-                <button class="sample-btn"
-                    onclick="document.getElementById('customTextInput').value='Once upon a time, a brave little duck waddled through the tall green grass. He jumped over big logs and ducked under low branches, seeking the magical glowing pond to find the bright yellow frog.'">Story
-                    1</button>
-                <button class="sample-btn"
-                    onclick="document.getElementById('customTextInput').value='The quick brown fox jumps over the lazy dog in the middle of the dark night. He hopes to find a juicy bone hidden deep in the ground.'">Story
-                    2</button>
-                <button class="sample-btn"
-                    onclick="document.getElementById('customTextInput').value='Twinkle twinkle little star, how I wonder what you are! Up above the world so high, like a diamond in the sky.'">Story
-                    3</button>
+            <div class="dice-container" style="margin-top: 15px; text-align: center;">
+                <button id="diceBtn" class="dice-btn" title="Pick a random story">🎲</button>
+                <div style="color: #94a3b8; font-weight: bold; font-size: 1.1rem; margin-top: 5px;">Roll for a New Adventure!</div>
             </div>
         </div>
 
@@ -445,7 +481,7 @@
 
         <div class="mobile-hint">
             <strong>Controls:</strong> iPad/Mobile: Tap DUCK or JUMP on screen.<br>
-            Desktop: UP to Jump, DOWN to Duck. A/D to brake/accelerate.
+            Desktop: WASD or Arrow Keys to Jump, Duck, Brake, and Accelerate.
         </div>
     </div>
 
@@ -460,10 +496,10 @@
             High Score: <span id="highScoreDisplay">0</span>
         </div>
         <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-            <button id="restartBtn"
-                style="font-size: 2rem; padding: 1.5rem 4rem; background: linear-gradient(to right, #10b981, #059669);">PLAY
+            <button id="restartBtn" class="game-over-btn"
+                style="background: linear-gradient(to right, #10b981, #059669);">PLAY
                 AGAIN</button>
-            <button id="menuBtn" style="font-size: 2rem; padding: 1.5rem 4rem;">MAIN MENU</button>
+            <button id="menuBtn" class="game-over-btn">MAIN MENU</button>
         </div>
     </div>
 
@@ -490,12 +526,56 @@
         const btnFaster = document.getElementById('btnFaster');
         const highScoreDisplay = document.getElementById('highScoreDisplay');
         const timerDisplay = document.getElementById('timerDisplay');
-        const shareLinkBtn = document.getElementById('shareLinkBtn');
+        const diceBtn = document.getElementById('diceBtn');
+
+        const DUCK_STORY_TEMPLATES = [
+            "Once upon a time, a brave little duck named {NAME} waddled through the tall green grass. {SUBJ} was looking for the legendary Glowing Pond. {SUBJ} jumped over big logs and ducked under low branches, flapping {POSS} wings with joy.\n\nAlong the way, {NAME} found a bright yellow frog who knew the secret path. They paddled together across the deep blue lake, splashing and giggling until they finally reached the magical golden water.",
+            "{NAME} the Duck always dreamed of flying higher than the highest mountain. One sunny morning, {SUBJ} took a deep breath and jumped into the cool breeze. {SUBJ} soared past fluffy white clouds and waved at the happy birds playing in the sky.\n\nSuddenly, {SUBJ} saw a giant rainbow bridge stretching across the valley. {NAME} ducked under the violet arc and landed softly in a field of purple flowers, feeling like the luckiest duck in the whole wide world.",
+            "Deep in the woods, {NAME} the Duck found a hidden gate covered in ivy. {SUBJ} pushed it open and saw a garden full of giant sunflowers and juicy berries. {SUBJ} waddled through the tiny tunnels and jumped over the garden hose, eager to explore.\n\n{SUBJ} met a friendly squirrel named Sammy who shared {POSS} nuts and seeds. They played hide and seek among the big pumpkins until the sun began to set, turning the sky into a beautiful orange blanket.",
+            "{NAME} the Duck found an old map buried in the sand. It showed a path leading to a chest of golden corn! {SUBJ} followed the zig-zag trail, jumping over sharp rocks and ducking under hanging vines, {POSS} heart beating fast with excitement.\n\nFinally, {SUBJ} reached the big hollow tree and found the sparkling treasure. {NAME} invited all {POSS} duckling friends for a grand feast, and they quacked happily until their bellies were full and round.",
+            "When the first snowflakes fell, {NAME} the Duck was ready for fun. {SUBJ} put on {POSS} tiny red scarf and waddled onto the frozen pond. {SUBJ} slipped and slid on the ice, jumping over snowy mounds and ducking under frosty willow trees.\n\n{SUBJ} found a family of penguins who taught {OBJ} how to dance in the snow. They spun in circles and slid down the slippery hills, making the cold winter day feel warm and bright with friendship.",
+            "{NAME} the Duck built a ship made of cardboard and dreams. {SUBJ} hopped inside and counted down: three, two, one, blast off! {SUBJ} soared past the moon and jumped over shooting stars, marveling at the glowing planets and dark space.\n\n{SUBJ} landed on a planet made of soft green cheese and met a group of friendly aliens with three eyes. They shared a picnic of space crackers before {NAME} flew back home, landing safely in {POSS} cozy nest."
+        ];
+
+        const GENDER_MAP = {
+            male: {
+                names: ["Dash", "Quack", "Pip", "Lucky", "Barnaby", "Rocket"],
+                subj: "He",
+                poss: "his",
+                obj: "him"
+            },
+            female: {
+                names: ["Daisy", "Quackers", "Pippa", "Lucky", "Bella", "Ruby"],
+                subj: "She",
+                poss: "her",
+                obj: "her"
+            }
+        };
+
+        diceBtn.addEventListener('click', () => {
+            const gender = document.getElementById('duckStyleSelect').value;
+            const data = GENDER_MAP[gender];
+            
+            diceBtn.style.animation = 'roll 0.6s ease-out';
+            setTimeout(() => {
+                const storyIndex = Math.floor(Math.random() * DUCK_STORY_TEMPLATES.length);
+                let text = DUCK_STORY_TEMPLATES[storyIndex];
+                
+                // Replace placeholders
+                text = text.replace(/{NAME}/g, data.names[storyIndex]);
+                text = text.replace(/{SUBJ}/g, data.subj);
+                text = text.replace(/{POSS}/g, data.poss);
+                text = text.replace(/{OBJ}/g, data.obj);
+                
+                document.getElementById('customTextInput').value = text;
+                diceBtn.style.animation = '';
+            }, 600);
+        });
 
         // --- Constants ---
         const WIDTH = 1200;
         const HEIGHT = 600;
-        const GROUND_Y = 450; // Plenty of room above and below
+        const GROUND_Y = 345; // Centered vertically (345 is baseline, 255 is x-height)
         const GUIDE_GAP = 90; // X-height for middle letters
 
         // Physics Settings
@@ -520,7 +600,7 @@
         // --- Game Classes ---
 
         class Player {
-            constructor() {
+            constructor(style = 'male') {
                 this.x = PLAYER_X;
                 this.y = GROUND_Y;
                 this.dy = 0;
@@ -529,6 +609,7 @@
                 this.isJumping = false;
                 this.isDucking = false;
                 this.glowOpacity = 0;
+                this.style = style;
             }
 
             jump() {
@@ -624,6 +705,8 @@
                 ctx.roundRect(10, 82, 12, 5, 2);
                 ctx.roundRect(28, 82, 12, 5, 2);
                 ctx.fill();
+
+
 
                 ctx.restore();
             }
@@ -838,7 +921,8 @@
             document.getElementById('gameOverTitle').style.color = "#ef4444";
             document.getElementById('gameOverTitle').style.webkitTextFillColor = "#ef4444";
 
-            player = new Player();
+            const duckStyle = document.getElementById('duckStyleSelect').value;
+            player = new Player(duckStyle);
             letters = [];
             particles = [];
             score = 0;
