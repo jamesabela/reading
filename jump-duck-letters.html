@@ -15,7 +15,7 @@
             --hazard-high: #ef4444;
             --hazard-low: #f97316;
             --collectible: #10b981;
-            --player-color: #f8fafc;
+            --player-color: #fbbf24;
             --guide-color: rgba(255, 255, 255, 0.2);
         }
 
@@ -581,30 +581,48 @@
 
             draw(ctx) {
                 ctx.save();
+                ctx.translate(this.x, this.y - this.height);
 
-                // Glow effect
-                ctx.shadowColor = '#3b82f6';
-                ctx.shadowBlur = 20 * this.glowOpacity;
+                // Duck Glow
+                ctx.shadowColor = '#fbbf24';
+                ctx.shadowBlur = 15 * this.glowOpacity;
 
-                // Player Box (drawn from bottom up if standing, top down if ducking)
-                let drawY = this.isDucking ? this.y - this.height : this.y - this.height;
-
-                // Draw stylized player (rounded rect)
-                ctx.fillStyle = '#f8fafc';
+                // Body
+                ctx.fillStyle = '#fbbf24'; // Bright Yellow
                 ctx.beginPath();
-                ctx.roundRect(this.x, drawY, this.width, this.height, 12);
+                ctx.ellipse(22, 60, 25, 20, 0.1, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Eye indicator
+                // Head
+                ctx.beginPath();
+                ctx.arc(35, 25, 18, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Beak
+                ctx.fillStyle = '#f97316'; // Orange
+                ctx.beginPath();
+                ctx.moveTo(48, 25);
+                ctx.quadraticCurveTo(60, 25, 65, 30);
+                ctx.quadraticCurveTo(55, 35, 48, 33);
+                ctx.fill();
+
+                // Eye
                 ctx.fillStyle = '#0f172a';
                 ctx.beginPath();
-                if (this.isDucking) {
-                    // Eyes near top
-                    ctx.arc(this.x + 35, drawY + 20, 6, 0, Math.PI * 2);
-                } else {
-                    // Eyes near top of standing
-                    ctx.arc(this.x + 35, drawY + 20, 6, 0, Math.PI * 2);
-                }
+                ctx.arc(42, 20, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Wing
+                ctx.fillStyle = '#f59e0b'; // Darker Yellow
+                ctx.beginPath();
+                ctx.ellipse(15, 60, 15, 8, -0.1, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Feet
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath();
+                ctx.roundRect(10, 82, 12, 5, 2);
+                ctx.roundRect(28, 82, 12, 5, 2);
                 ctx.fill();
 
                 ctx.restore();
@@ -628,7 +646,7 @@
                 this.char = char;
                 this.type = type;
                 this.x = WIDTH + 100;
-                this.y = GROUND_Y + 25; // Baseline adjustment for font sizing
+                this.y = GROUND_Y; // Baseline adjustment for font sizing
                 this.width = 60;
                 this.collected = false;
                 this.isHazard = (type === 'high' || type === 'low');
