@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jump Duck Letters</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --accent-color: #3b82f6;
+            --hazard-high: #ef4444;
+            --hazard-low: #f97316;
+            --collectible: #10b981;
+            --player-color: #f8fafc;
+            --guide-color: rgba(255, 255, 255, 0.2);
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            touch-action: none;
+            /* Prevent zooming and scrolling */
+        }
+
+        #game-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 50;
+            overflow-y: auto;
+            padding: 2rem;
+            box-sizing: border-box;
+            transition: opacity 0.3s ease;
+        }
+
+        #startScreen {
+            justify-content: flex-start;
+            padding-top: 150px;
+            /* Clear the main navigation bar */
+        }
+
+        #gameOverScreen {
+            justify-content: center;
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            margin: 0 0 1rem 0;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .instructions {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #cbd5e1;
+            line-height: 1.5;
+            max-width: 800px;
+        }
+
+        .mobile-hint {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        button {
+            padding: 1rem 2.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            color: white;
+            background: linear-gradient(to right, #3b82f6, #6366f1);
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            padding: 2rem;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            z-index: 20;
+        }
+
+        .score-container {
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .lives-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .life {
+            width: 25px;
+            height: 25px;
+            background-color: var(--hazard-high);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--hazard-high);
+            transition: opacity 0.3s;
+        }
+
+        /* Speedometer container */
+        .speed-gauge {
+            width: 200px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .speed-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .controls-overlay {
+            position: fixed;
+            bottom: 40px;
+            left: 0;
+            width: 100vw;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5%;
+            box-sizing: border-box;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        .control-hint {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px 40px;
+            border-radius: 40px;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
+            /* Make them clickable */
+            user-select: none;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.1s, background 0.1s;
+        }
+
+        .control-hint:active {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0.95);
+        }
+
+        .control-btn-small {
+            background: rgba(255, 255, 255, 0.15);
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            pointer-events: auto;
+            user-select: none;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.1s, background 0.1s;
+        }
+
+        .control-btn-small:active {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0.95);
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #f8fafc;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .text-editor-container {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #customTextInput {
+            width: 100%;
+            padding: 20px;
+            border-radius: 16px;
+            border: 3px solid #3b82f6;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            resize: none;
+            box-sizing: border-box;
+            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .sample-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .sample-btn {
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            flex: 1;
+            min-width: 120px;
+            max-width: 200px;
+        }
+
+        .sample-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .start-buttons {
+            display: flex;
+            gap: 25px;
+            margin-top: 1.5rem;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        #startTextBtn {
+            font-size: 2.5rem;
+            padding: 1.5rem 5rem;
+            background: linear-gradient(to right, #10b981, #059669);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
+            border: 4px solid #fff;
+            animation: pulse 2s infinite;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.03);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        #startRandomBtn {
+            font-size: 1.3rem;
+            padding: 1rem 3rem;
+            background: linear-gradient(to right, #64748b, #475569);
+            width: 100%;
+            max-width: 350px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="main-nav"></nav>
+
+    <div id="game-container">
+        <!-- Canvas Logical Resolution -->
+        <canvas id="gameCanvas" width="1200" height="600"></canvas>
+    </div>
+
+    <div id="ui-layer" class="hidden">
+        <div class="speed-gauge">
+            <div id="speedFill" class="speed-fill"></div>
+        </div>
+
+        <div id="timerDisplay" class="timer-display hidden">0:00</div>
+
+        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+            <div id="scoreDisplay" class="score-container">0</div>
+            <div id="livesContainer" class="lives-container">
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-overlay hidden" id="controlsOverlay">
+        <div class="control-group">
+            <div class="control-btn-small" id="btnSlower">🐢</div>
+            <div class="control-hint" id="btnDuck">👈 DUCK</div>
+        </div>
+        <div class="control-group">
+            <div class="control-hint" id="btnJump">JUMP 👉</div>
+            <div class="control-btn-small" id="btnFaster">🐇</div>
+        </div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="startScreen" class="overlay">
+        <h1>Jump Duck Letters</h1>
+
+        <div class="settings-panel"
+            style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; width: 90%; max-width: 800px;">
+            <div>
+                <label for="timeLimitSelect" style="color: white; margin-right: 10px; font-weight: bold;">Time
+                    Limit:</label>
+                <select id="timeLimitSelect"
+                    style="padding: 8px; border-radius: 8px; font-family: 'Outfit'; font-size: 1.1rem;">
+                    <option value="untimed">Untimed</option>
+                    <option value="60">1 minute</option>
+                    <option value="120">2 minutes</option>
+                    <option value="180">3 minutes</option>
+                    <option value="300">5 minutes</option>
+                </select>
+            </div>
+            <div>
+                <label for="livesSelect" style="color: white; margin-right: 10px; font-weight: bold;">Lives:</label>
+                <select id="livesSelect"
+                    style="padding: 8px; border-radius: 8px; font-family: 'Outfit'; font-size: 1.1rem;">
+                    <option value="3" selected>3</option>
+                    <option value="5">5</option>
+                    <option value="7">7</option>
+                    <option value="unlimited">Unlimited</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="text-editor-container">
+            <textarea id="customTextInput"
+                rows="4">Once upon a time, a brave little duck waddled through the tall green grass. He jumped over big logs and ducked under low branches, seeking the magical glowing pond to find the bright yellow frog.</textarea>
+            <div class="sample-buttons">
+                <button class="sample-btn"
+                    onclick="document.getElementById('customTextInput').value='Once upon a time, a brave little duck waddled through the tall green grass. He jumped over big logs and ducked under low branches, seeking the magical glowing pond to find the bright yellow frog.'">Story
+                    1</button>
+                <button class="sample-btn"
+                    onclick="document.getElementById('customTextInput').value='The quick brown fox jumps over the lazy dog in the middle of the dark night. He hopes to find a juicy bone hidden deep in the ground.'">Story
+                    2</button>
+                <button class="sample-btn"
+                    onclick="document.getElementById('customTextInput').value='Twinkle twinkle little star, how I wonder what you are! Up above the world so high, like a diamond in the sky.'">Story
+                    3</button>
+            </div>
+        </div>
+
+        <div class="start-buttons">
+            <button id="startTextBtn">▶ PLAY STORY</button>
+            <button id="startRandomBtn">Play Random Letters</button>
+            <button id="shareLinkBtn"
+                style="font-size: 1.1rem; padding: 0.8rem 2rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.4); margin-top: 10px; box-shadow: none;">🔗
+                Copy Share Link</button>
+        </div>
+
+        <div class="mobile-hint">
+            <strong>Controls:</strong> iPad/Mobile: Tap DUCK or JUMP on screen.<br>
+            Desktop: UP to Jump, DOWN to Duck. A/D to brake/accelerate.
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen" class="overlay hidden">
+        <h1 id="gameOverTitle"
+            style="color: #ef4444; background: none; -webkit-text-fill-color: #ef4444; font-size: 6rem;">GAME OVER</h1>
+        <div class="instructions" style="font-size: 3rem; margin-bottom: 1rem;">
+            Final Score: <span id="finalScore">0</span>
+        </div>
+        <div class="instructions" style="font-size: 2rem; margin-bottom: 2rem; color: #f59e0b;">
+            High Score: <span id="highScoreDisplay">0</span>
+        </div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+            <button id="restartBtn"
+                style="font-size: 2rem; padding: 1.5rem 4rem; background: linear-gradient(to right, #10b981, #059669);">PLAY
+                AGAIN</button>
+            <button id="menuBtn" style="font-size: 2rem; padding: 1.5rem 4rem;">MAIN MENU</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // UI Elements
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const uiLayer = document.getElementById('ui-layer');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const livesContainer = document.getElementById('livesContainer');
+        const startTextBtn = document.getElementById('startTextBtn');
+        const startRandomBtn = document.getElementById('startRandomBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const menuBtn = document.getElementById('menuBtn');
+        const speedFill = document.getElementById('speedFill');
+        const controlsOverlay = document.getElementById('controlsOverlay');
+        const btnDuck = document.getElementById('btnDuck');
+        const btnJump = document.getElementById('btnJump');
+        const btnSlower = document.getElementById('btnSlower');
+        const btnFaster = document.getElementById('btnFaster');
+        const highScoreDisplay = document.getElementById('highScoreDisplay');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const shareLinkBtn = document.getElementById('shareLinkBtn');
+
+        // --- Constants ---
+        const WIDTH = 1200;
+        const HEIGHT = 600;
+        const GROUND_Y = 450; // Plenty of room above and below
+        const GUIDE_GAP = 90; // X-height for middle letters
+
+        // Physics Settings
+        const FPS = 60;
+        const MS_PER_FRAME = 1000 / FPS;
+        const SPEED_INITIAL = 7;
+        const SPEED_MIN = 4;
+        const SPEED_MAX = 20;
+        const GRAVITY = 0.8;
+        const JUMP_FORCE = -17;
+
+        // Player Settings
+        const PLAYER_X = 200;
+        const PLAYER_WIDTH = 55;
+        const PLAYER_HEIGHT_NORMAL = GUIDE_GAP;
+
+        // Letters Definitions
+        const LETTERS_HIGH = ['b', 'd', 'f', 'h', 'k', 'l', 't', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+        const LETTERS_LOW = ['g', 'j', 'p', 'q', 'y'];
+        const LETTERS_MIDDLE = ['a', 'c', 'e', 'i', 'm', 'n', 'o', 'r', 's', 'u', 'v', 'w', 'x', 'z'];
+
+        // --- Game Classes ---
+
+        class Player {
+            constructor() {
+                this.x = PLAYER_X;
+                this.y = GROUND_Y;
+                this.dy = 0;
+                this.width = PLAYER_WIDTH;
+                this.height = PLAYER_HEIGHT_NORMAL;
+                this.isJumping = false;
+                this.isDucking = false;
+                this.glowOpacity = 0;
+            }
+
+            jump() {
+                if (!this.isJumping && !this.isDucking) {
+                    this.isJumping = true;
+                    this.dy = JUMP_FORCE;
+                }
+            }
+
+            startDuck() {
+                if (!this.isJumping && !this.isDucking) {
+                    this.isDucking = true;
+                    this.y = GROUND_Y + this.height;
+                }
+            }
+
+            stopDuck() {
+                if (this.isDucking) {
+                    this.isDucking = false;
+                    this.y = GROUND_Y;
+                }
+            }
+
+            update(keys) {
+                const wantsDuck = keys.has('ArrowDown') || keys.has('s') || keys.has('touchDuck');
+
+                if (this.isJumping) {
+                    if (wantsDuck) {
+                        this.dy += GRAVITY * 1.5; // Fast fall
+                    }
+                    this.y += this.dy;
+                    this.dy += GRAVITY;
+
+                    if (this.y >= GROUND_Y) {
+                        this.y = GROUND_Y;
+                        this.dy = 0;
+                        this.isJumping = false;
+                    }
+                } else {
+                    if (wantsDuck && !this.isDucking) {
+                        this.startDuck();
+                    } else if (!wantsDuck && this.isDucking) {
+                        this.stopDuck();
+                    }
+                }
+
+                // Pulse glow
+                this.glowOpacity = 0.5 + Math.sin(Date.now() / 200) * 0.3;
+            }
+
+            draw(ctx) {
+                ctx.save();
+
+                // Glow effect
+                ctx.shadowColor = '#3b82f6';
+                ctx.shadowBlur = 20 * this.glowOpacity;
+
+                // Player Box (drawn from bottom up if standing, top down if ducking)
+                let drawY = this.isDucking ? this.y - this.height : this.y - this.height;
+
+                // Draw stylized player (rounded rect)
+                ctx.fillStyle = '#f8fafc';
+                ctx.beginPath();
+                ctx.roundRect(this.x, drawY, this.width, this.height, 12);
+                ctx.fill();
+
+                // Eye indicator
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                if (this.isDucking) {
+                    // Eyes near top
+                    ctx.arc(this.x + 35, drawY + 20, 6, 0, Math.PI * 2);
+                } else {
+                    // Eyes near top of standing
+                    ctx.arc(this.x + 35, drawY + 20, 6, 0, Math.PI * 2);
+                }
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            getBBox() {
+                // Returns {x1, y1, x2, y2}
+                let topY = this.y - this.height;
+                let bottomY = this.y;
+                return {
+                    x1: this.x,
+                    y1: topY,
+                    x2: this.x + this.width,
+                    y2: bottomY
+                };
+            }
+        }
+
+        class LetterItem {
+            constructor(char, type) {
+                this.char = char;
+                this.type = type;
+                this.x = WIDTH + 100;
+                this.y = GROUND_Y + 25; // Baseline adjustment for font sizing
+                this.width = 60;
+                this.collected = false;
+                this.isHazard = (type === 'high' || type === 'low');
+                this.lightningPoints = [];
+
+                // Hitboxes
+                if (this.type === 'high') {
+                    this.color = '#ef4444'; // Red
+                    this.topY = -1000;
+                    this.bottomY = GROUND_Y - 5;
+                } else if (this.type === 'low') {
+                    this.color = '#f97316'; // Orange
+                    this.topY = GROUND_Y - 40;
+                    this.bottomY = 2000;
+                } else {
+                    this.color = '#10b981'; // Green
+                    this.topY = GROUND_Y - 70;
+                    this.bottomY = GROUND_Y;
+                }
+            }
+
+            generateLightning() {
+                this.lightningPoints = [];
+                let startY, endY;
+                if (this.type === 'high') {
+                    startY = this.y - 120;
+                    endY = -100;
+                } else {
+                    startY = this.y + 15;
+                    endY = HEIGHT + 100;
+                }
+
+                let segments = 6;
+                let dy = (endY - startY) / segments;
+
+                this.lightningPoints.push({ x: this.x, y: startY });
+                for (let i = 1; i < segments; i++) {
+                    this.lightningPoints.push({
+                        x: this.x + (Math.random() * 40 - 20),
+                        y: startY + dy * i
+                    });
+                }
+                this.lightningPoints.push({ x: this.x, y: endY });
+            }
+
+            update(speed) {
+                this.x -= speed;
+                if (this.isHazard) {
+                    this.generateLightning();
+                }
+            }
+
+            draw(ctx) {
+                if (this.collected) return;
+
+                ctx.save();
+
+                // Draw Hazard Barrier
+                if (this.isHazard) {
+                    ctx.beginPath();
+                    ctx.moveTo(this.lightningPoints[0].x, this.lightningPoints[0].y);
+                    for (let i = 1; i < this.lightningPoints.length; i++) {
+                        ctx.lineTo(this.lightningPoints[i].x, this.lightningPoints[i].y);
+                    }
+                    ctx.strokeStyle = Math.random() > 0.5 ? '#ffffff' : this.color;
+                    ctx.lineWidth = Math.random() * 4 + 3;
+                    ctx.stroke();
+
+                    // Add glow
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 15;
+                }
+
+                // Draw Text
+                ctx.font = "900 110px Outfit";
+                ctx.fillStyle = this.color;
+                ctx.textAlign = "center";
+                ctx.textBaseline = "alphabetic";
+                ctx.fillText(this.char, this.x, this.y);
+
+                ctx.restore();
+            }
+
+            getBBox() {
+                let halfW = this.width / 2;
+                return {
+                    x1: this.x - halfW,
+                    y1: this.topY,
+                    x2: this.x + halfW,
+                    y2: this.bottomY
+                };
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 15;
+                this.vy = (Math.random() - 0.5) * 15;
+                this.life = 1.0;
+                this.color = color;
+                this.size = Math.random() * 8 + 3;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= 0.04;
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.life);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // --- Main Game Logic ---
+
+        let gameActive = false;
+        let score = 0;
+        let lives = 3;
+        let speed = SPEED_INITIAL;
+        let letters = [];
+        let particles = [];
+        let player = null;
+        let keys = new Set();
+        let lastHazardType = null;
+        let nextSpawnTime = 0;
+        let lastTime = 0;
+        let lastSurvivalTime = 0;
+
+        let gameMode = 'random';
+        let customText = '';
+        let textIndex = 0;
+        let highScore = localStorage.getItem('jumpDuckHighScore') || 0;
+        let gameTimeLimit = 'untimed';
+        let gameTimeRemaining = 0;
+        let gameStartTime = 0;
+        let isUnlimitedLives = false;
+
+        function showMainMenu() {
+            gameOverScreen.classList.add('hidden');
+            uiLayer.classList.add('hidden');
+            controlsOverlay.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            const nav = document.getElementById('main-nav');
+            if (nav) nav.style.display = '';
+        }
+
+        function initGame(mode) {
+            gameMode = mode;
+            if (mode === 'text') {
+                const rawText = document.getElementById('customTextInput').value;
+                customText = rawText.replace(/[^a-zA-Z]/g, '');
+                textIndex = 0;
+
+                if (customText.length === 0) {
+                    alert("Please enter some text to play, or select a sample!");
+                    return;
+                }
+            }
+
+            const timeVal = document.getElementById('timeLimitSelect').value;
+            const livesVal = document.getElementById('livesSelect').value;
+
+            if (timeVal === 'untimed') {
+                gameTimeLimit = 'untimed';
+                timerDisplay.classList.add('hidden');
+            } else {
+                gameTimeLimit = parseInt(timeVal, 10);
+                gameTimeRemaining = gameTimeLimit;
+                timerDisplay.classList.remove('hidden');
+            }
+
+            if (livesVal === 'unlimited') {
+                isUnlimitedLives = true;
+                lives = 999;
+            } else {
+                isUnlimitedLives = false;
+                lives = parseInt(livesVal, 10);
+            }
+
+            // Reset Game Over title
+            document.getElementById('gameOverTitle').textContent = "GAME OVER";
+            document.getElementById('gameOverTitle').style.color = "#ef4444";
+            document.getElementById('gameOverTitle').style.webkitTextFillColor = "#ef4444";
+
+            player = new Player();
+            letters = [];
+            particles = [];
+            score = 0;
+            speed = SPEED_INITIAL;
+            gameActive = true;
+            keys.clear();
+
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            uiLayer.classList.remove('hidden');
+            const nav = document.getElementById('main-nav');
+            if (nav) nav.style.display = 'none';
+
+            // Always show controls on start to ensure iPad/touch screens have obvious buttons
+            controlsOverlay.classList.remove('hidden');
+            controlsOverlay.style.opacity = '1';
+
+            updateUI();
+            scheduleNextSpawn();
+
+            lastTime = performance.now();
+            lastSurvivalTime = performance.now();
+            gameStartTime = performance.now();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function scheduleNextSpawn() {
+            if (!gameActive) return;
+            const speedFactor = SPEED_INITIAL / speed;
+            const delay = (Math.random() * 600 + 600) * speedFactor; // 600-1200ms
+            nextSpawnTime = performance.now() + delay;
+        }
+
+        function spawnLetter() {
+            let char = '';
+            let lType = 'middle';
+
+            if (gameMode === 'text') {
+                if (textIndex >= customText.length) {
+                    return; // No more letters
+                }
+                char = customText[textIndex];
+                textIndex++;
+
+                if (LETTERS_HIGH.includes(char)) {
+                    lType = 'high';
+                } else if (LETTERS_LOW.includes(char)) {
+                    lType = 'low';
+                } else {
+                    lType = 'middle';
+                }
+            } else {
+                const r = Math.random();
+                let charSet = LETTERS_MIDDLE;
+
+                if (r < 0.6) { // Hazard
+                    let isHigh = Math.random() > 0.5;
+
+                    // Anti-streak
+                    if (lastHazardType === 'high' && Math.random() < 0.7) isHigh = false;
+                    else if (lastHazardType === 'low' && Math.random() < 0.7) isHigh = true;
+
+                    if (isHigh) {
+                        lType = 'high';
+                        charSet = LETTERS_HIGH;
+                        lastHazardType = 'high';
+                    } else {
+                        lType = 'low';
+                        charSet = LETTERS_LOW;
+                        lastHazardType = 'low';
+                    }
+                } else {
+                    lType = 'middle';
+                    charSet = LETTERS_MIDDLE;
+                }
+
+                char = charSet[Math.floor(Math.random() * charSet.length)];
+            }
+
+            letters.push(new LetterItem(char, lType));
+        }
+
+        function checkCollisions() {
+            const pBox = player.getBBox();
+
+            for (let i = letters.length - 1; i >= 0; i--) {
+                let letter = letters[i];
+                if (letter.collected) continue;
+
+                let lBox = letter.getBBox();
+
+                // AABB Collision
+                if (pBox.x1 < lBox.x2 && pBox.x2 > lBox.x1 &&
+                    pBox.y1 < lBox.y2 && pBox.y2 > lBox.y1) {
+
+                    if (letter.isHazard) {
+                        handleDamage(letter);
+                    } else {
+                        handleCollect(letter);
+                    }
+                }
+            }
+        }
+
+        function spawnParticles(x, y, color) {
+            for (let i = 0; i < 20; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function handleCollect(letter) {
+            let multiplier = speed / SPEED_INITIAL;
+            score += 10 * multiplier;
+            letter.collected = true;
+            spawnParticles(letter.x, letter.y - 25, letter.color);
+            letters = letters.filter(l => l !== letter);
+            updateUI();
+        }
+
+        function handleDamage(letter) {
+            if (!isUnlimitedLives) {
+                lives--;
+            }
+            letter.collected = true;
+            spawnParticles(player.x + player.width / 2, player.y - player.height / 2, '#ef4444');
+            letters = letters.filter(l => l !== letter);
+            updateUI();
+
+            // Screen shake effect
+            canvas.style.transform = `translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px)`;
+            setTimeout(() => canvas.style.transform = 'translate(0,0)', 100);
+
+            if (!isUnlimitedLives && lives <= 0) {
+                triggerGameOver();
+            }
+        }
+
+        function updateUI() {
+            scoreDisplay.textContent = Math.floor(score);
+
+            // Update Lives
+            livesContainer.innerHTML = '';
+            if (isUnlimitedLives) {
+                livesContainer.innerHTML = '<span style="font-size: 2.5rem; font-weight: 900; color: var(--hazard-high); line-height: 25px;">&infin;</span>';
+            } else {
+                for (let i = 0; i < lives; i++) {
+                    let life = document.createElement('div');
+                    life.className = 'life';
+                    livesContainer.appendChild(life);
+                }
+            }
+
+            if (gameTimeLimit !== 'untimed') {
+                let m = Math.floor(gameTimeRemaining / 60);
+                let s = Math.floor(gameTimeRemaining % 60);
+                timerDisplay.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+            }
+
+            // Update Speedometer
+            let ratio = (speed - SPEED_MIN) / (SPEED_MAX - SPEED_MIN);
+            ratio = Math.max(0, Math.min(1, ratio));
+            speedFill.style.width = `${ratio * 100}%`;
+        }
+
+        function triggerGameOver(isWin = false) {
+            gameActive = false;
+            let finalScore = Math.floor(score);
+            finalScoreDisplay.textContent = finalScore;
+
+            if (finalScore > highScore) {
+                highScore = finalScore;
+                localStorage.setItem('jumpDuckHighScore', highScore);
+            }
+            highScoreDisplay.textContent = highScore;
+
+            if (isWin) {
+                document.getElementById('gameOverTitle').textContent = "YOU WIN!";
+                document.getElementById('gameOverTitle').style.color = "#10b981";
+                document.getElementById('gameOverTitle').style.webkitTextFillColor = "#10b981";
+            }
+
+            gameOverScreen.classList.remove('hidden');
+            uiLayer.classList.add('hidden');
+            controlsOverlay.classList.add('hidden');
+        }
+
+        function drawBackground() {
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+            // Guidelines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([15, 15]);
+
+            // Baseline
+            ctx.beginPath();
+            ctx.moveTo(0, GROUND_Y);
+            ctx.lineTo(WIDTH, GROUND_Y);
+            ctx.stroke();
+
+            // X-Height line
+            let topY = GROUND_Y - GUIDE_GAP;
+            ctx.beginPath();
+            ctx.moveTo(0, topY);
+            ctx.lineTo(WIDTH, topY);
+            ctx.stroke();
+
+            ctx.setLineDash([]); // Reset
+        }
+
+        function gameLoop(timestamp) {
+            if (!gameActive) return;
+
+            // Spawn logic
+            if (timestamp >= nextSpawnTime) {
+                spawnLetter();
+                scheduleNextSpawn();
+            }
+
+            // Controls (Speed)
+            if (keys.has('ArrowLeft') || keys.has('a') || keys.has('touchSlower')) speed -= 0.25;
+            if (keys.has('ArrowRight') || keys.has('d') || keys.has('touchFaster')) speed += 0.25;
+
+            // Clamp speed
+            speed = Math.max(SPEED_MIN, Math.min(SPEED_MAX, speed));
+
+            player.update(keys);
+
+            // Update Letters
+            for (let i = letters.length - 1; i >= 0; i--) {
+                letters[i].update(speed);
+                if (letters[i].x < -200) {
+                    letters.splice(i, 1);
+                }
+            }
+
+            // Update Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                if (particles[i].life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            checkCollisions();
+
+            if (gameTimeLimit !== 'untimed') {
+                let elapsed = (performance.now() - gameStartTime) / 1000;
+                gameTimeRemaining = Math.max(0, gameTimeLimit - elapsed);
+                if (gameTimeRemaining <= 0) {
+                    triggerGameOver(true); // Treat time running out as a survival win
+                    return;
+                }
+            }
+
+            if (gameMode === 'text' && textIndex >= customText.length && letters.length === 0) {
+                triggerGameOver(true); // Win condition
+                return;
+            }
+
+            // Survival Score
+            if (timestamp - lastSurvivalTime >= 500) {
+                let multiplier = speed / SPEED_INITIAL;
+                score += multiplier;
+                lastSurvivalTime = timestamp;
+                updateUI();
+            }
+
+            // Rendering
+            drawBackground();
+            letters.forEach(l => l.draw(ctx));
+            particles.forEach(p => p.draw(ctx));
+            player.draw(ctx);
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // --- Input Listeners ---
+
+        window.addEventListener('keydown', (e) => {
+            keys.add(e.key);
+            if (e.key === 'ArrowUp' || e.key === 'w') player?.jump();
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys.delete(e.key);
+        });
+
+        // Visible Button Touch Controls
+        btnDuck.addEventListener('touchstart', (e) => { e.preventDefault(); keys.add('touchDuck'); }, { passive: false });
+        btnDuck.addEventListener('touchend', (e) => { e.preventDefault(); keys.delete('touchDuck'); }, { passive: false });
+        btnDuck.addEventListener('mousedown', (e) => { e.preventDefault(); keys.add('touchDuck'); });
+        btnDuck.addEventListener('mouseup', (e) => { e.preventDefault(); keys.delete('touchDuck'); });
+        btnDuck.addEventListener('mouseleave', (e) => { e.preventDefault(); keys.delete('touchDuck'); });
+
+        btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); player?.jump(); }, { passive: false });
+        btnJump.addEventListener('mousedown', (e) => { e.preventDefault(); player?.jump(); });
+
+        btnSlower.addEventListener('touchstart', (e) => { e.preventDefault(); keys.add('touchSlower'); }, { passive: false });
+        btnSlower.addEventListener('touchend', (e) => { e.preventDefault(); keys.delete('touchSlower'); }, { passive: false });
+        btnSlower.addEventListener('mousedown', (e) => { e.preventDefault(); keys.add('touchSlower'); });
+        btnSlower.addEventListener('mouseup', (e) => { e.preventDefault(); keys.delete('touchSlower'); });
+        btnSlower.addEventListener('mouseleave', (e) => { e.preventDefault(); keys.delete('touchSlower'); });
+
+        btnFaster.addEventListener('touchstart', (e) => { e.preventDefault(); keys.add('touchFaster'); }, { passive: false });
+        btnFaster.addEventListener('touchend', (e) => { e.preventDefault(); keys.delete('touchFaster'); }, { passive: false });
+        btnFaster.addEventListener('mousedown', (e) => { e.preventDefault(); keys.add('touchFaster'); });
+        btnFaster.addEventListener('mouseup', (e) => { e.preventDefault(); keys.delete('touchFaster'); });
+        btnFaster.addEventListener('mouseleave', (e) => { e.preventDefault(); keys.delete('touchFaster'); });
+
+        // General Canvas Touch Controls (fallback)
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                const touch = e.changedTouches[i];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+
+                if (x > rect.width / 2) {
+                    player?.jump(); // Right side = Jump
+                } else {
+                    keys.add('touchDuck'); // Left side = Duck
+                }
+            }
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            keys.delete('touchDuck');
+
+            // Re-evaluate if remaining touches are on the left
+            for (let i = 0; i < e.touches.length; i++) {
+                const touch = e.touches[i];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                if (x <= rect.width / 2) {
+                    keys.add('touchDuck');
+                }
+            }
+        }, { passive: false });
+
+        startTextBtn.addEventListener('click', () => initGame('text'));
+        startRandomBtn.addEventListener('click', () => initGame('random'));
+        restartBtn.addEventListener('click', () => initGame(gameMode));
+        menuBtn.addEventListener('click', showMainMenu);
+
+        function fallbackCopyTextToClipboard(text) {
+            var textArea = document.createElement("textarea");
+            textArea.value = text;
+
+            // Avoid scrolling
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                var successful = document.execCommand('copy');
+                if (!successful) {
+                    alert('Fallback copy failed. Here is the link:\n\n' + text);
+                }
+            } catch (err) {
+                console.error('Fallback copy error', err);
+                alert('Copy not supported. Here is the link:\n\n' + text);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function copyToClipboard(text, button) {
+            const originalText = button.innerHTML;
+            button.innerHTML = '✅ Copied!';
+            button.style.backgroundColor = 'rgba(16, 185, 129, 0.4)'; // Green tint
+            button.style.borderColor = '#10b981';
+
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                button.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+            }, 2500);
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).catch(err => {
+                    console.warn('Clipboard API failed, using fallback', err);
+                    fallbackCopyTextToClipboard(text);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text);
+            }
+        }
+
+        shareLinkBtn.addEventListener('click', () => {
+            const text = encodeURIComponent(document.getElementById('customTextInput').value);
+            const time = document.getElementById('timeLimitSelect').value;
+            const lives = document.getElementById('livesSelect').value;
+            const url = window.location.origin + window.location.pathname + `?text=${text}&time=${time}&lives=${lives}`;
+
+            copyToClipboard(url, shareLinkBtn);
+        });
+
+        // Initialize from URL params if available
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('text')) {
+                document.getElementById('customTextInput').value = params.get('text');
+            }
+            if (params.has('time')) {
+                const timeVal = params.get('time');
+                const timeSelect = document.getElementById('timeLimitSelect');
+                for (let i = 0; i < timeSelect.options.length; i++) {
+                    if (timeSelect.options[i].value === timeVal) {
+                        timeSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (params.has('lives')) {
+                const livesVal = params.get('lives');
+                const livesSelect = document.getElementById('livesSelect');
+                for (let i = 0; i < livesSelect.options.length; i++) {
+                    if (livesSelect.options[i].value === livesVal) {
+                        livesSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        });
+
+        // Initial Background Draw
+        drawBackground();
+
+    </script>
+    <script src="components.js"></script>
+    <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt=""
+            referrerpolicy="no-referrer-when-downgrade" /></noscript>
+</body>
+
+</html>
