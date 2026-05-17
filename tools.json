@@ -220,6 +220,14 @@
         "desc": "Master vocabulary definitions with this high-stakes penalty game. Score goals by picking the right words!",
         "tag": "Game / Vocab",
         "isExternal": false
+      },
+      {
+        "title": "Custom Crossword Studio",
+        "emoji": "🧩",
+        "url": "crossword.html",
+        "desc": "Design, generate, play, print, and export custom crossword puzzles instantly. Features designer and play-only modes.",
+        "tag": "Puzzle / Vocab",
+        "isExternal": false
       }
     ]
   },

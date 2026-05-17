@@ -1,0 +1,3246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Daily NeonCross // Custom Crossword Studio</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Design, generate, play, print, and export premium custom crossword puzzles instantly. Features custom word builder, multiple themes, and playable mode.">
+    <meta name="keywords" content="crossword maker, crossword generator, play crossword, print crossword, puzzle creator, javascript crossword">
+    <meta name="author" content="Antigravity Team">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Embedded Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600&family=Outfit:wght@400;500;600;700;800&family=Lexend:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.cdnfonts.com/css/open-dyslexic');
+
+        :root {
+            /* Warm Antique Editorial Newspaper Palette */
+            --bg-dark: #FAF8F5;       /* Warm antique newsprint base */
+            --bg-surface: #F5F2EB;    /* Warm editorial background shadow */
+            --bg-card: #FFFFFF;       /* Pure white solid paper card columns */
+            --border-color: #D1CBBF;   /* Crisp thin warm charcoal border */
+            --border-glow: #111111;    /* Sharp focused solid black borders */
+            
+            --text-main: #1A1A1A;      /* Rich dark editorial charcoal */
+            --text-muted: #4A4A4A;    /* Muted dark editorial grey */
+            --text-dim: #736E64;      /* Soft classic print grey */
+            
+            --accent-indigo: #1E3A8A;  /* Deep Classic Editorial Navy Blue */
+            --accent-purple: #5C1D24;  /* Sophisticated Burgundy/Crimson (NYT styling) */
+            --accent-pink: #7F1D1D;    /* Classic deep Crimson */
+            --accent-cyan: #0F766E;    /* Elegant Editorial Dark Teal */
+            
+            --accent-emerald: #15803D; /* Forest print green (correct) */
+            --accent-rose: #B91C1C;    /* Deep crimson red (error) */
+            --accent-amber: #B45309;   /* Classic gold/amber */
+            
+            --card-radius: 4px;        /* Sharp, clean publication-style cards */
+            --cell-radius: 0px;        /* Authentic square-edge print cells */
+            --shadow-main: 0 4px 15px rgba(115, 110, 100, 0.08); /* Soft organic paper shadow */
+            
+            --font-heading: 'Playfair Display', Georgia, serif;
+            --font-body: 'Inter', sans-serif;
+            --font-cells: 'Lora', Georgia, serif;
+            
+            --font-scale: 1.0;
+            --cell-size: calc(40px * var(--font-scale, 1.0));
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: calc(0.9rem * var(--font-scale, 1.0));
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(180, 175, 160, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(180, 175, 160, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        #main-nav {
+            position: relative;
+        }
+
+        .crossword-header {
+            background: #FFFFFF;
+            border-bottom: 2px solid var(--text-main);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+        }
+
+        @media(min-width: 768px) {
+            .header-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 0;
+            }
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 2.25rem;
+            height: 2.25rem;
+            background: var(--text-main);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+        }
+
+        .logo-icon span {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            font-family: var(--font-heading);
+        }
+
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 1.85rem;
+            font-weight: 900;
+            letter-spacing: -0.2px;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(92, 29, 36, 0.08);
+            color: var(--accent-purple);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            border: 1px solid var(--accent-purple);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Layout Containers */
+        .main-wrapper {
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+        }
+
+        /* Sidebar and Control Panel */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-main);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .glass-card:hover {
+            border-color: #A39E93;
+            box-shadow: 0 6px 20px rgba(115, 110, 100, 0.12);
+        }
+
+        .card-title {
+            font-family: var(--font-heading);
+            font-size: calc(1.15rem * var(--font-scale, 1.0));
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title svg {
+            color: var(--accent-purple);
+        }
+
+        /* Preset Picker & Config */
+        .preset-section {
+            margin-bottom: 1rem;
+        }
+
+        .select-container {
+            position: relative;
+            width: 100%;
+        }
+
+        select {
+            width: 100%;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: calc(0.9rem * var(--font-scale, 1.0));
+            appearance: none;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        select:focus {
+            border-color: var(--text-main);
+            box-shadow: 0 0 0 2px rgba(26, 26, 26, 0.1);
+            outline: none;
+        }
+
+        .select-container::after {
+            content: '▼';
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: calc(0.8rem * var(--font-scale, 1.0));
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-label span.value-bubble {
+            color: var(--accent-indigo);
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #E5E1D8;
+            border-radius: 2px;
+            appearance: none;
+            outline: none;
+            margin: 0.5rem 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--text-main);
+            border: 2px solid #FFFFFF;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: var(--accent-purple);
+        }
+
+        /* Custom Buttons */
+        .btn {
+            width: 100%;
+            background: #FFFFFF;
+            border: 1px solid var(--text-main);
+            padding: 0.8rem 1.25rem;
+            border-radius: 4px;
+            color: var(--text-main);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: calc(0.95rem * var(--font-scale, 1.0));
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: background-color 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+        }
+
+        .btn:hover {
+            background: var(--bg-surface);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-primary {
+            background: var(--text-main);
+            border: 1px solid var(--text-main);
+            color: #FFFFFF;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+            color: #FFFFFF;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        /* Word & Clue List Builder */
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .list-count-badge {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-surface);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .builder-list {
+            max-height: 250px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-right: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .word-pair-item {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.5rem;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+
+        .word-pair-item:hover {
+            background: var(--bg-surface);
+            border-color: #A39E93;
+        }
+
+        .item-word-input {
+            width: 90px;
+            font-weight: 700;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .item-clue-input {
+            flex: 1;
+            color: var(--text-muted);
+            min-width: 0;
+        }
+
+        .word-pair-item input {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 2px;
+            transition: all 0.15s;
+        }
+
+        .word-pair-item input:focus {
+            background: #FFFFFF;
+            border-color: var(--border-color);
+            outline: none;
+        }
+
+        .btn-remove {
+            width: 1.75rem;
+            height: 1.75rem;
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn-remove:hover {
+            background: rgba(185, 28, 28, 0.1);
+            color: var(--accent-rose);
+        }
+
+        .add-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .input-add-word {
+            flex: 1;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.6rem 0.75rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: calc(0.85rem * var(--font-scale, 1.0));
+            text-transform: uppercase;
+            transition: all 0.15s;
+        }
+
+        .input-add-word:focus {
+            border-color: var(--text-main);
+            outline: none;
+        }
+
+        .btn-add-item {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .btn-add-item:hover {
+            background: var(--text-main);
+            color: #FFFFFF;
+            border-color: var(--text-main);
+        }
+
+        /* Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 99px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A39E93;
+        }
+
+        /* Accessibility Switch Slider */
+        .accessibility-switch input:checked + .accessibility-slider {
+            background-color: var(--accent-indigo);
+        }
+
+        .accessibility-switch .accessibility-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .accessibility-switch input:checked + .accessibility-slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Main Puzzle Section */
+        .puzzle-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Toolbar options */
+        .toolbar-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+        }
+
+        .mode-selector {
+            display: flex;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.25rem;
+        }
+
+        .mode-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .mode-btn.active {
+            background: var(--text-main);
+            color: #FFFFFF;
+            box-shadow: none;
+        }
+
+        .tool-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-tool {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.85rem;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.15s;
+        }
+
+        .btn-tool:hover {
+            background: var(--bg-surface);
+            border-color: #A39E93;
+        }
+
+        .btn-tool-accent {
+            background: rgba(30, 58, 138, 0.06);
+            border-color: var(--accent-indigo);
+            color: var(--accent-indigo);
+        }
+
+        .btn-tool-accent:hover {
+            background: var(--accent-indigo);
+            color: #FFFFFF;
+        }
+
+        /* Grid Panel Styling */
+        .grid-container-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 480px;
+            position: relative;
+            overflow: auto;
+            padding: 2.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            max-width: 320px;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .empty-state svg {
+            color: var(--text-dim);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(0.98); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }        /* The actual crossword grid */
+        .crossword-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--cols), var(--cell-size));
+            gap: 2px;
+            background: #111111;
+            border: 4px solid #111111;
+            padding: 0;
+            border-radius: var(--cell-radius);
+            box-shadow: var(--shadow-main);
+            margin: auto;
+        }
+
+        .grid-cell {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            position: relative;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--cell-radius);
+            transition: background-color 0.15s ease;
+        }
+
+        /* Empty unplaced cells */
+        .grid-cell.empty {
+            background: #111111;
+            border: none;
+        }
+
+        /* Letter/Playable cells */
+        .grid-cell.letter {
+            background: #FFFFFF;
+            border: none;
+            cursor: text;
+            box-shadow: none;
+        }
+
+        .grid-cell.letter:hover {
+            background: #F3EFE7;
+        }
+
+        .grid-cell-number {
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-main);
+            font-family: var(--font-heading);
+            pointer-events: none;
+        }
+
+        .grid-cell-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-family: var(--font-cells);
+            font-size: calc(1.35rem * var(--font-scale, 1.0));
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            caret-color: transparent;
+        }
+
+        .grid-cell-input:focus {
+            outline: none;
+        }
+
+        /* Highlight / Active States (Highlighter Pencil Styling) */
+        .grid-cell.active-word {
+            background: #F3EFE7; /* Soft paper beige highlight */
+        }
+
+        .grid-cell.active-cell {
+            background: #FEF08A; /* Classic pencil yellow highlight! */
+            box-shadow: inset 0 0 0 2px var(--accent-indigo);
+        }
+
+        /* Correct / Verification States (Print-aligned soft highlights) */
+        .grid-cell.correct {
+            background: #D1FAE5;
+        }
+
+        .grid-cell.correct input {
+            color: var(--accent-emerald);
+        }
+
+        .grid-cell.incorrect {
+            background: #FEE2E2;
+        }
+
+        .grid-cell.incorrect input {
+            color: var(--accent-rose);
+        }
+
+        /* Typing scale pop */
+        @keyframes cellPop {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        .cell-pop {
+            animation: cellPop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Verification Shake animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+        .cell-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Clues Panel */
+        .clues-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .clues-container-card {
+            padding: 1.5rem;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .clues-list-title {
+            font-family: var(--font-heading);
+            font-size: 1.15rem;
+            font-weight: 800;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-main);
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .clues-list-title svg {
+            color: var(--accent-purple);
+        }
+
+        .clues-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            max-height: 240px;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        .clue-item {
+            font-family: var(--font-cells);
+            font-size: calc(0.9rem * var(--font-scale, 1.0));
+            padding: 0.4rem 0.6rem;
+            border-radius: 2px;
+            cursor: pointer;
+            line-height: 1.45;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .clue-item:hover {
+            background: var(--bg-surface);
+            border-color: var(--border-color);
+        }
+
+        .clue-item.active-clue {
+            background: #FEF08A; /* Classic pencil yellow active clue highlight */
+            border-color: #D1CBBF;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .clue-item.solved-clue {
+            text-decoration: line-through;
+            color: var(--text-dim);
+            opacity: 0.75;
+        }
+
+        .clue-number {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            color: var(--accent-purple);
+            min-width: 1.25rem;
+        }
+
+        .clue-text {
+            flex: 1;
+        }
+
+        .clue-length {
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            font-family: var(--font-body);
+        }
+
+        /* Footer Section */
+        #main-footer {
+            margin-top: auto;
+        }
+
+        /* Toast Message */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #FFFFFF;
+            border: 2px solid var(--text-main);
+            padding: 0.75rem 1.25rem;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            border-color: var(--accent-emerald);
+            background: #F0FDF4;
+        }
+
+        .toast-error {
+            border-color: var(--accent-rose);
+            background: #FEF2F2;
+        }
+
+        /* Canvas/Image Export hidden container */
+        #canvas-export-holder {
+            display: none;
+        }
+
+
+
+        /* Responsive Rules */
+        @media (max-width: 1024px) {
+            .main-wrapper {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .sidebar {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Pristine Print Stylesheet */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+                font-family: 'Inter', sans-serif !important;
+                font-size: 11pt !important;
+                overflow: visible !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            #main-nav,
+            .crossword-header, 
+            .sidebar, 
+            .toolbar-card, 
+            #main-footer, 
+            .toast, 
+            .logo-icon,
+            .btn-tool,
+            .mode-selector {
+                display: none !important;
+            }
+            
+            .main-wrapper {
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+            }
+            
+            .puzzle-section {
+                display: block !important;
+            }
+            
+            .grid-container-card {
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                min-height: auto !important;
+                padding: 1rem 0 3rem 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                page-break-inside: avoid;
+            }
+            
+            .grid-container-card::before {
+                content: 'CROSSWORD PUZZLE';
+                display: block;
+                text-align: center;
+                font-size: 20pt;
+                font-weight: 800;
+                letter-spacing: 2px;
+                margin-bottom: 2rem;
+                font-family: 'Outfit', sans-serif;
+            }
+            
+            .crossword-grid {
+                display: grid !important;
+                grid-template-columns: repeat(var(--cols), 32px) !important;
+                background: white !important;
+                border: 2px solid black !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                gap: 0 !important;
+                margin: 0 auto !important;
+            }
+            
+            .grid-cell {
+                width: 32px !important;
+                height: 32px !important;
+                border-radius: 0 !important;
+                background: white !important;
+                border: 1px solid black !important;
+                box-shadow: none !important;
+            }
+            
+            .grid-cell.empty {
+                background: #000000 !important;
+                border: 1px solid black !important;
+            }
+            
+            .grid-cell.letter {
+                background: white !important;
+                border: 1px solid black !important;
+            }
+            
+            .grid-cell-number {
+                color: black !important;
+                font-size: 7pt !important;
+                top: 1px !important;
+                left: 2px !important;
+            }
+            
+            .grid-cell-input {
+                color: white !important;
+                background: transparent !important;
+            }
+            
+            body.print-solved .grid-cell-input {
+                color: black !important;
+            }
+            
+            .clues-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 2rem !important;
+                page-break-inside: avoid;
+                margin-top: 2rem !important;
+                border-top: 1px solid #ccc;
+                padding-top: 1rem;
+            }
+            
+            .clues-container-card {
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                min-height: auto !important;
+            }
+            
+            .clues-list-title {
+                color: black !important;
+                border-bottom: 1.5px solid black !important;
+                font-size: 13pt !important;
+                font-weight: 700 !important;
+                margin-bottom: 0.5rem !important;
+                padding-bottom: 0.2rem !important;
+            }
+            
+            .clues-list-title svg {
+                display: none !important;
+            }
+            
+            .clues-list {
+                max-height: none !important;
+                overflow: visible !important;
+                display: block !important;
+            }
+            
+            .clue-item {
+                color: black !important;
+                font-size: 10pt !important;
+                padding: 0.25rem 0 !important;
+                border: none !important;
+                background: transparent !important;
+                display: flex !important;
+                page-break-inside: avoid;
+            }
+            
+            .clue-number {
+                color: black !important;
+                font-weight: 700 !important;
+            }
+            
+            .clue-length {
+                color: #555 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="main-nav"></nav>
+
+    <div class="crossword-header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <span>N</span>
+                </div>
+                <div>
+                    <h1>The Daily NeonCross</h1>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500; font-family: var(--font-cells);">The World's Finest Custom Puzzles</p>
+                </div>
+                <span class="badge">v1.0 Pro</span>
+            </div>
+            
+            <div class="header-actions">
+                <span style="font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.4rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent-purple);">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 16v-4"></path>
+                        <path d="M12 8h.01"></path>
+                    </svg>
+                    Keyboard active (Arrows & Tab supported)
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-wrapper" style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem; width: 100%; max-width: 1400px; margin: 0 auto; padding: 2rem;">
+        <!-- Left Side: Controls & Word Builder -->
+        <aside class="sidebar" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Generation Parameters -->
+            <section class="glass-card">
+                <div class="card-title">
+                    <span>Crossword Config</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.5 1z"></path>
+                    </svg>
+                </div>
+                
+                <div class="preset-section form-group">
+                    <label class="form-label" for="preset-select">Themed Word Presets</label>
+                    <div class="select-container">
+                        <select id="preset-select">
+                            <option value="" disabled>-- Select a theme preset --</option>
+                            <option value="tech" selected>💻 Technology & Web Dev</option>
+                            <option value="space">🚀 Outer Space Wonders</option>
+                            <option value="food">🍕 Culinary & Fine Foods</option>
+                            <option value="animals">🦁 Wild Animal Kingdom</option>
+                            <option value="igcse_psychology">🧠 iGCSE Psychology</option>
+                            <option value="igcse_computing">💻 iGCSE Computer Science</option>
+                            <option value="igcse_biology">🧬 iGCSE Biology</option>
+                            <option value="igcse_chemistry">🧪 iGCSE Chemistry</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="grid-size">
+                        <span>Max Grid Size</span>
+                        <span id="grid-size-val" class="value-bubble">20x20</span>
+                    </label>
+                    <input type="range" id="grid-size" min="10" max="30" value="20" step="1" />
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="attempts">
+                        <span>Gen Optimization Attempts</span>
+                        <span id="attempts-val" class="value-bubble">50</span>
+                    </label>
+                    <input type="range" id="attempts" min="10" max="100" value="50" step="5" />
+                </div>
+                
+                <button id="btn-generate" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                    </svg>
+                    Rebuild Layout
+                </button>
+            </section>
+
+            <!-- Aesthetics & Typography (Accessibility Panel) -->
+            <section class="glass-card">
+                <div class="card-title">
+                    <span>Aesthetics & Typography</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 7V4h16v3M9 20h6M12 4v16"></path>
+                    </svg>
+                </div>
+                
+                <div class="preset-section form-group">
+                    <label class="form-label" for="font-select">Font Theme</label>
+                    <div class="select-container">
+                        <select id="font-select">
+                            <option value="serif" selected>📰 Classic Editorial (Serif)</option>
+                            <option value="sans">✨ Modern Clean (Sans-Serif)</option>
+                            <option value="dyslexic">🧠 High Fluency (Lexend)</option>
+                            <option value="opendyslexic">📖 OpenDyslexic (Heavy-bottom)</option>
+                            <option value="mono">📠 Retro Typewriter (Monospace)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.25rem; padding-top: 0.25rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Text Size Scale</span>
+                        <span id="accessibility-size-badge" style="font-size: 0.75rem; font-weight: 700; color: var(--accent-purple); background: rgba(92,29,36,0.06); padding: 2px 6px; border-radius: 4px;">100%</span>
+                    </div>
+                    <input type="range" id="accessibility-large-print" min="1.0" max="2.0" step="0.1" value="1.0" style="width: 100%; height: 6px; border-radius: 3px; background: #E5E1D8; cursor: pointer; outline: none; -webkit-appearance: none; margin-top: 4px;">
+                </div>
+            </section>
+
+            <!-- Word Builder Studio -->
+            <section class="glass-card">
+                <div class="card-title">
+                    <span>Word Studio</span>
+                    <span id="word-count" class="list-count-badge">0</span>
+                </div>
+                
+                <div id="builder-list" class="builder-list">
+                    <!-- Dynamic inline list items load here -->
+                </div>
+                
+                <label class="form-label">Add Custom Pair</label>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <input type="text" id="add-word" class="input-add-word" placeholder="WORD (e.g. PYTHON)" maxlength="20" autocomplete="off" />
+                    <div class="add-controls">
+                        <input type="text" id="add-clue" class="input-add-word" placeholder="Clue describing the word" autocomplete="off" style="flex: 1;" />
+                        <button id="btn-add-word" class="btn-add-item" title="Add pair">+</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Share & Backup -->
+            <section class="glass-card">
+                <div class="card-title">
+                    <span>Share & Backup</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button id="btn-export-json" class="btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent-purple); display: inline; margin-right: 0.3rem;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path>
+                        </svg>
+                        Download JSON
+                    </button>
+                    <button id="btn-import-json" class="btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent-cyan); display: inline; margin-right: 0.3rem;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path>
+                        </svg>
+                        Upload JSON
+                    </button>
+                    <button id="btn-share-player" class="btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent-indigo); display: inline; margin-right: 0.3rem;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                        </svg>
+                        Copy Play Link
+                    </button>
+                    <button id="btn-share-creator" class="btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent-purple); display: inline; margin-right: 0.3rem;">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Copy Edit Link
+                    </button>
+                    <input type="file" id="input-import-json" accept=".json" style="display: none;" />
+                    <p style="font-size: 0.72rem; color: var(--text-dim); text-align: center; line-height: 1.4;">
+                        Share crossword via link, export JSON, or upload a new one. Read the <a href="./crossword_schema.md" target="_blank" style="color: var(--accent-indigo); text-decoration: underline; font-weight: 500;">Format Schema</a>.
+                    </p>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Right Side: Interactive Board -->
+        <main class="puzzle-section" style="display: flex; flex-direction: column; gap: 1.5rem; min-width: 0;">
+            
+            <!-- Toolbar Settings -->
+            <div class="glass-card toolbar-card">
+                <div class="designer-mode-indicator" style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span class="badge" style="background: var(--accent-indigo); color: white; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 700; border-radius: 4px; font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.5px;">Designer Mode</span>
+                    <button id="btn-preview" class="btn-tool btn-tool-accent" title="Preview crossword in a new tab" style="font-weight: 700;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Preview Play
+                    </button>
+                </div>
+
+                <!-- Sleek Accessibility Controls for Play-Only Mode (Left Sidebar Hidden) -->
+                <div class="accessibility-toolbar-group" style="display: none; align-items: center; gap: 1.25rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Font:</span>
+                        <select id="toolbar-font-select" class="input-add-word" style="padding: 0.2rem 1.7rem 0.2rem 0.5rem; font-size: 0.8rem; height: 30px; min-width: 140px; margin: 0; width: auto; font-family: var(--font-body);">
+                            <option value="serif" selected>📰 Classic Serif</option>
+                            <option value="sans">✨ Modern Sans</option>
+                            <option value="dyslexic">🧠 High Lexend</option>
+                            <option value="opendyslexic">📖 OpenDyslexic</option>
+                            <option value="mono">📠 Monospace</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Size:</span>
+                        <input type="range" id="toolbar-accessibility-large-print" min="1.0" max="2.0" step="0.1" value="1.0" style="width: 80px; height: 6px; border-radius: 3px; background: #E5E1D8; cursor: pointer; outline: none; -webkit-appearance: none;">
+                        <span id="toolbar-accessibility-size-badge" style="font-size: 0.72rem; font-weight: 700; color: var(--accent-purple); background: rgba(92,29,36,0.06); padding: 1px 4px; border-radius: 3px; min-width: 32px; text-align: center;">100%</span>
+                    </div>
+                </div>
+                
+                <div class="tool-actions">
+                    <!-- Interactive Solvers (hidden in designer) -->
+                    <button id="btn-check" class="btn-tool btn-tool-accent" title="Validate active letters">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Verify
+                    </button>
+                    <button id="btn-reveal-cell" class="btn-tool" title="Reveal selected letter">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                        </svg>
+                        Cell
+                    </button>
+                    <button id="btn-reveal-word" class="btn-tool" title="Reveal selected word">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Word
+                    </button>
+                    <button id="btn-solve" class="btn-tool" title="Reveal full solution">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Solve
+                    </button>
+                    <button id="btn-clear" class="btn-tool" title="Reset crossword grid">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Clear
+                    </button>
+                    
+                    <!-- Global Actions -->
+                    <button id="btn-print" class="btn-tool" title="Print puzzle sheet">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        Print
+                    </button>
+                    <button id="btn-export-png" class="btn-tool" title="Export puzzle as PNG image">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path>
+                        </svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Workspace Grid -->
+            <div id="grid-container" class="glass-card grid-container-card">
+                <!-- Grid Canvas Rendered dynamically -->
+            </div>
+
+            <!-- Dynamic Clues list -->
+            <div class="clues-grid">
+                
+                <!-- Across Clues -->
+                <div class="glass-card clues-container-card">
+                    <h3 class="clues-list-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                        Across Clues
+                    </h3>
+                    <ul id="across-clues" class="clues-list">
+                        <!-- Across entries list dynamically -->
+                    </ul>
+                </div>
+                
+                <!-- Down Clues -->
+                <div class="glass-card clues-container-card">
+                    <h3 class="clues-list-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <polyline points="19 12 12 19 5 12"></polyline>
+                        </svg>
+                        Down Clues
+                    </h3>
+                    <ul id="down-clues" class="clues-list">
+                        <!-- Down entries list dynamically -->
+                    </ul>
+                </div>
+                
+            </div>
+
+        </main>
+    </div>
+
+    <footer id="main-footer" class="section"></footer>
+
+    <!-- Crossword Generator Engine -->
+    <script>
+        /**
+         * CrosswordGenerator
+         * Core crossword placement engine translated and enhanced from Python.
+         */
+        class CrosswordGenerator {
+            constructor(wordsWithClues, maxGridSize = 20) {
+                this.wordsData = [];
+                for (const [w, c] of wordsWithClues) {
+                    if (!c || !String(c).trim()) continue;
+                    const cleanW = String(w).toUpperCase().replace(/[^A-Z]/g, '');
+                    if (cleanW.length > 1) {
+                        this.wordsData.push({
+                            word: cleanW,
+                            clue: c,
+                            original: w
+                        });
+                    }
+                }
+                this.maxGridSize = maxGridSize;
+                this.grid = {}; 
+                this.placedWords = []; 
+                this.attempts = 50; 
+            }
+
+            setAttempts(attempts) {
+                this.attempts = Math.max(1, attempts);
+            }
+
+            generate() {
+                let bestLayout = null;
+                let bestScore = -1;
+
+                if (this.wordsData.length === 0) return false;
+
+                for (let attempt = 0; attempt < this.attempts; attempt++) {
+                    this._resetGrid();
+                    const shuffledWords = [...this.wordsData];
+                    this._shuffle(shuffledWords);
+                    shuffledWords.sort((a, b) => b.word.length - a.word.length);
+                    
+                    const first = shuffledWords[0];
+                    const mid = Math.floor(this.maxGridSize / 2);
+                    const direction = Math.random() < 0.5 ? 'H' : 'V';
+                    const startRow = direction === 'H' ? mid : mid - Math.floor(first.word.length / 2);
+                    const startCol = direction === 'H' ? mid - Math.floor(first.word.length / 2) : mid;
+                    
+                    if (this._placeWord(first, startRow, startCol, direction)) {
+                        this.placedWords.push({
+                            ...first,
+                            row: startRow,
+                            col: startCol,
+                            dir: direction
+                        });
+                        
+                        let remaining = shuffledWords.slice(1);
+                        let madeProgress = true;
+                        
+                        while (madeProgress) {
+                            madeProgress = false;
+                            const retryList = [];
+                            for (const wData of remaining) {
+                                const placed = this._findBestFit(wData);
+                                if (placed) {
+                                    madeProgress = true;
+                                } else {
+                                    retryList.push(wData);
+                                }
+                            }
+                            remaining = retryList;
+                        }
+                    }
+                    
+                    const score = this.placedWords.length;
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestLayout = {
+                            grid: { ...this.grid },
+                            placedWords: this.placedWords.map(w => ({ ...w }))
+                        };
+                        if (score === this.wordsData.length) break;
+                    }
+                }
+
+                if (bestLayout) {
+                    this.grid = bestLayout.grid;
+                    this.placedWords = bestLayout.placedWords;
+                    this._centerGrid();
+                    this._assignNumbers();
+                    return true;
+                }
+                return false;
+            }
+
+            loadLayout(placedWordsData) {
+                this.placedWords = placedWordsData.map(w => ({
+                    word: String(w.word).toUpperCase().replace(/[^A-Z]/g, ''),
+                    clue: String(w.clue),
+                    row: parseInt(w.row),
+                    col: parseInt(w.col),
+                    dir: String(w.dir),
+                    number: parseInt(w.number)
+                }));
+                this.grid = {};
+                for (const w of this.placedWords) {
+                    for (let i = 0; i < w.word.length; i++) {
+                        const r = w.row + (w.dir === 'V' ? i : 0);
+                        const c = w.col + (w.dir === 'H' ? i : 0);
+                        this.grid[`${r},${c}`] = w.word[i];
+                    }
+                }
+                this._assignNumbers();
+                return true;
+            }
+
+            _resetGrid() {
+                this.grid = {};
+                this.placedWords = [];
+            }
+
+            _placeWord(wordData, row, col, direction) {
+                const word = wordData.word;
+                const length = word.length;
+                
+                for (let i = 0; i < length; i++) {
+                    const r = row + (direction === 'V' ? i : 0);
+                    const c = col + (direction === 'H' ? i : 0);
+                    if (r < 0 || r >= this.maxGridSize || c < 0 || c >= this.maxGridSize) return false;
+                    
+                    const key = `${r},${c}`;
+                    if (this.grid.hasOwnProperty(key)) {
+                        if (this.grid[key] !== word[i]) return false;
+                    } else {
+                        if (direction === 'H') {
+                            if (this.grid.hasOwnProperty(`${r - 1},${c}`) || this.grid.hasOwnProperty(`${r + 1},${c}`)) return false;
+                        } else {
+                            if (this.grid.hasOwnProperty(`${r},${c - 1}`) || this.grid.hasOwnProperty(`${r},${c + 1}`)) return false;
+                        }
+                    }
+                }
+                
+                if (direction === 'H') {
+                    if (this.grid.hasOwnProperty(`${row},${col - 1}`) || this.grid.hasOwnProperty(`${row},${col + length}`)) return false;
+                } else {
+                    if (this.grid.hasOwnProperty(`${row - 1},${col}`) || this.grid.hasOwnProperty(`${row + length},${col}`)) return false;
+                }
+
+                for (let i = 0; i < length; i++) {
+                    const r = row + (direction === 'V' ? i : 0);
+                    const c = col + (direction === 'H' ? i : 0);
+                    this.grid[`${r},${c}`] = word[i];
+                }
+                return true;
+            }
+
+            _findBestFit(wordData) {
+                const word = wordData.word;
+                const targets = [...this.placedWords];
+                this._shuffle(targets);
+                
+                for (const target of targets) {
+                    const targetWord = target.word;
+                    const wordSet = new Set(word);
+                    const commonLetters = [...new Set(targetWord)].filter(char => wordSet.has(char));
+                    
+                    for (const char of commonLetters) {
+                        for (let wIdx = 0; wIdx < word.length; wIdx++) {
+                            if (word[wIdx] !== char) continue;
+                            for (let tIdx = 0; tIdx < targetWord.length; tIdx++) {
+                                if (targetWord[tIdx] !== char) continue;
+                                
+                                const interR = target.row + (target.dir === 'V' ? tIdx : 0);
+                                const interC = target.col + (target.dir === 'H' ? tIdx : 0);
+                                const newDir = target.dir === 'H' ? 'V' : 'H';
+                                const newRow = interR - (newDir === 'V' ? wIdx : 0);
+                                const newCol = interC - (newDir === 'H' ? wIdx : 0);
+                                
+                                if (this._placeWord(wordData, newRow, newCol, newDir)) {
+                                    this.placedWords.push({
+                                        ...wordData,
+                                        row: newRow,
+                                        col: newCol,
+                                        dir: newDir
+                                    });
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            _centerGrid() {
+                if (this.placedWords.length === 0) return;
+                const minR = Math.min(...this.placedWords.map(w => w.row));
+                const minC = Math.min(...this.placedWords.map(w => w.col));
+                const newGrid = {};
+                for (const w of this.placedWords) {
+                    w.row -= minR;
+                    w.col -= minC;
+                    for (let i = 0; i < w.word.length; i++) {
+                        const r = w.row + (w.dir === 'V' ? i : 0);
+                        const c = w.col + (w.dir === 'H' ? i : 0);
+                        newGrid[`${r},${c}`] = w.word[i];
+                    }
+                }
+                this.grid = newGrid;
+            }
+
+            _assignNumbers() {
+                this.placedWords.sort((a, b) => {
+                    if (a.row !== b.row) return a.row - b.row;
+                    return a.col - b.col;
+                });
+                let number = 1;
+                const locMap = {};
+                for (const w of this.placedWords) {
+                    const key = `${w.row},${w.col}`;
+                    if (locMap.hasOwnProperty(key)) {
+                        w.number = locMap[key];
+                    } else {
+                        w.number = number;
+                        locMap[key] = number;
+                        number++;
+                    }
+                }
+            }
+
+            getDimensions() {
+                if (this.placedWords.length === 0) return { rows: 0, cols: 0 };
+                const maxR = Math.max(...this.placedWords.map(w => w.row + (w.dir === 'V' ? w.word.length : 1)));
+                const maxC = Math.max(...this.placedWords.map(w => w.col + (w.dir === 'H' ? w.word.length : 1)));
+                return { rows: maxR, cols: maxC };
+            }
+
+            _shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+        }
+    </script>
+
+    <!-- App Controller Logic -->
+    <script>
+        const PRESETS = {
+            tech: [
+                ["HTML", "Markup language for structural layout on the web"],
+                ["CSS", "Stylesheets used to describe the web's visual presentation"],
+                ["JAVASCRIPT", "The universal scripting language of modern browsers"],
+                ["DATABASE", "An organized, queryable collection of structured data"],
+                ["COMPILER", "Translates high-level source code into binary machine code"],
+                ["ALGORITHM", "A step-by-step logic routine to perform calculations"],
+                ["FRONTEND", "The client-facing UI part of a web application"],
+                ["API", "Inter-application communication interface and protocols"],
+                ["SERVER", "A computer or program providing service to other clients"],
+                ["INTERNET", "Global interconnected computer network system"]
+            ],
+            space: [
+                ["SUPERNOVA", "A massive stellar explosion of colossal luminous energy"],
+                ["GALAXY", "A gravitationally bound system of stars, dust, and gas"],
+                ["NEBULA", "An interstellar cloud of dust, hydrogen, and helium"],
+                ["ASTRONAUT", "A professional trained to pilot or travel in a spacecraft"],
+                ["TELESCOPE", "An optical instrument designed to view distant planets"],
+                ["JUPITER", "The largest gas giant planet in our Solar System"],
+                ["ORBIT", "The gravitationally curved path of a celestial body"],
+                ["METEORITE", "A cosmic rock fragment that impacts the Earth's crust"],
+                ["SATELLITE", "An artificial object placed into orbit around the Earth"],
+                ["GRAVITY", "The natural force attracting bodies toward planetary center"]
+            ],
+            food: [
+                ["AVOCADO", "Green pear-shaped fruit popular for breakfast toasts"],
+                ["SPAGHETTI", "Long, thin, solid cylindrical wheat pasta lines"],
+                ["CROISSANT", "Buttery, flaky, crescent-shaped French pastry bread"],
+                ["CHOCOLATE", "Sweet brown treat prepared from roasted cacao seeds"],
+                ["ESPRESSO", "Strong, concentrated black coffee brewed under pressure"],
+                ["BROCCOLI", "Edible green branching stalk vegetable resembling a tree"],
+                ["CINNAMON", "Sweet aromatic baking spice obtained from inner tree bark"],
+                ["PINEAPPLE", "Tropical fruit with sweet yellow meat and a spiky top"],
+                ["CHEESE", "Dairy food product crafted from coagulated milk curds"],
+                ["PANCAKE", "Flat circular batter cake cooked on a hot griddle"]
+            ],
+            animals: [
+                ["CHAMELEON", "Lizard famously known for shifting its skin pattern color"],
+                ["OCTOPUS", "Eight-armed marine mollusk with a soft boneless body"],
+                ["KANGAROO", "Large jumping marsupial animal native to Australia"],
+                ["PLATYPUS", "Egg-laying mammal featuring a duck bill and beaver tail"],
+                ["FLAMINGO", "Pink wading bird that rests balanced on one long leg"],
+                ["CHEETAH", "The swiftest feline land mammal running on Earth"],
+                ["GIRAFFE", "Tallest spotted mammal boasting an extremely long neck"],
+                ["PENGUIN", "Flightless marine bird walking on ice and swimming cold seas"],
+                ["DOLPHIN", "highly intelligent aquatic mammal known for social clicks"],
+                ["EAGLE", "Majestic bird of prey with exceptionally sharp eyesight"]
+            ],
+            igcse_psychology: [
+                ["COGNITION", "The mental action or process of acquiring knowledge and understanding through thought"],
+                ["BEHAVIOUR", "The way in which one acts or conducts oneself, especially toward others"],
+                ["MEMORY", "The faculty by which the mind stores and remembers information"],
+                ["SCHEMA", "A cognitive framework or concept that helps organize and interpret information"],
+                ["HYPOTHESIS", "A testable statement predicting the outcome of a scientific study"],
+                ["REDUCTIONISM", "Explaining complex phenomena by scientific analysis of simpler components"],
+                ["CONFORMITY", "Compliance with standards, rules, or laws in socially accepted conventions"],
+                ["CORRELATION", "A mutual relationship or connection between two or more variables"],
+                ["PERCEPTION", "The state of being or becoming aware of something through the senses"],
+                ["PHOBIA", "An extreme or irrational fear of or aversion to something"]
+            ],
+            igcse_computing: [
+                ["PSEUDOCODE", "A detailed yet readable description of what a computer program must do"],
+                ["BINARY", "A system of numerical notation using base-2 (only 0 and 1)"],
+                ["PROTOCOL", "A set of rules governing the exchange of data between devices"],
+                ["INTERPRETER", "Translates and executes instructions in a program line-by-line"],
+                ["HARDWARE", "The physical components of a computer system, such as CPU and RAM"],
+                ["FIREWALL", "A network security system designed to prevent unauthorized access"],
+                ["ENCRYPTION", "The process of converting information or data into a secure code"],
+                ["TRANSMISSION", "The act of sending data over a communication medium"],
+                ["BUS", "A communication system transferring data inside a computer"]
+            ],
+            igcse_biology: [
+                ["PHOTOSYNTHESIS", "Process by which plants synthesize glucose from sunlight and carbon dioxide"],
+                ["MITOCHONDRIA", "The powerhouse of the cell where aerobic respiration occurs"],
+                ["ENZYME", "A biological catalyst that speeds up biochemical reactions in living cells"],
+                ["PATHOGEN", "A disease-causing microorganism such as a bacterium or virus"],
+                ["HOMEOSTASIS", "The maintenance of a constant internal state in a living organism"],
+                ["CELLULOSE", "A complex carbohydrate that forms the cell wall of plant cells"],
+                ["OSMOSIS", "The diffusion of water molecules from high to low water potential"],
+                ["RESPIRATION", "Chemical reactions in cells that break down nutrients to release energy"],
+                ["CHROMOSOME", "A thread-like structure of DNA that carries genetic information"],
+                ["DIFFUSION", "Net movement of particles from region of higher to lower concentration"]
+            ],
+            igcse_chemistry: [
+                ["ELECTROLYSIS", "The breakdown of an ionic compound using electricity"],
+                ["CATALYST", "Substance increasing chemical reaction rate without being consumed"],
+                ["ISOTOPE", "Atoms of same element with same protons but different neutrons"],
+                ["COVALENT", "A chemical bond formed by the sharing of pairs of electrons"],
+                ["EXOTHERMIC", "A chemical reaction that releases thermal energy to the surroundings"],
+                ["DISTILLATION", "A separation technique based on differences in boiling points"],
+                ["HALOGEN", "An element in Group 7 of the Periodic Table"],
+                ["ACID", "Substance releasing hydrogen ions in solution with pH less than 7"],
+                ["MOLECULE", "Smallest unit of a compound made of bonded atoms"],
+                ["CHROMATOGRAPHY", "Separation technique of a mixture based on solubility"]
+            ]
+        };
+
+        let wordsWithClues = [];
+        let generator = null;
+        let activeRow = -1;
+        let activeCol = -1;
+        let activeDirection = 'H'; 
+        let playerAnswers = {}; 
+        let appMode = 'designer'; 
+        let isSharedPlayOnly = false;
+        let sharedLayoutData = null;
+
+        const presetSelect = document.getElementById('preset-select');
+        const gridSizeSlider = document.getElementById('grid-size');
+        const gridSizeValue = document.getElementById('grid-size-val');
+        const attemptsSlider = document.getElementById('attempts');
+        const attemptsValue = document.getElementById('attempts-val');
+        const btnGenerate = document.getElementById('btn-generate');
+        const btnAddWord = document.getElementById('btn-add-word');
+        const addWordInput = document.getElementById('add-word');
+        const addClueInput = document.getElementById('add-clue');
+        const wordListCount = document.getElementById('word-count');
+        const builderListContainer = document.getElementById('builder-list');
+
+        const btnPreview = document.getElementById('btn-preview');
+        const btnCheck = document.getElementById('btn-check');
+        const btnRevealCell = document.getElementById('btn-reveal-cell');
+        const btnRevealWord = document.getElementById('btn-reveal-word');
+        const btnSolve = document.getElementById('btn-solve');
+        const btnClear = document.getElementById('btn-clear');
+        const btnPrint = document.getElementById('btn-print');
+        const btnExportPNG = document.getElementById('btn-export-png');
+        const btnExportJSON = document.getElementById('btn-export-json');
+        const btnImportJSON = document.getElementById('btn-import-json');
+        const inputImportJSON = document.getElementById('input-import-json');
+        const btnSharePlayer = document.getElementById('btn-share-player');
+        const btnShareCreator = document.getElementById('btn-share-creator');
+        const fontSelect = document.getElementById('font-select');
+        const accessibilityLargePrint = document.getElementById('accessibility-large-print');
+
+        const gridContainer = document.getElementById('grid-container');
+        const acrossCluesList = document.getElementById('across-clues');
+        const downCluesList = document.getElementById('down-clues');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            loadAccessibilitySettings();
+            loadSavedOrPreset();
+        });
+
+        function setupEventListeners() {
+            gridSizeSlider.addEventListener('input', (e) => {
+                gridSizeValue.textContent = `${e.target.value}x${e.target.value}`;
+            });
+            attemptsSlider.addEventListener('input', (e) => {
+                attemptsValue.textContent = e.target.value;
+            });
+
+            presetSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    loadPreset(e.target.value);
+                    saveToLocalStorage();
+                }
+            });
+
+            fontSelect.addEventListener('change', (e) => {
+                applyFontTheme(e.target.value);
+                const tFont = document.getElementById('toolbar-font-select');
+                if (tFont) tFont.value = e.target.value;
+                saveAccessibilitySettings();
+            });
+
+            const tFont = document.getElementById('toolbar-font-select');
+            if (tFont) {
+                tFont.addEventListener('change', (e) => {
+                    applyFontTheme(e.target.value);
+                    if (fontSelect) fontSelect.value = e.target.value;
+                    saveAccessibilitySettings();
+                });
+            }
+
+            accessibilityLargePrint.addEventListener('input', (e) => {
+                applyTextScale(e.target.value);
+                saveAccessibilitySettings();
+            });
+
+            const tLarge = document.getElementById('toolbar-accessibility-large-print');
+            if (tLarge) {
+                tLarge.addEventListener('input', (e) => {
+                    applyTextScale(e.target.value);
+                    saveAccessibilitySettings();
+                });
+            }
+
+            btnGenerate.addEventListener('click', () => {
+                generatePuzzle();
+            });
+
+            btnAddWord.addEventListener('click', addNewWordPair);
+            addWordInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') addClueInput.focus();
+            });
+            addClueInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') addNewWordPair();
+            });
+
+            if (btnPreview) {
+                btnPreview.addEventListener('click', previewPlayCrossword);
+            }
+
+            btnCheck.addEventListener('click', checkAnswers);
+            btnRevealCell.addEventListener('click', revealActiveCell);
+            btnRevealWord.addEventListener('click', revealActiveWord);
+            btnSolve.addEventListener('click', solvePuzzle);
+            btnClear.addEventListener('click', clearPlayerGrid);
+            btnPrint.addEventListener('click', printPuzzle);
+            btnExportPNG.addEventListener('click', exportToPNG);
+            btnExportJSON.addEventListener('click', exportToJSON);
+            btnImportJSON.addEventListener('click', () => {
+                inputImportJSON.click();
+            });
+            inputImportJSON.addEventListener('change', importFromJSON);
+            if (btnSharePlayer) {
+                btnSharePlayer.addEventListener('click', copyPlayLink);
+            }
+            if (btnShareCreator) {
+                btnShareCreator.addEventListener('click', copyCreatorLink);
+            }
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.crossword-grid') && !e.target.closest('.clues-list') && !e.target.closest('.toolbar-card')) {
+                    clearSelection();
+                }
+            });
+
+            // Recalculate grid cell sizes instantly on window resizing or iPad rotation
+            window.addEventListener('resize', updateGridCellSizing);
+        }
+
+        function applyFontTheme(theme) {
+            const root = document.documentElement;
+            if (theme === 'serif') {
+                root.style.setProperty('--font-heading', "'Playfair Display', Georgia, serif");
+                root.style.setProperty('--font-cells', "'Lora', Georgia, serif");
+            } else if (theme === 'sans') {
+                root.style.setProperty('--font-heading', "'Outfit', sans-serif");
+                root.style.setProperty('--font-cells', "'Inter', sans-serif");
+            } else if (theme === 'dyslexic') {
+                root.style.setProperty('--font-heading', "'Lexend', sans-serif");
+                root.style.setProperty('--font-cells', "'Lexend', sans-serif");
+            } else if (theme === 'opendyslexic') {
+                root.style.setProperty('--font-heading', "'OpenDyslexic', sans-serif");
+                root.style.setProperty('--font-cells', "'OpenDyslexic', sans-serif");
+            } else if (theme === 'mono') {
+                root.style.setProperty('--font-heading', "'JetBrains Mono', monospace");
+                root.style.setProperty('--font-cells', "'JetBrains Mono', monospace");
+            }
+        }
+
+        function applyTextScale(scale) {
+            scale = parseFloat(scale) || 1.0;
+            const root = document.documentElement;
+            
+            // Set the custom scale variable
+            root.style.setProperty('--font-scale', scale);
+            
+            // Update both slider input elements and badge text to keep them visually synced
+            const sidebarSlider = document.getElementById('accessibility-large-print');
+            const toolbarSlider = document.getElementById('toolbar-accessibility-large-print');
+            const sidebarBadge = document.getElementById('accessibility-size-badge');
+            const toolbarBadge = document.getElementById('toolbar-accessibility-size-badge');
+            
+            const percentText = `${Math.round(scale * 100)}%`;
+            
+            if (sidebarSlider) sidebarSlider.value = scale;
+            if (toolbarSlider) toolbarSlider.value = scale;
+            if (sidebarBadge) sidebarBadge.textContent = percentText;
+            if (toolbarBadge) toolbarBadge.textContent = percentText;
+            
+            // Trigger grid cell resizing
+            if (typeof updateGridCellSizing === 'function') {
+                updateGridCellSizing();
+            }
+        }
+
+        function saveAccessibilitySettings() {
+            const fontVal = fontSelect ? fontSelect.value : (document.getElementById('toolbar-font-select')?.value || 'serif');
+            const sidebarSlider = document.getElementById('accessibility-large-print');
+            const toolbarSlider = document.getElementById('toolbar-accessibility-large-print');
+            const scaleVal = sidebarSlider ? parseFloat(sidebarSlider.value) : (toolbarSlider ? parseFloat(toolbarSlider.value) : 1.0);
+            
+            const settings = {
+                fontTheme: fontVal,
+                textScale: scaleVal
+            };
+            localStorage.setItem('neoncross_accessibility', JSON.stringify(settings));
+        }
+
+        function loadAccessibilitySettings() {
+            try {
+                const data = localStorage.getItem('neoncross_accessibility');
+                if (data) {
+                    const settings = JSON.parse(data);
+                    
+                    const tFont = document.getElementById('toolbar-font-select');
+                    
+                    if (settings.fontTheme) {
+                        if (fontSelect) fontSelect.value = settings.fontTheme;
+                        if (tFont) tFont.value = settings.fontTheme;
+                        applyFontTheme(settings.fontTheme);
+                    }
+                    
+                    // Fallback to legacy settings.largePrint (map true -> 1.5, false -> 1.0)
+                    let scale = 1.0;
+                    if (settings.textScale !== undefined) {
+                        scale = parseFloat(settings.textScale);
+                    } else if (settings.largePrint !== undefined) {
+                        scale = settings.largePrint ? 1.5 : 1.0;
+                    }
+                    
+                    applyTextScale(scale);
+                }
+            } catch (err) {
+                console.error("Failed to load accessibility settings:", err);
+            }
+        }
+
+        function enforcePlayOnlyUI() {
+            if (!isSharedPlayOnly) return;
+            
+            // Force active mode to Player
+            setAppMode('player');
+            
+            // Hide the Designer Mode Indicator & Preview button in the toolbar
+            const designerIndicator = document.querySelector('.designer-mode-indicator');
+            if (designerIndicator) {
+                designerIndicator.style.setProperty('display', 'none', 'important');
+            }
+            
+            // Show the sleek inline accessibility controls in the toolbar
+            const accToolbar = document.querySelector('.accessibility-toolbar-group');
+            if (accToolbar) {
+                accToolbar.style.setProperty('display', 'flex', 'important');
+            }
+            
+            // Hide the left sidebar entirely
+            const sidebar = document.querySelector('aside.sidebar');
+            if (sidebar) {
+                sidebar.style.setProperty('display', 'none', 'important');
+            }
+            
+            // Expand the main wrapper grid layout to full screen width (1fr)
+            const mainWrapper = document.querySelector('.main-wrapper');
+            if (mainWrapper) {
+                mainWrapper.style.setProperty('grid-template-columns', '1fr', 'important');
+            }
+            
+            // Lock out interactive solvers
+            if (btnRevealCell) btnRevealCell.style.setProperty('display', 'none', 'important');
+            if (btnRevealWord) btnRevealWord.style.setProperty('display', 'none', 'important');
+            if (btnSolve) btnSolve.style.setProperty('display', 'none', 'important');
+        }
+
+        function loadSavedOrPreset() {
+            // Check for URL share link parameter first (p = Play, d = Design/Edit)
+            const urlParams = new URLSearchParams(window.location.search);
+            const pParam = urlParams.get('p');
+            const dParam = urlParams.get('d');
+            const param = pParam || dParam;
+            
+            if (param) {
+                try {
+                    const decoded = decodeURIComponent(escape(atob(param)));
+                    const obj = JSON.parse(decoded);
+                    
+                    if (obj) {
+                        // Apply grid settings if present
+                        if (obj.g && obj.g >= 10 && obj.g <= 30) {
+                            gridSizeSlider.value = obj.g;
+                            gridSizeValue.textContent = `${obj.g}x${obj.g}`;
+                        }
+                        if (obj.a && obj.a >= 10 && obj.a <= 100) {
+                            attemptsSlider.value = obj.a;
+                            attemptsValue.textContent = obj.a;
+                        }
+                        
+                        // Parse word list from either layout coords or words array
+                        if (Array.isArray(obj.l)) {
+                            wordsWithClues = obj.l.map(item => ({
+                                word: String(item[0]).trim().toUpperCase().replace(/[^A-Z]/g, ''),
+                                clue: String(item[1]).trim(),
+                                id: generateUUID()
+                            }));
+                            
+                            sharedLayoutData = obj.l.map(item => ({
+                                word: String(item[0]).trim().toUpperCase().replace(/[^A-Z]/g, ''),
+                                clue: String(item[1]).trim(),
+                                row: parseInt(item[2]),
+                                col: parseInt(item[3]),
+                                dir: String(item[4]),
+                                number: parseInt(item[5])
+                            }));
+                        } else if (Array.isArray(obj.w)) {
+                            wordsWithClues = obj.w.map(item => {
+                                if (Array.isArray(item) && item.length >= 2) {
+                                    return {
+                                        word: String(item[0]).trim().toUpperCase().replace(/[^A-Z]/g, ''),
+                                        clue: String(item[1]).trim(),
+                                        id: generateUUID()
+                                    };
+                                }
+                                return null;
+                            }).filter(Boolean);
+                            sharedLayoutData = null;
+                        }
+                        
+                        if (wordsWithClues.length > 0) {
+                            presetSelect.value = '';
+                            renderWordPairsList();
+                            generatePuzzle();
+                            
+                            if (pParam) {
+                                isSharedPlayOnly = true;
+                                enforcePlayOnlyUI();
+                                showToast(`Successfully loaded shared crossword puzzle!`, 'success');
+                            } else {
+                                isSharedPlayOnly = false;
+                                setAppMode('designer');
+                                showToast(`Loaded editable crossword in Designer Mode!`, 'success');
+                            }
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    showToast('Failed to load shared puzzle from link.', 'error');
+                    console.error(e);
+                }
+            }
+
+            // Support plain-text link scheme for LLMs (words=WORD:Clue|WORD:Clue)
+            const plainWords = urlParams.get('words');
+            if (plainWords) {
+                try {
+                    // Split pairs by pipe '|' or semicolon ';'
+                    const pairs = plainWords.split(/[|;]/);
+                    const parsed = [];
+                    for (const pair of pairs) {
+                        const splitIdx = pair.indexOf(':');
+                        if (splitIdx !== -1) {
+                            const word = pair.substring(0, splitIdx).trim().toUpperCase().replace(/[^A-Z]/g, '');
+                            const clue = decodeURIComponent(pair.substring(splitIdx + 1).trim());
+                            if (word.length >= 2 && clue.length > 0) {
+                                parsed.push({
+                                    word: word,
+                                    clue: clue,
+                                    id: generateUUID()
+                                });
+                            }
+                        }
+                    }
+
+                    if (parsed.length > 0) {
+                        wordsWithClues = parsed;
+                        
+                        // Parse other plain params
+                        const plainGridSize = urlParams.get('gridSize') || urlParams.get('g');
+                        if (plainGridSize) {
+                            const gVal = parseInt(plainGridSize);
+                            if (gVal >= 10 && gVal <= 30) {
+                                gridSizeSlider.value = gVal;
+                                gridSizeValue.textContent = `${gVal}x${gVal}`;
+                            }
+                        }
+                        const plainAttempts = urlParams.get('attempts') || urlParams.get('a');
+                        if (plainAttempts) {
+                            const aVal = parseInt(plainAttempts);
+                            if (aVal >= 10 && aVal <= 100) {
+                                attemptsSlider.value = aVal;
+                                attemptsValue.textContent = aVal;
+                            }
+                        }
+                        
+                        sharedLayoutData = null; // Fresh dynamic build
+                        presetSelect.value = '';
+                        renderWordPairsList();
+                        generatePuzzle();
+                        
+                        const plainMode = urlParams.get('mode') || 'edit';
+                        if (plainMode === 'play') {
+                            isSharedPlayOnly = true;
+                            enforcePlayOnlyUI();
+                            showToast(`Loaded LLM crossword in Play Mode!`, 'success');
+                        } else {
+                            isSharedPlayOnly = false;
+                            setAppMode('designer');
+                            showToast(`Loaded LLM crossword in Designer Mode!`, 'success');
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    console.error("LLM Plain-text URL parsing error:", e);
+                }
+            }
+
+            // Fallback to local storage or defaults
+            const savedWords = localStorage.getItem('crossword_words');
+            const savedConfig = localStorage.getItem('crossword_config');
+            const savedLayout = localStorage.getItem('crossword_layout');
+            
+            if (savedConfig) {
+                const config = JSON.parse(savedConfig);
+                gridSizeSlider.value = config.gridSize;
+                gridSizeValue.textContent = `${config.gridSize}x${config.gridSize}`;
+                attemptsSlider.value = config.attempts;
+                attemptsValue.textContent = config.attempts;
+            }
+            
+            if (savedLayout) {
+                try {
+                    sharedLayoutData = JSON.parse(savedLayout);
+                } catch (e) {
+                    console.error('Failed to parse saved layout', e);
+                    sharedLayoutData = null;
+                }
+            } else {
+                sharedLayoutData = null;
+            }
+            
+            if (savedWords) {
+                wordsWithClues = JSON.parse(savedWords);
+                presetSelect.value = '';
+                renderWordPairsList();
+                generatePuzzle();
+            } else {
+                loadPreset('tech');
+            }
+
+            // Set initial mode to Designer for default editor loads
+            if (!isSharedPlayOnly) {
+                setAppMode('designer');
+            }
+        }
+
+        function loadPreset(presetKey) {
+            if (PRESETS[presetKey]) {
+                wordsWithClues = PRESETS[presetKey].map(([w, c]) => ({
+                    word: w,
+                    clue: c,
+                    id: generateUUID()
+                }));
+                renderWordPairsList();
+                generatePuzzle();
+            }
+        }
+
+        function renderWordPairsList() {
+            builderListContainer.innerHTML = '';
+            wordListCount.textContent = wordsWithClues.length;
+
+            wordsWithClues.forEach((pair, index) => {
+                const item = document.createElement('div');
+                item.className = 'word-pair-item';
+                item.innerHTML = `
+                    <input type="text" class="item-word-input" value="${pair.word}" placeholder="WORD" />
+                    <input type="text" class="item-clue-input" value="${pair.clue}" placeholder="Clue describing the word" />
+                    <button class="btn-remove" title="Remove word pair">×</button>
+                `;
+
+                const wordInput = item.querySelector('.item-word-input');
+                const clueInput = item.querySelector('.item-clue-input');
+                const removeBtn = item.querySelector('.btn-remove');
+
+                wordInput.addEventListener('input', (e) => {
+                    wordsWithClues[index].word = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+                    saveToLocalStorage();
+                });
+
+                clueInput.addEventListener('input', (e) => {
+                    wordsWithClues[index].clue = e.target.value;
+                    saveToLocalStorage();
+                });
+
+                removeBtn.addEventListener('click', () => {
+                    wordsWithClues.splice(index, 1);
+                    renderWordPairsList();
+                    saveToLocalStorage();
+                });
+
+                builderListContainer.appendChild(item);
+            });
+        }
+
+        function addNewWordPair() {
+            const rawWord = addWordInput.value.trim().toUpperCase();
+            const cleanWord = rawWord.replace(/[^A-Z]/g, '');
+            const clue = addClueInput.value.trim();
+
+            if (!cleanWord || cleanWord.length < 2) {
+                showToast('Word must be at least 2 alphabetic characters!', 'error');
+                addWordInput.focus();
+                return;
+            }
+
+            if (!clue) {
+                showToast('Clue cannot be empty!', 'error');
+                addClueInput.focus();
+                return;
+            }
+
+            if (wordsWithClues.some(p => p.word === cleanWord)) {
+                showToast(`"${cleanWord}" is already in your word list!`, 'error');
+                addWordInput.focus();
+                return;
+            }
+
+            wordsWithClues.push({
+                word: cleanWord,
+                clue: clue,
+                id: generateUUID()
+            });
+
+            renderWordPairsList();
+            saveToLocalStorage();
+
+            addWordInput.value = '';
+            addClueInput.value = '';
+            addWordInput.focus();
+            generatePuzzle();
+        }
+
+        function generatePuzzle() {
+            if (wordsWithClues.length === 0) {
+                renderEmptyState('Add words to the sidebar to generate a crossword puzzle.');
+                return;
+            }
+
+            const maxGridSize = parseInt(gridSizeSlider.value);
+            const attempts = parseInt(attemptsSlider.value);
+            
+            renderLoadingState();
+            
+            setTimeout(() => {
+                if (sharedLayoutData && sharedLayoutData.length > 0) {
+                    const cg = new CrosswordGenerator([], maxGridSize);
+                    const loaded = cg.loadLayout(sharedLayoutData);
+                    
+                    if (loaded && cg.placedWords.length > 0) {
+                        generator = cg;
+                        playerAnswers = {};
+                        
+                        renderGrid();
+                        renderClues();
+                        
+                        sharedLayoutData = null;
+                        saveToLocalStorage();
+                        return;
+                    }
+                }
+
+                const wordsListFormat = wordsWithClues.map(p => [p.word, p.clue]);
+                const cg = new CrosswordGenerator(wordsListFormat, maxGridSize);
+                cg.setAttempts(attempts);
+                const success = cg.generate();
+                
+                if (success && cg.placedWords.length > 0) {
+                    generator = cg;
+                    playerAnswers = {}; 
+                    
+                    const placedCount = cg.placedWords.length;
+                    const totalCount = cg.wordsData.length;
+                    
+                    renderGrid();
+                    renderClues();
+                    
+                    saveToLocalStorage();
+                    
+                    if (placedCount < totalCount) {
+                        showToast(`Generated grid placing ${placedCount} of ${totalCount} words. Try increasing grid size or attempts for a full fit!`, 'warning');
+                    } else {
+                        showToast(`Perfect layout! All ${placedCount} words placed successfully.`, 'success');
+                    }
+                } else {
+                    renderEmptyState('Could not fit these words together. Try adding longer words with intersecting letters, raising attempts, or expanding grid size.');
+                    showToast('Generation failed. Words did not fit.', 'error');
+                }
+            }, 150);
+        }
+
+        function renderLoadingState() {
+            gridContainer.innerHTML = `
+                <div class="empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                    <p>Fitting words together into optimal intersections...</p>
+                </div>
+            `;
+        }
+
+        function renderEmptyState(message) {
+            generator = null;
+            gridContainer.innerHTML = `
+                <div class="empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="3" x2="9" y2="21"></line>
+                        <line x1="15" y1="3" x2="15" y2="21"></line>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="3" y1="15" x2="21" y2="15"></line>
+                    </svg>
+                    <p>${message}</p>
+                </div>
+            `;
+            acrossCluesList.innerHTML = '<li>No active crossword puzzle generated.</li>';
+            downCluesList.innerHTML = '<li>No active crossword puzzle generated.</li>';
+        }
+
+        function updateGridCellSizing() {
+            const gridEl = document.querySelector('.crossword-grid');
+            if (!gridEl || !generator) return;
+            
+            const { cols } = generator.getDimensions();
+            const containerWidth = gridContainer.clientWidth;
+            const containerPadding = 48; // padding (24px left + 24px right)
+            const availableWidth = containerWidth - containerPadding;
+            
+            let calculatedSize = Math.floor(availableWidth / cols) - 2;
+            
+            // Clamp cell size depending on the custom text size scale
+            const scale = parseFloat(document.documentElement.style.getPropertyValue('--font-scale')) || 1.0;
+            const maxClamp = Math.round(44 * scale);
+            const minClamp = Math.round(24 * scale);
+            let cellDimensionSize = Math.min(maxClamp, Math.max(minClamp, calculatedSize));
+            
+            // Adjust limits for small mobile displays (portrait phones)
+            if (window.innerWidth < 480) {
+                const mobMax = Math.round(32 * scale);
+                const mobMin = Math.round(20 * scale);
+                cellDimensionSize = Math.min(mobMax, Math.max(mobMin, calculatedSize));
+            }
+            
+            gridEl.style.setProperty('--cell-size', `${cellDimensionSize}px`);
+        }
+
+        function renderGrid() {
+            gridContainer.innerHTML = '';
+            const { rows, cols } = generator.getDimensions();
+            
+            const gridEl = document.createElement('div');
+            gridEl.className = 'crossword-grid';
+            gridEl.style.setProperty('--cols', cols);
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const key = `${r},${c}`;
+                    const cell = document.createElement('div');
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    
+                    if (generator.grid.hasOwnProperty(key)) {
+                        cell.className = 'grid-cell letter';
+                        const wordStart = generator.placedWords.find(w => w.row === r && w.col === c);
+                        if (wordStart) {
+                            const numSpan = document.createElement('span');
+                            numSpan.className = 'grid-cell-number';
+                            numSpan.textContent = wordStart.number;
+                            cell.appendChild(numSpan);
+                        }
+
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'grid-cell-input';
+                        input.maxLength = 1;
+                        input.setAttribute('autocomplete', 'off');
+                        input.setAttribute('spellcheck', 'false');
+                        
+                        if (appMode === 'designer') {
+                            input.value = generator.grid[key];
+                            input.disabled = true;
+                        } else {
+                            input.value = playerAnswers[key] || '';
+                            input.disabled = false;
+                        }
+                        
+                        cell.appendChild(input);
+                        setupCellInteractions(cell, input, r, c);
+                    } else {
+                        cell.className = 'grid-cell empty';
+                    }
+                    gridEl.appendChild(cell);
+                }
+            }
+            gridContainer.appendChild(gridEl);
+            updateGridCellSizing();
+        }
+
+        function renderClues() {
+            acrossCluesList.innerHTML = '';
+            downCluesList.innerHTML = '';
+
+            const placed = [...generator.placedWords];
+            const acrossWords = placed.filter(w => w.dir === 'H');
+            const downWords = placed.filter(w => w.dir === 'V');
+
+            if (acrossWords.length === 0) {
+                acrossCluesList.innerHTML = '<li class="clue-item">No horizontal clues.</li>';
+            } else {
+                acrossWords.forEach(w => {
+                    const li = createClueItemElement(w);
+                    acrossCluesList.appendChild(li);
+                });
+            }
+
+            if (downWords.length === 0) {
+                downCluesList.innerHTML = '<li class="clue-item">No vertical clues.</li>';
+            } else {
+                downWords.forEach(w => {
+                    const li = createClueItemElement(w);
+                    downCluesList.appendChild(li);
+                });
+            }
+        }
+
+        function createClueItemElement(wordData) {
+            const li = document.createElement('li');
+            li.className = 'clue-item';
+            li.dataset.number = wordData.number;
+            li.dataset.dir = wordData.dir;
+            
+            const isSolved = checkWordSolvedState(wordData);
+            if (isSolved && appMode === 'player') {
+                li.classList.add('solved-clue');
+            }
+            
+            li.innerHTML = `
+                <span class="clue-number">${wordData.number}</span>
+                <span class="clue-text">${wordData.clue}</span>
+                <span class="clue-length">(${wordData.word.length})</span>
+            `;
+
+            li.addEventListener('click', () => {
+                activeRow = wordData.row;
+                activeCol = wordData.col;
+                activeDirection = wordData.dir;
+                highlightActiveWord();
+                
+                const activeInput = document.querySelector(`.grid-cell[data-row="${activeRow}"][data-col="${activeCol}"] input`);
+                if (activeInput) activeInput.focus();
+            });
+
+            return li;
+        }
+
+        function checkWordSolvedState(wordData) {
+            const length = wordData.word.length;
+            for (let i = 0; i < length; i++) {
+                const r = wordData.row + (wordData.dir === 'V' ? i : 0);
+                const c = wordData.col + (wordData.dir === 'H' ? i : 0);
+                const key = `${r},${c}`;
+                if (!playerAnswers[key] || playerAnswers[key] !== generator.grid[key]) return false;
+            }
+            return true;
+        }
+
+        function setupCellInteractions(cell, input, r, c) {
+            input.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (activeRow === r && activeCol === c) {
+                    activeDirection = activeDirection === 'H' ? 'V' : 'H';
+                } else {
+                    activeRow = r;
+                    activeCol = c;
+                    const parentWords = generator.placedWords.filter(w => isCellInWord(w, r, c));
+                    if (parentWords.length === 1) activeDirection = parentWords[0].dir;
+                }
+                highlightActiveWord();
+                input.focus();
+            });
+
+            input.addEventListener('focus', () => {
+                activeRow = r;
+                activeCol = c;
+                highlightActiveWord();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                const key = e.key;
+
+                if (key === 'ArrowRight') {
+                    e.preventDefault();
+                    activeDirection = 'H';
+                    moveCursor(0, 1);
+                } else if (key === 'ArrowLeft') {
+                    e.preventDefault();
+                    activeDirection = 'H';
+                    moveCursor(0, -1);
+                } else if (key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeDirection = 'V';
+                    moveCursor(1, 0);
+                } else if (key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeDirection = 'V';
+                    moveCursor(-1, 0);
+                } else if (key === 'Tab' || key === 'Enter') {
+                    e.preventDefault();
+                    jumpToNextWord(e.shiftKey);
+                } else if (key === 'Backspace' || key === 'Delete') {
+                    e.preventDefault();
+                    const coordKey = `${r},${c}`;
+                    if (playerAnswers[coordKey]) {
+                        playerAnswers[coordKey] = '';
+                        input.value = '';
+                        input.parentElement.classList.remove('correct', 'incorrect');
+                        updateClueCrossThrough();
+                    } else {
+                        moveCursorBackwards();
+                    }
+                } else if (key.length === 1 && !/^[a-zA-Z]$/.test(key)) {
+                    // Prevent entering non-letter symbols/numbers
+                    e.preventDefault();
+                }
+            });
+
+            // Unified character input handler for desktop, tablet, and mobile keyboards
+            input.addEventListener('input', (e) => {
+                const val = input.value.trim().toUpperCase();
+                const cleanVal = val.replace(/[^A-Z]/g, '');
+                
+                if (cleanVal.length > 0) {
+                    const char = cleanVal[cleanVal.length - 1]; // Get last character typed
+                    const coordKey = `${r},${c}`;
+                    
+                    playerAnswers[coordKey] = char;
+                    input.value = char;
+                    
+                    cell.classList.remove('cell-pop', 'correct', 'incorrect');
+                    void cell.offsetWidth;
+                    cell.classList.add('cell-pop');
+                    
+                    updateClueCrossThrough();
+                    moveCursorForwards();
+                    checkVictoryCondition();
+                }
+            });
+        }
+
+        function isCellInWord(wordData, r, c) {
+            const len = wordData.word.length;
+            if (wordData.dir === 'H') {
+                return r === wordData.row && c >= wordData.col && c < wordData.col + len;
+            } else {
+                return c === wordData.col && r === wordData.row && r < wordData.row + len;
+            }
+        }
+
+        function highlightActiveWord() {
+            document.querySelectorAll('.grid-cell.letter').forEach(c => {
+                c.classList.remove('active-cell', 'active-word');
+            });
+            document.querySelectorAll('.clue-item').forEach(li => {
+                li.classList.remove('active-clue');
+            });
+
+            if (activeRow === -1 || activeCol === -1) return;
+
+            let activeWord = generator.placedWords.find(w => w.dir === activeDirection && isCellInWord(w, activeRow, activeCol));
+            if (!activeWord) {
+                activeWord = generator.placedWords.find(w => isCellInWord(w, activeRow, activeCol));
+                if (activeWord) activeDirection = activeWord.dir;
+            }
+
+            if (activeWord) {
+                const len = activeWord.word.length;
+                for (let i = 0; i < len; i++) {
+                    const r = activeWord.row + (activeWord.dir === 'V' ? i : 0);
+                    const c = activeWord.col + (activeWord.dir === 'H' ? i : 0);
+                    const cellEl = document.querySelector(`.grid-cell[data-row="${r}"][data-col="${c}"]`);
+                    if (cellEl) cellEl.classList.add('active-word');
+                }
+                const clueEl = document.querySelector(`.clue-item[data-number="${activeWord.number}"][data-dir="${activeWord.dir}"]`);
+                if (clueEl) {
+                    clueEl.classList.add('active-clue');
+                }
+            }
+
+            const cellEl = document.querySelector(`.grid-cell[data-row="${activeRow}"][data-col="${activeCol}"]`);
+            if (cellEl) cellEl.classList.add('active-cell');
+        }
+
+        function clearSelection() {
+            activeRow = -1;
+            activeCol = -1;
+            document.querySelectorAll('.grid-cell.letter').forEach(c => {
+                c.classList.remove('active-cell', 'active-word');
+            });
+            document.querySelectorAll('.clue-item').forEach(li => {
+                li.classList.remove('active-clue');
+            });
+        }
+
+        function moveCursor(dr, dc) {
+            const nextR = activeRow + dr;
+            const nextC = activeCol + dc;
+            const nextInput = document.querySelector(`.grid-cell[data-row="${nextR}"][data-col="${nextC}"] input`);
+            if (nextInput) {
+                activeRow = nextR;
+                activeCol = nextC;
+                nextInput.focus();
+            }
+        }
+
+        function moveCursorForwards() {
+            const activeWord = generator.placedWords.find(w => w.dir === activeDirection && isCellInWord(w, activeRow, activeCol));
+            if (!activeWord) return;
+
+            const len = activeWord.word.length;
+            const idx = activeDirection === 'H' ? (activeCol - activeWord.col) : (activeRow - activeWord.row);
+
+            if (idx < len - 1) {
+                const nextR = activeRow + (activeDirection === 'V' ? 1 : 0);
+                const nextC = activeCol + (activeDirection === 'H' ? 1 : 0);
+                const nextInput = document.querySelector(`.grid-cell[data-row="${nextR}"][data-col="${nextC}"] input`);
+                if (nextInput) {
+                    activeRow = nextR;
+                    activeCol = nextC;
+                    nextInput.focus();
+                }
+            }
+        }
+
+        function moveCursorBackwards() {
+            const activeWord = generator.placedWords.find(w => w.dir === activeDirection && isCellInWord(w, activeRow, activeCol));
+            if (!activeWord) return;
+
+            const idx = activeDirection === 'H' ? (activeCol - activeWord.col) : (activeRow - activeWord.row);
+
+            if (idx > 0) {
+                const prevR = activeRow - (activeDirection === 'V' ? 1 : 0);
+                const prevC = activeCol - (activeDirection === 'H' ? 1 : 0);
+                const prevInput = document.querySelector(`.grid-cell[data-row="${prevR}"][data-col="${prevC}"] input`);
+                if (prevInput) {
+                    activeRow = prevR;
+                    activeCol = prevC;
+                    
+                    const coordKey = `${prevR},${prevC}`;
+                    playerAnswers[coordKey] = '';
+                    prevInput.value = '';
+                    prevInput.parentElement.classList.remove('correct', 'incorrect');
+                    
+                    prevInput.focus();
+                    updateClueCrossThrough();
+                }
+            }
+        }
+
+        function jumpToNextWord(reverse = false) {
+            if (!generator || generator.placedWords.length === 0) return;
+            const words = [...generator.placedWords];
+            let currentIdx = words.findIndex(w => w.dir === activeDirection && isCellInWord(w, activeRow, activeCol));
+            if (currentIdx === -1) currentIdx = words.findIndex(w => isCellInWord(w, activeRow, activeCol));
+
+            let nextIdx = 0;
+            if (currentIdx !== -1) {
+                if (reverse) {
+                    nextIdx = (currentIdx - 1 + words.length) % words.length;
+                } else {
+                    nextIdx = (currentIdx + 1) % words.length;
+                }
+            }
+
+            const nextWord = words[nextIdx];
+            activeRow = nextWord.row;
+            activeCol = nextWord.col;
+            activeDirection = nextWord.dir;
+
+            highlightActiveWord();
+            const nextInput = document.querySelector(`.grid-cell[data-row="${activeRow}"][data-col="${activeCol}"] input`);
+            if (nextInput) nextInput.focus();
+        }
+
+        function updateClueCrossThrough() {
+            if (!generator) return;
+            generator.placedWords.forEach(w => {
+                const isSolved = checkWordSolvedState(w);
+                const clueEl = document.querySelector(`.clue-item[data-number="${w.number}"][data-dir="${w.dir}"]`);
+                if (clueEl) {
+                    if (isSolved && appMode === 'player') {
+                        clueEl.classList.add('solved-clue');
+                    } else {
+                        clueEl.classList.remove('solved-clue');
+                    }
+                }
+            });
+        }
+
+        function setAppMode(mode) {
+            if (isSharedPlayOnly) {
+                mode = 'player';
+            }
+            appMode = mode;
+            if (mode === 'player') {
+                // Show standard play features
+                btnCheck.style.display = 'flex';     // Verify
+                btnClear.style.display = 'flex';     // Clear
+                
+                // Hide answer cheats in Player Mode
+                btnRevealCell.style.display = 'none'; // Cell
+                btnRevealWord.style.display = 'none'; // Word
+                btnSolve.style.display = 'none';      // Solve
+            } else {
+                // Hide standard play features in Designer Mode
+                btnCheck.style.display = 'none';
+                btnClear.style.display = 'none';
+                
+                // Show solver/review tools for Designer Mode
+                btnRevealCell.style.display = 'flex';
+                btnRevealWord.style.display = 'flex';
+                btnSolve.style.display = 'flex';
+            }
+            if (generator) {
+                renderGrid();
+                updateClueCrossThrough();
+            }
+        }
+
+        function checkAnswers() {
+            if (!generator) return;
+            let totalEmpty = 0;
+            let incorrectCount = 0;
+
+            document.querySelectorAll('.grid-cell.letter').forEach(cell => {
+                const r = parseInt(cell.dataset.row);
+                const c = parseInt(cell.dataset.col);
+                const key = `${r},${c}`;
+                const playerVal = playerAnswers[key] || '';
+                const correctVal = generator.grid[key];
+
+                cell.classList.remove('correct', 'incorrect', 'cell-shake');
+
+                if (!playerVal) {
+                    totalEmpty++;
+                    return;
+                }
+
+                if (playerVal === correctVal) {
+                    cell.classList.add('correct');
+                } else {
+                    incorrectCount++;
+                    cell.classList.add('incorrect', 'cell-shake');
+                }
+            });
+
+            setTimeout(() => {
+                document.querySelectorAll('.grid-cell.letter').forEach(cell => {
+                    cell.classList.remove('correct', 'incorrect', 'cell-shake');
+                });
+            }, 2000);
+
+            if (totalEmpty === 0 && incorrectCount === 0) {
+                showToast('Congratulations! Every letter is correct!', 'success');
+            } else if (incorrectCount === 0) {
+                showToast('Answers correct so far! Keep going.', 'success');
+            } else {
+                showToast(`Verification: Found ${incorrectCount} incorrect letter values.`, 'error');
+            }
+        }
+
+        function revealActiveCell() {
+            if (!generator || activeRow === -1 || activeCol === -1) {
+                showToast('Please select a crossword cell first.', 'warning');
+                return;
+            }
+            const key = `${activeRow},${activeCol}`;
+            playerAnswers[key] = generator.grid[key];
+            const input = document.querySelector(`.grid-cell[data-row="${activeRow}"][data-col="${activeCol}"] input`);
+            if (input) {
+                input.value = generator.grid[key];
+                input.parentElement.classList.remove('incorrect');
+                input.parentElement.classList.add('correct');
+                setTimeout(() => input.parentElement.classList.remove('correct'), 1000);
+            }
+            updateClueCrossThrough();
+            moveCursorForwards();
+            checkVictoryCondition();
+        }
+
+        function revealActiveWord() {
+            if (!generator || activeRow === -1 || activeCol === -1) {
+                showToast('Select a cell inside the word you want to reveal.', 'warning');
+                return;
+            }
+            const activeWord = generator.placedWords.find(w => w.dir === activeDirection && isCellInWord(w, activeRow, activeCol)) ||
+                               generator.placedWords.find(w => isCellInWord(w, activeRow, activeCol));
+            if (!activeWord) return;
+
+            const len = activeWord.word.length;
+            for (let i = 0; i < len; i++) {
+                const r = activeWord.row + (activeWord.dir === 'V' ? i : 0);
+                const c = activeWord.col + (activeWord.dir === 'H' ? i : 0);
+                const key = `${r},${c}`;
+                playerAnswers[key] = generator.grid[key];
+                const input = document.querySelector(`.grid-cell[data-row="${r}"][data-col="${c}"] input`);
+                if (input) {
+                    input.value = generator.grid[key];
+                    input.parentElement.classList.remove('incorrect');
+                    input.parentElement.classList.add('correct');
+                    setTimeout(() => input.parentElement.classList.remove('correct'), 1000);
+                }
+            }
+            updateClueCrossThrough();
+            checkVictoryCondition();
+        }
+
+        function solvePuzzle() {
+            if (!generator) return;
+            Object.keys(generator.grid).forEach(key => {
+                playerAnswers[key] = generator.grid[key];
+            });
+            renderGrid();
+            updateClueCrossThrough();
+            showToast('The crossword puzzle has been fully solved!', 'success');
+        }
+
+        function clearPlayerGrid() {
+            if (!generator) return;
+            playerAnswers = {};
+            renderGrid();
+            updateClueCrossThrough();
+            showToast('Crossword grid cleared.', 'success');
+        }
+
+        function checkVictoryCondition() {
+            if (!generator) return false;
+            const isFinished = Object.keys(generator.grid).every(key => {
+                return playerAnswers[key] === generator.grid[key];
+            });
+            if (isFinished) {
+                setTimeout(() => {
+                    showToast('Amazing work! You completed the crossword puzzle correctly! 🎉', 'success');
+                }, 300);
+            }
+            return isFinished;
+        }
+
+        function printPuzzle() {
+            if (!generator) {
+                showToast('Generate a puzzle before printing!', 'warning');
+                return;
+            }
+            if (appMode === 'designer') {
+                document.body.classList.add('print-solved');
+            } else {
+                document.body.classList.remove('print-solved');
+            }
+            window.print();
+        }
+
+        function exportToPNG() {
+            if (!generator) {
+                showToast('Create a crossword puzzle before exporting!', 'warning');
+                return;
+            }
+
+            try {
+                const { rows, cols } = generator.getDimensions();
+                const cellSize = 44;
+                const gridPadding = 40;
+                const gridWidth = cols * cellSize;
+                const gridHeight = rows * cellSize;
+                const canvas = document.createElement('canvas');
+                
+                canvas.width = gridWidth + gridPadding * 2;
+                canvas.height = gridHeight + gridPadding * 2 + 80;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#0f1424';
+                ctx.font = 'bold 22px "Outfit", Arial, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.fillText('CROSSWORD MAKER PUZZLE', canvas.width / 2, 25);
+                
+                ctx.fillStyle = '#555555';
+                ctx.font = 'italic 12px "Inter", Arial, sans-serif';
+                ctx.fillText('Solve the across and down clues below', canvas.width / 2, 55);
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const x = gridPadding + c * cellSize;
+                        const y = gridPadding + 80 + r * cellSize;
+                        const key = `${r},${c}`;
+                        
+                        if (generator.grid.hasOwnProperty(key)) {
+                            ctx.fillStyle = '#ffffff';
+                            ctx.fillRect(x, y, cellSize, cellSize);
+                            ctx.strokeStyle = '#000000';
+                            ctx.lineWidth = 1.5;
+                            ctx.strokeRect(x, y, cellSize, cellSize);
+                            
+                            const wordStart = generator.placedWords.find(w => w.row === r && w.col === c);
+                            if (wordStart) {
+                                ctx.fillStyle = '#000000';
+                                ctx.font = 'bold 9px "Inter", monospace';
+                                ctx.textAlign = 'left';
+                                ctx.textBaseline = 'top';
+                                ctx.fillText(wordStart.number.toString(), x + 4, y + 4);
+                            }
+                            
+                            if (appMode === 'designer') {
+                                ctx.fillStyle = '#000000';
+                                ctx.font = 'bold 18px "Outfit", Arial, sans-serif';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+                                ctx.fillText(generator.grid[key], x + cellSize/2, y + cellSize/2 + 2);
+                            }
+                        } else {
+                            ctx.fillStyle = '#000000';
+                            ctx.fillRect(x, y, cellSize, cellSize);
+                        }
+                    }
+                }
+
+                const link = document.createElement('a');
+                link.download = `crossword_${appMode === 'designer' ? 'solved' : 'blank'}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                showToast('Successfully exported crossword image!', 'success');
+            } catch (e) {
+                showToast('PNG image export failed.', 'error');
+                console.error(e);
+            }
+        }
+
+        function exportToJSON() {
+            if (wordsWithClues.length === 0) {
+                showToast('Add words to the crossword before exporting!', 'warning');
+                return;
+            }
+
+            try {
+                // Determine a suitable title based on current preset select or input state
+                let currentTheme = 'Custom';
+                if (presetSelect.value) {
+                    const optionEl = presetSelect.querySelector(`option[value="${presetSelect.value}"]`);
+                    if (optionEl) {
+                        currentTheme = optionEl.textContent.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+                    }
+                }
+
+                // Clean word pair objects for clean export
+                const exportWords = wordsWithClues.map(p => ({
+                    word: p.word,
+                    clue: p.clue
+                }));
+
+                const exportObj = {
+                    title: `${currentTheme} Crossword`,
+                    description: `Custom crossword built with NeonCross Premium Crossword Studio.`,
+                    gridSize: parseInt(gridSizeSlider.value),
+                    attempts: parseInt(attemptsSlider.value),
+                    words: exportWords
+                };
+
+                const dataStr = JSON.stringify(exportObj, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `crossword_${currentTheme.toLowerCase().replace(/\s+/g, '_')}.json`;
+                link.href = url;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+                showToast('Crossword configuration exported successfully!', 'success');
+            } catch (e) {
+                showToast('JSON export failed.', 'error');
+                console.error(e);
+            }
+        }
+
+        function importFromJSON(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const data = JSON.parse(evt.target.result);
+                    let importedWords = [];
+                    let importedGridSize = null;
+                    let importedAttempts = null;
+
+                    // Support Format A: Full Standard Schema
+                    if (data && typeof data === 'object' && !Array.isArray(data) && Array.isArray(data.words)) {
+                        importedWords = data.words;
+                        if (data.gridSize) importedGridSize = parseInt(data.gridSize);
+                        if (data.attempts) importedAttempts = parseInt(data.attempts);
+                    } 
+                    // Support Format B: Flat list of objects
+                    else if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object' && !Array.isArray(data[0])) {
+                        importedWords = data;
+                    }
+                    // Support Format C: Flat list of arrays (pairs)
+                    else if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
+                        importedWords = data.map(item => {
+                            if (item.length >= 2) {
+                                return { word: item[0], clue: item[1] };
+                            }
+                            return null;
+                        }).filter(Boolean);
+                    } else {
+                        throw new Error('Unsupported JSON format. Check schema documentation.');
+                    }
+
+                    // Validate the imported words
+                    const parsedWords = [];
+                    for (const item of importedWords) {
+                        if (!item || typeof item !== 'object') continue;
+                        const word = String(item.word || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+                        const clue = String(item.clue || '').trim();
+
+                        if (word.length >= 2 && clue.length > 0) {
+                            parsedWords.push({
+                                word: word,
+                                clue: clue,
+                                id: generateUUID()
+                            });
+                        }
+                    }
+
+                    if (parsedWords.length === 0) {
+                        throw new Error('No valid word-clue pairs found in the JSON file.');
+                    }
+
+                    // Apply settings if present
+                    if (importedGridSize && importedGridSize >= 10 && importedGridSize <= 30) {
+                        gridSizeSlider.value = importedGridSize;
+                        gridSizeValue.textContent = `${importedGridSize}x${importedGridSize}`;
+                    }
+                    if (importedAttempts && importedAttempts >= 10 && importedAttempts <= 100) {
+                        attemptsSlider.value = importedAttempts;
+                        attemptsValue.textContent = importedAttempts;
+                    }
+
+                    // Update global state
+                    wordsWithClues = parsedWords;
+                    presetSelect.value = ''; // Reset preset since we loaded a custom file
+                    
+                    // Render and rebuild puzzle
+                    renderWordPairsList();
+                    saveToLocalStorage();
+                    generatePuzzle();
+
+                    showToast(`Successfully imported ${parsedWords.length} words!`, 'success');
+                } catch (err) {
+                    showToast(`JSON Import Error: ${err.message}`, 'error');
+                    console.error(err);
+                } finally {
+                    // Clear the file input value so same file can be uploaded again if needed
+                    e.target.value = '';
+                }
+            };
+
+            reader.onerror = function() {
+                showToast('Failed to read the file.', 'error');
+                e.target.value = '';
+            };
+
+            reader.readAsText(file);
+        }
+
+        function buildShareUrl(mode = 'play') {
+            if (wordsWithClues.length === 0) {
+                return null;
+            }
+            try {
+                const dataObj = {
+                    g: parseInt(gridSizeSlider.value),
+                    a: parseInt(attemptsSlider.value)
+                };
+                
+                if (generator && generator.placedWords.length > 0) {
+                    // Compress exact placed words: [word, clue, row, col, dir, number]
+                    dataObj.l = generator.placedWords.map(w => [w.word, w.clue, w.row, w.col, w.dir, w.number]);
+                } else {
+                    dataObj.w = wordsWithClues.map(p => [p.word, p.clue]);
+                }
+                
+                const dataStr = JSON.stringify(dataObj);
+                const base64 = btoa(unescape(encodeURIComponent(dataStr)));
+                const paramName = mode === 'play' ? 'p' : 'd';
+                return `${window.location.origin}${window.location.pathname}?${paramName}=${base64}`;
+            } catch (e) {
+                console.error(e);
+                return null;
+            }
+        }
+
+        function previewPlayCrossword() {
+            const shareUrl = buildShareUrl('play');
+            if (!shareUrl) {
+                showToast('Please add words and generate a crossword first!', 'warning');
+                return;
+            }
+            window.open(shareUrl, '_blank');
+        }
+
+        function copyTextToClipboard(text, successMessage) {
+            const fallbackCopy = () => {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.top = '0';
+                textarea.style.left = '0';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showToast(successMessage, 'success');
+                    } else {
+                        throw new Error('execCommand returned false');
+                    }
+                } catch (err) {
+                    showToast('Failed to copy. Please manually copy the URL.', 'error');
+                    console.error(err);
+                }
+                document.body.removeChild(textarea);
+            };
+
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        showToast(successMessage, 'success');
+                    })
+                    .catch(err => {
+                        console.warn('Clipboard API failed, attempting fallback:', err);
+                        fallbackCopy();
+                    });
+            } else {
+                fallbackCopy();
+            }
+        }
+
+        function copyPlayLink() {
+            const shareUrl = buildShareUrl('play');
+            if (!shareUrl) {
+                showToast('Please add words and generate a crossword first!', 'warning');
+                return;
+            }
+            copyTextToClipboard(shareUrl, 'Play-only crossword link copied to clipboard!');
+        }
+
+        function copyCreatorLink() {
+            const shareUrl = buildShareUrl('creator');
+            if (!shareUrl) {
+                showToast('Please add words and generate a crossword first!', 'warning');
+                return;
+            }
+            copyTextToClipboard(shareUrl, 'Editable creator crossword link copied to clipboard!');
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('crossword_words', JSON.stringify(wordsWithClues));
+            localStorage.setItem('crossword_config', JSON.stringify({
+                gridSize: gridSizeSlider.value,
+                attempts: attemptsSlider.value
+            }));
+            
+            if (generator && generator.placedWords.length > 0) {
+                const layout = generator.placedWords.map(w => ({
+                    word: w.word,
+                    clue: w.clue,
+                    row: w.row,
+                    col: w.col,
+                    dir: w.dir,
+                    number: w.number
+                }));
+                localStorage.setItem('crossword_layout', JSON.stringify(layout));
+            } else {
+                localStorage.removeItem('crossword_layout');
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const oldToast = document.querySelector('.toast');
+            if (oldToast) oldToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            let iconSvg = '';
+            if (type === 'success') {
+                iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+            } else if (type === 'error') {
+                iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+            } else {
+                iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+            }
+
+            toast.innerHTML = `${iconSvg} <span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 50);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4500);
+        }
+
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+    </script>
+    <script src="components.js"></script>
+        <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+</body>
+</html>
