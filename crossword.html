@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Daily NeonCross // Custom Crossword Studio</title>
-    
+    <title>Crossword Studio</title>
+
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Design, generate, play, print, and export premium custom crossword puzzles instantly. Features custom word builder, multiple themes, and playable mode.">
-    <meta name="keywords" content="crossword maker, crossword generator, play crossword, print crossword, puzzle creator, javascript crossword">
+    <meta name="description"
+        content="Design, generate, play, print, and export premium custom crossword puzzles instantly. Features custom word builder, multiple themes, and playable mode.">
+    <meta name="keywords"
+        content="crossword maker, crossword generator, play crossword, print crossword, puzzle creator, javascript crossword">
     <meta name="author" content="Antigravity Team">
     <link rel="stylesheet" href="styles.css">
-    
+
     <!-- Embedded Styles -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600&family=Outfit:wght@400;500;600;700;800&family=Lexend:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
@@ -18,33 +21,51 @@
 
         :root {
             /* Warm Antique Editorial Newspaper Palette */
-            --bg-dark: #FAF8F5;       /* Warm antique newsprint base */
-            --bg-surface: #F5F2EB;    /* Warm editorial background shadow */
-            --bg-card: #FFFFFF;       /* Pure white solid paper card columns */
-            --border-color: #D1CBBF;   /* Crisp thin warm charcoal border */
-            --border-glow: #111111;    /* Sharp focused solid black borders */
-            
-            --text-main: #1A1A1A;      /* Rich dark editorial charcoal */
-            --text-muted: #4A4A4A;    /* Muted dark editorial grey */
-            --text-dim: #736E64;      /* Soft classic print grey */
-            
-            --accent-indigo: #1E3A8A;  /* Deep Classic Editorial Navy Blue */
-            --accent-purple: #5C1D24;  /* Sophisticated Burgundy/Crimson (NYT styling) */
-            --accent-pink: #7F1D1D;    /* Classic deep Crimson */
-            --accent-cyan: #0F766E;    /* Elegant Editorial Dark Teal */
-            
-            --accent-emerald: #15803D; /* Forest print green (correct) */
-            --accent-rose: #B91C1C;    /* Deep crimson red (error) */
-            --accent-amber: #B45309;   /* Classic gold/amber */
-            
-            --card-radius: 4px;        /* Sharp, clean publication-style cards */
-            --cell-radius: 0px;        /* Authentic square-edge print cells */
-            --shadow-main: 0 4px 15px rgba(115, 110, 100, 0.08); /* Soft organic paper shadow */
-            
+            --bg-dark: #FAF8F5;
+            /* Warm antique newsprint base */
+            --bg-surface: #F5F2EB;
+            /* Warm editorial background shadow */
+            --bg-card: #FFFFFF;
+            /* Pure white solid paper card columns */
+            --border-color: #D1CBBF;
+            /* Crisp thin warm charcoal border */
+            --border-glow: #111111;
+            /* Sharp focused solid black borders */
+
+            --text-main: #1A1A1A;
+            /* Rich dark editorial charcoal */
+            --text-muted: #4A4A4A;
+            /* Muted dark editorial grey */
+            --text-dim: #736E64;
+            /* Soft classic print grey */
+
+            --accent-indigo: #1E3A8A;
+            /* Deep Classic Editorial Navy Blue */
+            --accent-purple: #5C1D24;
+            /* Sophisticated Burgundy/Crimson (NYT styling) */
+            --accent-pink: #7F1D1D;
+            /* Classic deep Crimson */
+            --accent-cyan: #0F766E;
+            /* Elegant Editorial Dark Teal */
+
+            --accent-emerald: #15803D;
+            /* Forest print green (correct) */
+            --accent-rose: #B91C1C;
+            /* Deep crimson red (error) */
+            --accent-amber: #B45309;
+            /* Classic gold/amber */
+
+            --card-radius: 4px;
+            /* Sharp, clean publication-style cards */
+            --cell-radius: 0px;
+            /* Authentic square-edge print cells */
+            --shadow-main: 0 4px 15px rgba(115, 110, 100, 0.08);
+            /* Soft organic paper shadow */
+
             --font-heading: 'Playfair Display', Georgia, serif;
             --font-body: 'Inter', sans-serif;
             --font-cells: 'Lora', Georgia, serif;
-            
+
             --font-scale: 1.0;
             --cell-size: calc(40px * var(--font-scale, 1.0));
         }
@@ -66,7 +87,7 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(180, 175, 160, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(180, 175, 160, 0.03) 1px, transparent 1px);
             background-size: 20px 20px;
@@ -310,7 +331,7 @@
 
         .btn:hover {
             background: var(--bg-surface);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .btn:active {
@@ -478,19 +499,22 @@
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: transparent;
         }
+
         ::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 99px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #A39E93;
         }
 
         /* Accessibility Switch Slider */
-        .accessibility-switch input:checked + .accessibility-slider {
+        .accessibility-switch input:checked+.accessibility-slider {
             background-color: var(--accent-indigo);
         }
 
@@ -504,10 +528,10 @@
             background-color: white;
             transition: .3s;
             border-radius: 50%;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
-        .accessibility-switch input:checked + .accessibility-slider:before {
+        .accessibility-switch input:checked+.accessibility-slider:before {
             transform: translateX(20px);
         }
 
@@ -617,9 +641,20 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.4; transform: scale(0.98); }
-            50% { opacity: 0.8; transform: scale(1.02); }
-        }        /* The actual crossword grid */
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(0.98);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.02);
+            }
+        }
+
+        /* The actual crossword grid */
         .crossword-grid {
             display: grid;
             grid-template-columns: repeat(var(--cols), var(--cell-size));
@@ -693,11 +728,13 @@
 
         /* Highlight / Active States (Highlighter Pencil Styling) */
         .grid-cell.active-word {
-            background: #F3EFE7; /* Soft paper beige highlight */
+            background: #F3EFE7;
+            /* Soft paper beige highlight */
         }
 
         .grid-cell.active-cell {
-            background: #FEF08A; /* Classic pencil yellow highlight! */
+            background: #FEF08A;
+            /* Classic pencil yellow highlight! */
             box-shadow: inset 0 0 0 2px var(--accent-indigo);
         }
 
@@ -720,19 +757,38 @@
 
         /* Typing scale pop */
         @keyframes cellPop {
-            0% { transform: scale(0.9); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
+
         .cell-pop {
             animation: cellPop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         /* Verification Shake animation */
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-4px); }
-            40%, 80% { transform: translateX(4px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-4px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(4px);
+            }
         }
+
         .cell-shake {
             animation: shake 0.4s ease-in-out;
         }
@@ -800,7 +856,8 @@
         }
 
         .clue-item.active-clue {
-            background: #FEF08A; /* Classic pencil yellow active clue highlight */
+            background: #FEF08A;
+            /* Classic pencil yellow active clue highlight */
             border-color: #D1CBBF;
             color: var(--text-main);
             font-weight: 500;
@@ -883,7 +940,7 @@
             .main-wrapper {
                 grid-template-columns: 1fr !important;
             }
-            
+
             .sidebar {
                 display: flex;
                 flex-direction: column;
@@ -907,30 +964,30 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            
+
             #main-nav,
-            .crossword-header, 
-            .sidebar, 
-            .toolbar-card, 
-            #main-footer, 
-            .toast, 
+            .crossword-header,
+            .sidebar,
+            .toolbar-card,
+            #main-footer,
+            .toast,
             .logo-icon,
             .btn-tool,
             .mode-selector {
                 display: none !important;
             }
-            
+
             .main-wrapper {
                 display: block !important;
                 padding: 0 !important;
                 margin: 0 !important;
                 max-width: 100% !important;
             }
-            
+
             .puzzle-section {
                 display: block !important;
             }
-            
+
             .grid-container-card {
                 border: none !important;
                 background: transparent !important;
@@ -943,7 +1000,7 @@
                 justify-content: center !important;
                 page-break-inside: avoid;
             }
-            
+
             .grid-container-card::before {
                 content: 'CROSSWORD PUZZLE';
                 display: block;
@@ -954,7 +1011,7 @@
                 margin-bottom: 2rem;
                 font-family: 'Outfit', sans-serif;
             }
-            
+
             .crossword-grid {
                 display: grid !important;
                 grid-template-columns: repeat(var(--cols), 32px) !important;
@@ -965,7 +1022,7 @@
                 gap: 0 !important;
                 margin: 0 auto !important;
             }
-            
+
             .grid-cell {
                 width: 32px !important;
                 height: 32px !important;
@@ -974,33 +1031,33 @@
                 border: 1px solid black !important;
                 box-shadow: none !important;
             }
-            
+
             .grid-cell.empty {
                 background: #000000 !important;
                 border: 1px solid black !important;
             }
-            
+
             .grid-cell.letter {
                 background: white !important;
                 border: 1px solid black !important;
             }
-            
+
             .grid-cell-number {
                 color: black !important;
                 font-size: 7pt !important;
                 top: 1px !important;
                 left: 2px !important;
             }
-            
+
             .grid-cell-input {
                 color: white !important;
                 background: transparent !important;
             }
-            
+
             body.print-solved .grid-cell-input {
                 color: black !important;
             }
-            
+
             .clues-grid {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr !important;
@@ -1010,7 +1067,7 @@
                 border-top: 1px solid #ccc;
                 padding-top: 1rem;
             }
-            
+
             .clues-container-card {
                 border: none !important;
                 background: transparent !important;
@@ -1018,7 +1075,7 @@
                 padding: 0 !important;
                 min-height: auto !important;
             }
-            
+
             .clues-list-title {
                 color: black !important;
                 border-bottom: 1.5px solid black !important;
@@ -1027,17 +1084,17 @@
                 margin-bottom: 0.5rem !important;
                 padding-bottom: 0.2rem !important;
             }
-            
+
             .clues-list-title svg {
                 display: none !important;
             }
-            
+
             .clues-list {
                 max-height: none !important;
                 overflow: visible !important;
                 display: block !important;
             }
-            
+
             .clue-item {
                 color: black !important;
                 font-size: 10pt !important;
@@ -1047,18 +1104,19 @@
                 display: flex !important;
                 page-break-inside: avoid;
             }
-            
+
             .clue-number {
                 color: black !important;
                 font-weight: 700 !important;
             }
-            
+
             .clue-length {
                 color: #555 !important;
             }
         }
     </style>
 </head>
+
 <body>
     <nav id="main-nav"></nav>
 
@@ -1069,15 +1127,18 @@
                     <span>N</span>
                 </div>
                 <div>
-                    <h1>The Daily NeonCross</h1>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500; font-family: var(--font-cells);">The World's Finest Custom Puzzles</p>
+                    <h1>Crossword Studio</h1>
+                    <p
+                        style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500; font-family: var(--font-cells);">
+                        The World's Finest Custom Puzzles</p>
                 </div>
-                <span class="badge">v1.0 Pro</span>
             </div>
-            
+
             <div class="header-actions">
-                <span style="font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.4rem;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent-purple);">
+                <span
+                    style="font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.4rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="color: var(--accent-purple);">
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="M12 16v-4"></path>
                         <path d="M12 8h.01"></path>
@@ -1088,29 +1149,35 @@
         </div>
     </div>
 
-    <div class="main-wrapper" style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem; width: 100%; max-width: 1400px; margin: 0 auto; padding: 2rem;">
+    <div class="main-wrapper"
+        style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem; width: 100%; max-width: 1400px; margin: 0 auto; padding: 2rem;">
         <!-- Left Side: Controls & Word Builder -->
         <aside class="sidebar" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            
+
             <!-- Generation Parameters -->
             <section class="glass-card">
                 <div class="card-title">
                     <span>Crossword Config</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2 2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.5 1z"></path>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2 2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.5 1z">
+                        </path>
                     </svg>
                 </div>
 
-                <a href="https://chatgpt.com/g/g-6a098704565c8191a4964214b54ce263-crossword-generator" target="_blank" class="btn" style="border-color: var(--accent-purple); color: var(--accent-purple); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.25rem;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent-purple);">
+                <a href="https://chatgpt.com/g/g-6a098704565c8191a4964214b54ce263-crossword-generator" target="_blank"
+                    class="btn"
+                    style="border-color: var(--accent-purple); color: var(--accent-purple); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.25rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        style="color: var(--accent-purple);">
                         <path d="M12 8V4H8"></path>
                         <rect width="16" height="12" x="4" y="8" rx="2"></rect>
                         <path d="M2 14h2M20 14h2M15 13v2M9 13v2"></path>
                     </svg>
                     AI Crossword Generator
                 </a>
-                
+
                 <div class="preset-section form-group">
                     <label class="form-label" for="preset-select">Themed Word Presets</label>
                     <div class="select-container">
@@ -1127,7 +1194,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label" for="grid-size">
                         <span>Max Grid Size</span>
@@ -1135,7 +1202,7 @@
                     </label>
                     <input type="range" id="grid-size" min="10" max="30" value="20" step="1" />
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label" for="attempts">
                         <span>Gen Optimization Attempts</span>
@@ -1143,9 +1210,10 @@
                     </label>
                     <input type="range" id="attempts" min="10" max="100" value="50" step="5" />
                 </div>
-                
+
                 <button id="btn-generate" class="btn btn-primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
                         <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
                     </svg>
                     Rebuild Layout
@@ -1160,7 +1228,7 @@
                         <path d="M4 7V4h16v3M9 20h6M12 4v16"></path>
                     </svg>
                 </div>
-                
+
                 <div class="preset-section form-group">
                     <label class="form-label" for="font-select">Font Theme</label>
                     <div class="select-container">
@@ -1176,10 +1244,14 @@
 
                 <div style="display: flex; flex-direction: column; gap: 0.25rem; padding-top: 0.25rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Text Size Scale</span>
-                        <span id="accessibility-size-badge" style="font-size: 0.75rem; font-weight: 700; color: var(--accent-purple); background: rgba(92,29,36,0.06); padding: 2px 6px; border-radius: 4px;">100%</span>
+                        <span
+                            style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Text
+                            Size Scale</span>
+                        <span id="accessibility-size-badge"
+                            style="font-size: 0.75rem; font-weight: 700; color: var(--accent-purple); background: rgba(92,29,36,0.06); padding: 2px 6px; border-radius: 4px;">100%</span>
                     </div>
-                    <input type="range" id="accessibility-large-print" min="1.0" max="2.0" step="0.1" value="1.0" style="width: 100%; height: 6px; border-radius: 3px; background: #E5E1D8; cursor: pointer; outline: none; -webkit-appearance: none; margin-top: 4px;">
+                    <input type="range" id="accessibility-large-print" min="1.0" max="2.0" step="0.1" value="1.0"
+                        style="width: 100%; height: 6px; border-radius: 3px; background: #E5E1D8; cursor: pointer; outline: none; -webkit-appearance: none; margin-top: 4px;">
                 </div>
             </section>
 
@@ -1189,16 +1261,18 @@
                     <span>Word Studio</span>
                     <span id="word-count" class="list-count-badge">0</span>
                 </div>
-                
+
                 <div id="builder-list" class="builder-list">
                     <!-- Dynamic inline list items load here -->
                 </div>
-                
+
                 <label class="form-label">Add Custom Pair</label>
                 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <input type="text" id="add-word" class="input-add-word" placeholder="WORD (e.g. PYTHON)" maxlength="20" autocomplete="off" />
+                    <input type="text" id="add-word" class="input-add-word" placeholder="WORD (e.g. PYTHON)"
+                        maxlength="20" autocomplete="off" />
                     <div class="add-controls">
-                        <input type="text" id="add-clue" class="input-add-word" placeholder="Clue describing the word" autocomplete="off" style="flex: 1;" />
+                        <input type="text" id="add-clue" class="input-add-word" placeholder="Clue describing the word"
+                            autocomplete="off" style="flex: 1;" />
                         <button id="btn-add-word" class="btn-add-item" title="Add pair">+</button>
                     </div>
                 </div>
@@ -1216,26 +1290,34 @@
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                     <button id="btn-export-json" class="btn">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent-purple); display: inline; margin-right: 0.3rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5"
+                            style="color: var(--accent-purple); display: inline; margin-right: 0.3rem;">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path>
                         </svg>
                         Download JSON
                     </button>
                     <button id="btn-import-json" class="btn">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent-cyan); display: inline; margin-right: 0.3rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5"
+                            style="color: var(--accent-cyan); display: inline; margin-right: 0.3rem;">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path>
                         </svg>
                         Upload JSON
                     </button>
                     <button id="btn-share-player" class="btn">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent-indigo); display: inline; margin-right: 0.3rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5"
+                            style="color: var(--accent-indigo); display: inline; margin-right: 0.3rem;">
                             <circle cx="12" cy="12" r="10"></circle>
                             <polygon points="10 8 16 12 10 16 10 8"></polygon>
                         </svg>
                         Copy Play Link
                     </button>
                     <button id="btn-share-creator" class="btn">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--accent-purple); display: inline; margin-right: 0.3rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5"
+                            style="color: var(--accent-purple); display: inline; margin-right: 0.3rem;">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                             <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                         </svg>
@@ -1243,7 +1325,10 @@
                     </button>
                     <input type="file" id="input-import-json" accept=".json" style="display: none;" />
                     <p style="font-size: 0.72rem; color: var(--text-dim); text-align: center; line-height: 1.4;">
-                        Share crossword via link, export JSON, or upload a new one. Read the <a href="./crossword_schema.md" target="_blank" style="color: var(--accent-indigo); text-decoration: underline; font-weight: 500;">Format Schema</a>.
+                        Share crossword via link, export JSON, or upload a new one. Read the <a
+                            href="./crossword_schema.md" target="_blank"
+                            style="color: var(--accent-indigo); text-decoration: underline; font-weight: 500;">Format
+                            Schema</a>.
                     </p>
                 </div>
             </section>
@@ -1251,13 +1336,17 @@
 
         <!-- Right Side: Interactive Board -->
         <main class="puzzle-section" style="display: flex; flex-direction: column; gap: 1.5rem; min-width: 0;">
-            
+
             <!-- Toolbar Settings -->
             <div class="glass-card toolbar-card">
                 <div class="designer-mode-indicator" style="display: flex; align-items: center; gap: 0.75rem;">
-                    <span class="badge" style="background: var(--accent-indigo); color: white; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 700; border-radius: 4px; font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.5px;">Designer Mode</span>
-                    <button id="btn-preview" class="btn-tool btn-tool-accent" title="Preview crossword in a new tab" style="font-weight: 700;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <span class="badge"
+                        style="background: var(--accent-indigo); color: white; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 700; border-radius: 4px; font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.5px;">Designer
+                        Mode</span>
+                    <button id="btn-preview" class="btn-tool btn-tool-accent" title="Preview crossword in a new tab"
+                        style="font-weight: 700;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                             <polyline points="15 3 21 3 21 9"></polyline>
                             <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -1269,8 +1358,10 @@
                 <!-- Sleek Accessibility Controls for Play-Only Mode (Left Sidebar Hidden) -->
                 <div class="accessibility-toolbar-group" style="display: none; align-items: center; gap: 1.25rem;">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Font:</span>
-                        <select id="toolbar-font-select" class="input-add-word" style="padding: 0.2rem 1.7rem 0.2rem 0.5rem; font-size: 0.8rem; height: 30px; min-width: 140px; margin: 0; width: auto; font-family: var(--font-body);">
+                        <span
+                            style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Font:</span>
+                        <select id="toolbar-font-select" class="input-add-word"
+                            style="padding: 0.2rem 1.7rem 0.2rem 0.5rem; font-size: 0.8rem; height: 30px; min-width: 140px; margin: 0; width: auto; font-family: var(--font-body);">
                             <option value="serif" selected>📰 Classic Serif</option>
                             <option value="sans">✨ Modern Sans</option>
                             <option value="dyslexic">🧠 High Lexend</option>
@@ -1279,61 +1370,69 @@
                         </select>
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Size:</span>
-                        <input type="range" id="toolbar-accessibility-large-print" min="1.0" max="2.0" step="0.1" value="1.0" style="width: 80px; height: 6px; border-radius: 3px; background: #E5E1D8; cursor: pointer; outline: none; -webkit-appearance: none;">
-                        <span id="toolbar-accessibility-size-badge" style="font-size: 0.72rem; font-weight: 700; color: var(--accent-purple); background: rgba(92,29,36,0.06); padding: 1px 4px; border-radius: 3px; min-width: 32px; text-align: center;">100%</span>
+                        <span
+                            style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Size:</span>
+                        <input type="range" id="toolbar-accessibility-large-print" min="1.0" max="2.0" step="0.1"
+                            value="1.0"
+                            style="width: 80px; height: 6px; border-radius: 3px; background: #E5E1D8; cursor: pointer; outline: none; -webkit-appearance: none;">
+                        <span id="toolbar-accessibility-size-badge"
+                            style="font-size: 0.72rem; font-weight: 700; color: var(--accent-purple); background: rgba(92,29,36,0.06); padding: 1px 4px; border-radius: 3px; min-width: 32px; text-align: center;">100%</span>
                     </div>
                 </div>
-                
+
                 <div class="tool-actions">
                     <!-- Interactive Solvers (hidden in designer) -->
                     <button id="btn-check" class="btn-tool btn-tool-accent" title="Validate active letters">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                         Verify
                     </button>
                     <button id="btn-reveal-cell" class="btn-tool" title="Reveal selected letter">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path
+                                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41">
+                            </path>
                         </svg>
                         Cell
                     </button>
                     <button id="btn-reveal-word" class="btn-tool" title="Reveal selected word">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                         Word
                     </button>
                     <button id="btn-solve" class="btn-tool" title="Reveal full solution">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
                         Solve
                     </button>
                     <button id="btn-clear" class="btn-tool" title="Reset crossword grid">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path
+                                d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                            </path>
                         </svg>
                         Clear
                     </button>
-                    
+
                     <!-- Global Actions -->
                     <button id="btn-print" class="btn-tool" title="Print puzzle sheet">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <polyline points="6 9 6 2 18 2 18 9"></polyline>
                             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
                             <rect x="6" y="14" width="12" height="8"></rect>
                         </svg>
                         Print
-                    </button>
-                    <button id="btn-export-png" class="btn-tool" title="Export puzzle as PNG image">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path>
-                        </svg>
-                        Export
                     </button>
                 </div>
             </div>
@@ -1345,11 +1444,12 @@
 
             <!-- Dynamic Clues list -->
             <div class="clues-grid">
-                
+
                 <!-- Across Clues -->
                 <div class="glass-card clues-container-card">
                     <h3 class="clues-list-title">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
@@ -1359,11 +1459,12 @@
                         <!-- Across entries list dynamically -->
                     </ul>
                 </div>
-                
+
                 <!-- Down Clues -->
                 <div class="glass-card clues-container-card">
                     <h3 class="clues-list-title">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <polyline points="19 12 12 19 5 12"></polyline>
                         </svg>
@@ -1373,7 +1474,7 @@
                         <!-- Down entries list dynamically -->
                     </ul>
                 </div>
-                
+
             </div>
 
         </main>
@@ -1402,9 +1503,9 @@
                     }
                 }
                 this.maxGridSize = maxGridSize;
-                this.grid = {}; 
-                this.placedWords = []; 
-                this.attempts = 50; 
+                this.grid = {};
+                this.placedWords = [];
+                this.attempts = 50;
             }
 
             setAttempts(attempts) {
@@ -1422,13 +1523,13 @@
                     const shuffledWords = [...this.wordsData];
                     this._shuffle(shuffledWords);
                     shuffledWords.sort((a, b) => b.word.length - a.word.length);
-                    
+
                     const first = shuffledWords[0];
                     const mid = Math.floor(this.maxGridSize / 2);
                     const direction = Math.random() < 0.5 ? 'H' : 'V';
                     const startRow = direction === 'H' ? mid : mid - Math.floor(first.word.length / 2);
                     const startCol = direction === 'H' ? mid - Math.floor(first.word.length / 2) : mid;
-                    
+
                     if (this._placeWord(first, startRow, startCol, direction)) {
                         this.placedWords.push({
                             ...first,
@@ -1436,10 +1537,10 @@
                             col: startCol,
                             dir: direction
                         });
-                        
+
                         let remaining = shuffledWords.slice(1);
                         let madeProgress = true;
-                        
+
                         while (madeProgress) {
                             madeProgress = false;
                             const retryList = [];
@@ -1454,7 +1555,7 @@
                             remaining = retryList;
                         }
                     }
-                    
+
                     const score = this.placedWords.length;
                     if (score > bestScore) {
                         bestScore = score;
@@ -1505,12 +1606,12 @@
             _placeWord(wordData, row, col, direction) {
                 const word = wordData.word;
                 const length = word.length;
-                
+
                 for (let i = 0; i < length; i++) {
                     const r = row + (direction === 'V' ? i : 0);
                     const c = col + (direction === 'H' ? i : 0);
                     if (r < 0 || r >= this.maxGridSize || c < 0 || c >= this.maxGridSize) return false;
-                    
+
                     const key = `${r},${c}`;
                     if (this.grid.hasOwnProperty(key)) {
                         if (this.grid[key] !== word[i]) return false;
@@ -1522,7 +1623,7 @@
                         }
                     }
                 }
-                
+
                 if (direction === 'H') {
                     if (this.grid.hasOwnProperty(`${row},${col - 1}`) || this.grid.hasOwnProperty(`${row},${col + length}`)) return false;
                 } else {
@@ -1541,24 +1642,24 @@
                 const word = wordData.word;
                 const targets = [...this.placedWords];
                 this._shuffle(targets);
-                
+
                 for (const target of targets) {
                     const targetWord = target.word;
                     const wordSet = new Set(word);
                     const commonLetters = [...new Set(targetWord)].filter(char => wordSet.has(char));
-                    
+
                     for (const char of commonLetters) {
                         for (let wIdx = 0; wIdx < word.length; wIdx++) {
                             if (word[wIdx] !== char) continue;
                             for (let tIdx = 0; tIdx < targetWord.length; tIdx++) {
                                 if (targetWord[tIdx] !== char) continue;
-                                
+
                                 const interR = target.row + (target.dir === 'V' ? tIdx : 0);
                                 const interC = target.col + (target.dir === 'H' ? tIdx : 0);
                                 const newDir = target.dir === 'H' ? 'V' : 'H';
                                 const newRow = interR - (newDir === 'V' ? wIdx : 0);
                                 const newCol = interC - (newDir === 'H' ? wIdx : 0);
-                                
+
                                 if (this._placeWord(wordData, newRow, newCol, newDir)) {
                                     this.placedWords.push({
                                         ...wordData,
@@ -1731,9 +1832,9 @@
         let generator = null;
         let activeRow = -1;
         let activeCol = -1;
-        let activeDirection = 'H'; 
-        let playerAnswers = {}; 
-        let appMode = 'designer'; 
+        let activeDirection = 'H';
+        let playerAnswers = {};
+        let appMode = 'designer';
         let isSharedPlayOnly = false;
         let sharedLayoutData = null;
 
@@ -1841,7 +1942,9 @@
             btnSolve.addEventListener('click', solvePuzzle);
             btnClear.addEventListener('click', clearPlayerGrid);
             btnPrint.addEventListener('click', printPuzzle);
-            btnExportPNG.addEventListener('click', exportToPNG);
+            if (btnExportPNG) {
+                btnExportPNG.addEventListener('click', exportToPNG);
+            }
             btnExportJSON.addEventListener('click', exportToJSON);
             btnImportJSON.addEventListener('click', () => {
                 inputImportJSON.click();
@@ -1887,23 +1990,23 @@
         function applyTextScale(scale) {
             scale = parseFloat(scale) || 1.0;
             const root = document.documentElement;
-            
+
             // Set the custom scale variable
             root.style.setProperty('--font-scale', scale);
-            
+
             // Update both slider input elements and badge text to keep them visually synced
             const sidebarSlider = document.getElementById('accessibility-large-print');
             const toolbarSlider = document.getElementById('toolbar-accessibility-large-print');
             const sidebarBadge = document.getElementById('accessibility-size-badge');
             const toolbarBadge = document.getElementById('toolbar-accessibility-size-badge');
-            
+
             const percentText = `${Math.round(scale * 100)}%`;
-            
+
             if (sidebarSlider) sidebarSlider.value = scale;
             if (toolbarSlider) toolbarSlider.value = scale;
             if (sidebarBadge) sidebarBadge.textContent = percentText;
             if (toolbarBadge) toolbarBadge.textContent = percentText;
-            
+
             // Trigger grid cell resizing
             if (typeof updateGridCellSizing === 'function') {
                 updateGridCellSizing();
@@ -1915,7 +2018,7 @@
             const sidebarSlider = document.getElementById('accessibility-large-print');
             const toolbarSlider = document.getElementById('toolbar-accessibility-large-print');
             const scaleVal = sidebarSlider ? parseFloat(sidebarSlider.value) : (toolbarSlider ? parseFloat(toolbarSlider.value) : 1.0);
-            
+
             const settings = {
                 fontTheme: fontVal,
                 textScale: scaleVal
@@ -1928,15 +2031,15 @@
                 const data = localStorage.getItem('neoncross_accessibility');
                 if (data) {
                     const settings = JSON.parse(data);
-                    
+
                     const tFont = document.getElementById('toolbar-font-select');
-                    
+
                     if (settings.fontTheme) {
                         if (fontSelect) fontSelect.value = settings.fontTheme;
                         if (tFont) tFont.value = settings.fontTheme;
                         applyFontTheme(settings.fontTheme);
                     }
-                    
+
                     // Fallback to legacy settings.largePrint (map true -> 1.5, false -> 1.0)
                     let scale = 1.0;
                     if (settings.textScale !== undefined) {
@@ -1944,7 +2047,7 @@
                     } else if (settings.largePrint !== undefined) {
                         scale = settings.largePrint ? 1.5 : 1.0;
                     }
-                    
+
                     applyTextScale(scale);
                 }
             } catch (err) {
@@ -1954,34 +2057,34 @@
 
         function enforcePlayOnlyUI() {
             if (!isSharedPlayOnly) return;
-            
+
             // Force active mode to Player
             setAppMode('player');
-            
+
             // Hide the Designer Mode Indicator & Preview button in the toolbar
             const designerIndicator = document.querySelector('.designer-mode-indicator');
             if (designerIndicator) {
                 designerIndicator.style.setProperty('display', 'none', 'important');
             }
-            
+
             // Show the sleek inline accessibility controls in the toolbar
             const accToolbar = document.querySelector('.accessibility-toolbar-group');
             if (accToolbar) {
                 accToolbar.style.setProperty('display', 'flex', 'important');
             }
-            
+
             // Hide the left sidebar entirely
             const sidebar = document.querySelector('aside.sidebar');
             if (sidebar) {
                 sidebar.style.setProperty('display', 'none', 'important');
             }
-            
+
             // Expand the main wrapper grid layout to full screen width (1fr)
             const mainWrapper = document.querySelector('.main-wrapper');
             if (mainWrapper) {
                 mainWrapper.style.setProperty('grid-template-columns', '1fr', 'important');
             }
-            
+
             // Lock out interactive solvers
             if (btnRevealCell) btnRevealCell.style.setProperty('display', 'none', 'important');
             if (btnRevealWord) btnRevealWord.style.setProperty('display', 'none', 'important');
@@ -1994,12 +2097,12 @@
             const pParam = urlParams.get('p');
             const dParam = urlParams.get('d');
             const param = pParam || dParam;
-            
+
             if (param) {
                 try {
                     const decoded = decodeURIComponent(escape(atob(param)));
                     const obj = JSON.parse(decoded);
-                    
+
                     if (obj) {
                         // Apply grid settings if present
                         if (obj.g && obj.g >= 10 && obj.g <= 30) {
@@ -2010,7 +2113,7 @@
                             attemptsSlider.value = obj.a;
                             attemptsValue.textContent = obj.a;
                         }
-                        
+
                         // Parse word list from either layout coords or words array
                         if (Array.isArray(obj.l)) {
                             wordsWithClues = obj.l.map(item => ({
@@ -2018,7 +2121,7 @@
                                 clue: String(item[1]).trim(),
                                 id: generateUUID()
                             }));
-                            
+
                             sharedLayoutData = obj.l.map(item => ({
                                 word: String(item[0]).trim().toUpperCase().replace(/[^A-Z]/g, ''),
                                 clue: String(item[1]).trim(),
@@ -2040,12 +2143,12 @@
                             }).filter(Boolean);
                             sharedLayoutData = null;
                         }
-                        
+
                         if (wordsWithClues.length > 0) {
                             presetSelect.value = '';
                             renderWordPairsList();
                             generatePuzzle();
-                            
+
                             if (pParam) {
                                 isSharedPlayOnly = true;
                                 enforcePlayOnlyUI();
@@ -2088,7 +2191,7 @@
 
                     if (parsed.length > 0) {
                         wordsWithClues = parsed;
-                        
+
                         // Parse other plain params
                         const plainGridSize = urlParams.get('gridSize') || urlParams.get('g');
                         if (plainGridSize) {
@@ -2106,12 +2209,12 @@
                                 attemptsValue.textContent = aVal;
                             }
                         }
-                        
+
                         sharedLayoutData = null; // Fresh dynamic build
                         presetSelect.value = '';
                         renderWordPairsList();
                         generatePuzzle();
-                        
+
                         const plainMode = urlParams.get('mode') || 'edit';
                         if (plainMode === 'play') {
                             isSharedPlayOnly = true;
@@ -2133,7 +2236,7 @@
             const savedWords = localStorage.getItem('crossword_words');
             const savedConfig = localStorage.getItem('crossword_config');
             const savedLayout = localStorage.getItem('crossword_layout');
-            
+
             if (savedConfig) {
                 const config = JSON.parse(savedConfig);
                 gridSizeSlider.value = config.gridSize;
@@ -2141,7 +2244,7 @@
                 attemptsSlider.value = config.attempts;
                 attemptsValue.textContent = config.attempts;
             }
-            
+
             if (savedLayout) {
                 try {
                     sharedLayoutData = JSON.parse(savedLayout);
@@ -2152,7 +2255,7 @@
             } else {
                 sharedLayoutData = null;
             }
-            
+
             if (savedWords) {
                 wordsWithClues = JSON.parse(savedWords);
                 presetSelect.value = '';
@@ -2263,21 +2366,21 @@
 
             const maxGridSize = parseInt(gridSizeSlider.value);
             const attempts = parseInt(attemptsSlider.value);
-            
+
             renderLoadingState();
-            
+
             setTimeout(() => {
                 if (sharedLayoutData && sharedLayoutData.length > 0) {
                     const cg = new CrosswordGenerator([], maxGridSize);
                     const loaded = cg.loadLayout(sharedLayoutData);
-                    
+
                     if (loaded && cg.placedWords.length > 0) {
                         generator = cg;
                         playerAnswers = {};
-                        
+
                         renderGrid();
                         renderClues();
-                        
+
                         sharedLayoutData = null;
                         saveToLocalStorage();
                         return;
@@ -2288,19 +2391,19 @@
                 const cg = new CrosswordGenerator(wordsListFormat, maxGridSize);
                 cg.setAttempts(attempts);
                 const success = cg.generate();
-                
+
                 if (success && cg.placedWords.length > 0) {
                     generator = cg;
-                    playerAnswers = {}; 
-                    
+                    playerAnswers = {};
+
                     const placedCount = cg.placedWords.length;
                     const totalCount = cg.wordsData.length;
-                    
+
                     renderGrid();
                     renderClues();
-                    
+
                     saveToLocalStorage();
-                    
+
                     if (placedCount < totalCount) {
                         showToast(`Generated grid placing ${placedCount} of ${totalCount} words. Try increasing grid size or attempts for a full fit!`, 'warning');
                     } else {
@@ -2345,34 +2448,34 @@
         function updateGridCellSizing() {
             const gridEl = document.querySelector('.crossword-grid');
             if (!gridEl || !generator) return;
-            
+
             const { cols } = generator.getDimensions();
             const containerWidth = gridContainer.clientWidth;
             const containerPadding = 48; // padding (24px left + 24px right)
             const availableWidth = containerWidth - containerPadding;
-            
+
             let calculatedSize = Math.floor(availableWidth / cols) - 2;
-            
+
             // Clamp cell size depending on the custom text size scale
             const scale = parseFloat(document.documentElement.style.getPropertyValue('--font-scale')) || 1.0;
             const maxClamp = Math.round(44 * scale);
             const minClamp = Math.round(24 * scale);
             let cellDimensionSize = Math.min(maxClamp, Math.max(minClamp, calculatedSize));
-            
+
             // Adjust limits for small mobile displays (portrait phones)
             if (window.innerWidth < 480) {
                 const mobMax = Math.round(32 * scale);
                 const mobMin = Math.round(20 * scale);
                 cellDimensionSize = Math.min(mobMax, Math.max(mobMin, calculatedSize));
             }
-            
+
             gridEl.style.setProperty('--cell-size', `${cellDimensionSize}px`);
         }
 
         function renderGrid() {
             gridContainer.innerHTML = '';
             const { rows, cols } = generator.getDimensions();
-            
+
             const gridEl = document.createElement('div');
             gridEl.className = 'crossword-grid';
             gridEl.style.setProperty('--cols', cols);
@@ -2383,7 +2486,7 @@
                     const cell = document.createElement('div');
                     cell.dataset.row = r;
                     cell.dataset.col = c;
-                    
+
                     if (generator.grid.hasOwnProperty(key)) {
                         cell.className = 'grid-cell letter';
                         const wordStart = generator.placedWords.find(w => w.row === r && w.col === c);
@@ -2400,7 +2503,7 @@
                         input.maxLength = 1;
                         input.setAttribute('autocomplete', 'off');
                         input.setAttribute('spellcheck', 'false');
-                        
+
                         if (appMode === 'designer') {
                             input.value = generator.grid[key];
                             input.disabled = true;
@@ -2408,7 +2511,7 @@
                             input.value = playerAnswers[key] || '';
                             input.disabled = false;
                         }
-                        
+
                         cell.appendChild(input);
                         setupCellInteractions(cell, input, r, c);
                     } else {
@@ -2453,12 +2556,12 @@
             li.className = 'clue-item';
             li.dataset.number = wordData.number;
             li.dataset.dir = wordData.dir;
-            
+
             const isSolved = checkWordSolvedState(wordData);
             if (isSolved && appMode === 'player') {
                 li.classList.add('solved-clue');
             }
-            
+
             li.innerHTML = `
                 <span class="clue-number">${wordData.number}</span>
                 <span class="clue-text">${wordData.clue}</span>
@@ -2470,7 +2573,7 @@
                 activeCol = wordData.col;
                 activeDirection = wordData.dir;
                 highlightActiveWord();
-                
+
                 const activeInput = document.querySelector(`.grid-cell[data-row="${activeRow}"][data-col="${activeCol}"] input`);
                 if (activeInput) activeInput.focus();
             });
@@ -2553,18 +2656,18 @@
             input.addEventListener('input', (e) => {
                 const val = input.value.trim().toUpperCase();
                 const cleanVal = val.replace(/[^A-Z]/g, '');
-                
+
                 if (cleanVal.length > 0) {
                     const char = cleanVal[cleanVal.length - 1]; // Get last character typed
                     const coordKey = `${r},${c}`;
-                    
+
                     playerAnswers[coordKey] = char;
                     input.value = char;
-                    
+
                     cell.classList.remove('cell-pop', 'correct', 'incorrect');
                     void cell.offsetWidth;
                     cell.classList.add('cell-pop');
-                    
+
                     updateClueCrossThrough();
                     moveCursorForwards();
                     checkVictoryCondition();
@@ -2669,12 +2772,12 @@
                 if (prevInput) {
                     activeRow = prevR;
                     activeCol = prevC;
-                    
+
                     const coordKey = `${prevR},${prevC}`;
                     playerAnswers[coordKey] = '';
                     prevInput.value = '';
                     prevInput.parentElement.classList.remove('correct', 'incorrect');
-                    
+
                     prevInput.focus();
                     updateClueCrossThrough();
                 }
@@ -2730,7 +2833,7 @@
                 // Show standard play features
                 btnCheck.style.display = 'flex';     // Verify
                 btnClear.style.display = 'flex';     // Clear
-                
+
                 // Hide answer cheats in Player Mode
                 btnRevealCell.style.display = 'none'; // Cell
                 btnRevealWord.style.display = 'none'; // Word
@@ -2739,7 +2842,7 @@
                 // Hide standard play features in Designer Mode
                 btnCheck.style.display = 'none';
                 btnClear.style.display = 'none';
-                
+
                 // Show solver/review tools for Designer Mode
                 btnRevealCell.style.display = 'flex';
                 btnRevealWord.style.display = 'flex';
@@ -2818,7 +2921,7 @@
                 return;
             }
             const activeWord = generator.placedWords.find(w => w.dir === activeDirection && isCellInWord(w, activeRow, activeCol)) ||
-                               generator.placedWords.find(w => isCellInWord(w, activeRow, activeCol));
+                generator.placedWords.find(w => isCellInWord(w, activeRow, activeCol));
             if (!activeWord) return;
 
             const len = activeWord.word.length;
@@ -2896,20 +2999,20 @@
                 const gridWidth = cols * cellSize;
                 const gridHeight = rows * cellSize;
                 const canvas = document.createElement('canvas');
-                
+
                 canvas.width = gridWidth + gridPadding * 2;
                 canvas.height = gridHeight + gridPadding * 2 + 80;
-                
+
                 const ctx = canvas.getContext('2d');
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
+
                 ctx.fillStyle = '#0f1424';
                 ctx.font = 'bold 22px "Outfit", Arial, sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'top';
                 ctx.fillText('CROSSWORD MAKER PUZZLE', canvas.width / 2, 25);
-                
+
                 ctx.fillStyle = '#555555';
                 ctx.font = 'italic 12px "Inter", Arial, sans-serif';
                 ctx.fillText('Solve the across and down clues below', canvas.width / 2, 55);
@@ -2919,14 +3022,14 @@
                         const x = gridPadding + c * cellSize;
                         const y = gridPadding + 80 + r * cellSize;
                         const key = `${r},${c}`;
-                        
+
                         if (generator.grid.hasOwnProperty(key)) {
                             ctx.fillStyle = '#ffffff';
                             ctx.fillRect(x, y, cellSize, cellSize);
                             ctx.strokeStyle = '#000000';
                             ctx.lineWidth = 1.5;
                             ctx.strokeRect(x, y, cellSize, cellSize);
-                            
+
                             const wordStart = generator.placedWords.find(w => w.row === r && w.col === c);
                             if (wordStart) {
                                 ctx.fillStyle = '#000000';
@@ -2935,13 +3038,13 @@
                                 ctx.textBaseline = 'top';
                                 ctx.fillText(wordStart.number.toString(), x + 4, y + 4);
                             }
-                            
+
                             if (appMode === 'designer') {
                                 ctx.fillStyle = '#000000';
                                 ctx.font = 'bold 18px "Outfit", Arial, sans-serif';
                                 ctx.textAlign = 'center';
                                 ctx.textBaseline = 'middle';
-                                ctx.fillText(generator.grid[key], x + cellSize/2, y + cellSize/2 + 2);
+                                ctx.fillText(generator.grid[key], x + cellSize / 2, y + cellSize / 2 + 2);
                             }
                         } else {
                             ctx.fillStyle = '#000000';
@@ -2954,7 +3057,7 @@
                 link.download = `crossword_${appMode === 'designer' ? 'solved' : 'blank'}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                
+
                 showToast('Successfully exported crossword image!', 'success');
             } catch (e) {
                 showToast('PNG image export failed.', 'error');
@@ -2994,13 +3097,13 @@
 
                 const dataStr = JSON.stringify(exportObj, null, 2);
                 const blob = new Blob([dataStr], { type: 'application/json' });
-                
+
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.download = `crossword_${currentTheme.toLowerCase().replace(/\s+/g, '_')}.json`;
                 link.href = url;
                 link.click();
-                
+
                 URL.revokeObjectURL(url);
                 showToast('Crossword configuration exported successfully!', 'success');
             } catch (e) {
@@ -3014,7 +3117,7 @@
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = function (evt) {
                 try {
                     const data = JSON.parse(evt.target.result);
                     let importedWords = [];
@@ -3026,7 +3129,7 @@
                         importedWords = data.words;
                         if (data.gridSize) importedGridSize = parseInt(data.gridSize);
                         if (data.attempts) importedAttempts = parseInt(data.attempts);
-                    } 
+                    }
                     // Support Format B: Flat list of objects
                     else if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object' && !Array.isArray(data[0])) {
                         importedWords = data;
@@ -3076,7 +3179,7 @@
                     // Update global state
                     wordsWithClues = parsedWords;
                     presetSelect.value = ''; // Reset preset since we loaded a custom file
-                    
+
                     // Render and rebuild puzzle
                     renderWordPairsList();
                     saveToLocalStorage();
@@ -3092,7 +3195,7 @@
                 }
             };
 
-            reader.onerror = function() {
+            reader.onerror = function () {
                 showToast('Failed to read the file.', 'error');
                 e.target.value = '';
             };
@@ -3109,14 +3212,14 @@
                     g: parseInt(gridSizeSlider.value),
                     a: parseInt(attemptsSlider.value)
                 };
-                
+
                 if (generator && generator.placedWords.length > 0) {
                     // Compress exact placed words: [word, clue, row, col, dir, number]
                     dataObj.l = generator.placedWords.map(w => [w.word, w.clue, w.row, w.col, w.dir, w.number]);
                 } else {
                     dataObj.w = wordsWithClues.map(p => [p.word, p.clue]);
                 }
-                
+
                 const dataStr = JSON.stringify(dataObj);
                 const base64 = btoa(unescape(encodeURIComponent(dataStr)));
                 const paramName = mode === 'play' ? 'p' : 'd';
@@ -3198,7 +3301,7 @@
                 gridSize: gridSizeSlider.value,
                 attempts: attemptsSlider.value
             }));
-            
+
             if (generator && generator.placedWords.length > 0) {
                 const layout = generator.placedWords.map(w => ({
                     word: w.word,
@@ -3220,7 +3323,7 @@
 
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
-            
+
             let iconSvg = '';
             if (type === 'success') {
                 iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
@@ -3232,7 +3335,7 @@
 
             toast.innerHTML = `${iconSvg} <span>${message}</span>`;
             document.body.appendChild(toast);
-            
+
             setTimeout(() => toast.classList.add('show'), 50);
 
             setTimeout(() => {
@@ -3242,14 +3345,16 @@
         }
 
         function generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                 var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
             });
         }
     </script>
     <script src="components.js"></script>
-        <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+    <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt=""
+            referrerpolicy="no-referrer-when-downgrade" /></noscript>
 </body>
+
 </html>
