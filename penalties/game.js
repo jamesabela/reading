@@ -835,8 +835,7 @@ function showResultOverlay(text, color, detail = '', explanation = '') {
     title.innerText = text;
     title.style.color = color;
     answer.innerText = detail;
-    const linkedExplanation = explanation.replace(/Concept Grid/g, '<a href="../videos.html" style="color: #00d2ff; text-decoration: underline;" target="_blank">Concept Grid</a>');
-    explanationEl.innerHTML = linkedExplanation;
+    explanationEl.innerText = explanation;
     overlay.style.borderColor = color;
     overlay.style.display = 'block';
 
