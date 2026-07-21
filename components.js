@@ -96,6 +96,13 @@ function renderNews() {
 
     const newsItems = [
         {
+            version: "Lateral Thinking Puzzles",
+            date: "Tuesday, July 21, 2026",
+            title: "Mobile Friendly Update",
+            content: "Our <a href=\"https://jamesabela.github.io/jsfun/lateral.html\" target=\"_blank\" style=\"color: var(--primary); text-decoration: underline;\">Lateral Thinking Puzzles</a> tool has been updated to be fully mobile-friendly to help make those long car journeys much more fun with engaging puzzles!",
+            highlight: "MOBILE UPDATE"
+        },
+        {
             version: "Version 1.3.0.0",
             date: "Tuesday, April 14, 2026",
             title: "Enhanced Accessibility & Audio",
