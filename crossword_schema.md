@@ -195,6 +195,7 @@ https://[your-app-domain]/crossword.html?words=[WORD1]:[Clue1]|[WORD2]:[Clue2]&g
 * **`mode`** *(optional)*: The interface mode to load. 
   - Set to `play` to load in solving mode (solving toolbar available, left designer sidebar hidden).
   - Set to `edit` to load in designer mode (full sidebar editor available).
+* **`new`** *(optional)*: Set `new=1` to immediately start a fresh, blank crossword workspace (`crossword.html?new=1`).
 
 ### Custom GPT Prompt Instructions
 

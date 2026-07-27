@@ -1166,23 +1166,35 @@
                     </svg>
                 </div>
 
-                <a href="https://chatgpt.com/g/g-6a098704565c8191a4964214b54ce263-crossword-generator" target="_blank"
-                    class="btn"
-                    style="border-color: var(--accent-purple); color: var(--accent-purple); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.25rem;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        style="color: var(--accent-purple);">
-                        <path d="M12 8V4H8"></path>
-                        <rect width="16" height="12" x="4" y="8" rx="2"></rect>
-                        <path d="M2 14h2M20 14h2M15 13v2M9 13v2"></path>
-                    </svg>
-                    AI Crossword Generator
-                </a>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1.25rem;">
+                    <button id="btn-new-crossword" class="btn" title="Start a brand new empty crossword puzzle"
+                        style="border-color: var(--accent-emerald); color: var(--accent-emerald); padding: 0.7rem 0.4rem; font-size: 0.82rem;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            style="color: var(--accent-emerald);">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        New Crossword
+                    </button>
+                    <a href="https://chatgpt.com/g/g-6a098704565c8191a4964214b54ce263-crossword-generator" target="_blank"
+                        class="btn"
+                        style="border-color: var(--accent-purple); color: var(--accent-purple); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.7rem 0.4rem; font-size: 0.82rem;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            style="color: var(--accent-purple);">
+                            <path d="M12 8V4H8"></path>
+                            <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+                            <path d="M2 14h2M20 14h2M15 13v2M9 13v2"></path>
+                        </svg>
+                        AI Generator
+                    </a>
+                </div>
 
                 <div class="preset-section form-group">
                     <label class="form-label" for="preset-select">Themed Word Presets</label>
                     <div class="select-container">
                         <select id="preset-select">
                             <option value="" disabled>-- Select a theme preset --</option>
+                            <option value="new">✨ Blank New Crossword</option>
                             <option value="tech" selected>💻 Technology & Web Dev</option>
                             <option value="space">🚀 Outer Space Wonders</option>
                             <option value="food">🍕 Culinary & Fine Foods</option>
@@ -1414,14 +1426,14 @@
                         </svg>
                         Solve
                     </button>
-                    <button id="btn-clear" class="btn-tool" title="Reset crossword grid">
+                    <button id="btn-clear" class="btn-tool" title="Reset crossword grid input letters">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5">
                             <path
                                 d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
                             </path>
                         </svg>
-                        Clear
+                        Clear Grid
                     </button>
 
                     <!-- Global Actions -->
@@ -1843,6 +1855,7 @@
         const gridSizeValue = document.getElementById('grid-size-val');
         const attemptsSlider = document.getElementById('attempts');
         const attemptsValue = document.getElementById('attempts-val');
+        const btnNewCrossword = document.getElementById('btn-new-crossword');
         const btnGenerate = document.getElementById('btn-generate');
         const btnAddWord = document.getElementById('btn-add-word');
         const addWordInput = document.getElementById('add-word');
@@ -1883,6 +1896,8 @@
             attemptsSlider.addEventListener('input', (e) => {
                 attemptsValue.textContent = e.target.value;
             });
+
+            if (btnNewCrossword) btnNewCrossword.addEventListener('click', startNewCrossword);
 
             presetSelect.addEventListener('change', (e) => {
                 if (e.target.value) {
@@ -2091,9 +2106,39 @@
             if (btnSolve) btnSolve.style.setProperty('display', 'none', 'important');
         }
 
+        function startNewCrossword() {
+            wordsWithClues = [];
+            sharedLayoutData = null;
+            playerAnswers = {};
+            generator = null;
+
+            if (presetSelect) presetSelect.value = '';
+            if (addWordInput) addWordInput.value = '';
+            if (addClueInput) addClueInput.value = '';
+
+            localStorage.removeItem('crossword_words');
+            localStorage.removeItem('crossword_layout');
+
+            renderWordPairsList();
+            renderEmptyState('New blank crossword initialized. Add custom words in the Word Studio below or select a theme preset to begin.');
+
+            if (window.history && window.history.replaceState) {
+                const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+            }
+
+            showToast('Started a new blank crossword puzzle!', 'success');
+        }
+
         function loadSavedOrPreset() {
-            // Check for URL share link parameter first (p = Play, d = Design/Edit)
+            // Check for URL parameters first (p = Play, d = Design/Edit, new = Start Blank)
             const urlParams = new URLSearchParams(window.location.search);
+            const isNew = urlParams.get('new');
+            if (isNew !== null) {
+                startNewCrossword();
+                return;
+            }
+
             const pParam = urlParams.get('p');
             const dParam = urlParams.get('d');
             const param = pParam || dParam;
@@ -2272,6 +2317,10 @@
         }
 
         function loadPreset(presetKey) {
+            if (presetKey === 'new') {
+                startNewCrossword();
+                return;
+            }
             if (PRESETS[presetKey]) {
                 wordsWithClues = PRESETS[presetKey].map(([w, c]) => ({
                     word: w,
