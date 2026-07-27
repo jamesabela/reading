@@ -1012,6 +1012,10 @@
                 font-family: 'Outfit', sans-serif;
             }
 
+            body.print-solved .grid-container-card::before {
+                content: 'CROSSWORD PUZZLE — SOLUTION KEY' !important;
+            }
+
             .crossword-grid {
                 display: grid !important;
                 grid-template-columns: repeat(var(--cols), 32px) !important;
@@ -1437,14 +1441,22 @@
                     </button>
 
                     <!-- Global Actions -->
-                    <button id="btn-print" class="btn-tool" title="Print puzzle sheet">
+                    <button id="btn-print-puzzle" class="btn-tool" title="Print blank student crossword sheet">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5">
                             <polyline points="6 9 6 2 18 2 18 9"></polyline>
                             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
                             <rect x="6" y="14" width="12" height="8"></rect>
                         </svg>
-                        Print
+                        Print Crossword
+                    </button>
+                    <button id="btn-print-solution" class="btn-tool btn-tool-accent" title="Print solved teacher answer key sheet" style="border-color: var(--accent-purple); color: var(--accent-purple); background: rgba(92, 29, 36, 0.06);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <polyline points="9 15 11 17 15 13"></polyline>
+                        </svg>
+                        Print Solution
                     </button>
                 </div>
             </div>
@@ -1869,7 +1881,8 @@
         const btnRevealWord = document.getElementById('btn-reveal-word');
         const btnSolve = document.getElementById('btn-solve');
         const btnClear = document.getElementById('btn-clear');
-        const btnPrint = document.getElementById('btn-print');
+        const btnPrintPuzzle = document.getElementById('btn-print-puzzle');
+        const btnPrintSolution = document.getElementById('btn-print-solution');
         const btnExportPNG = document.getElementById('btn-export-png');
         const btnExportJSON = document.getElementById('btn-export-json');
         const btnImportJSON = document.getElementById('btn-import-json');
@@ -1956,7 +1969,8 @@
             btnRevealWord.addEventListener('click', revealActiveWord);
             btnSolve.addEventListener('click', solvePuzzle);
             btnClear.addEventListener('click', clearPlayerGrid);
-            btnPrint.addEventListener('click', printPuzzle);
+            if (btnPrintPuzzle) btnPrintPuzzle.addEventListener('click', () => printPuzzle(false));
+            if (btnPrintSolution) btnPrintSolution.addEventListener('click', () => printPuzzle(true));
             if (btnExportPNG) {
                 btnExportPNG.addEventListener('click', exportToPNG);
             }
@@ -2887,6 +2901,9 @@
                 btnRevealCell.style.display = 'none'; // Cell
                 btnRevealWord.style.display = 'none'; // Word
                 btnSolve.style.display = 'none';      // Solve
+
+                if (btnPrintPuzzle) btnPrintPuzzle.style.display = 'flex';
+                if (btnPrintSolution) btnPrintSolution.style.display = 'none';
             } else {
                 // Hide standard play features in Designer Mode
                 btnCheck.style.display = 'none';
@@ -2896,6 +2913,9 @@
                 btnRevealCell.style.display = 'flex';
                 btnRevealWord.style.display = 'flex';
                 btnSolve.style.display = 'flex';
+
+                if (btnPrintPuzzle) btnPrintPuzzle.style.display = 'flex';
+                if (btnPrintSolution) btnPrintSolution.style.display = 'flex';
             }
             if (generator) {
                 renderGrid();
@@ -3022,17 +3042,20 @@
             return isFinished;
         }
 
-        function printPuzzle() {
+        function printPuzzle(solved = false) {
             if (!generator) {
                 showToast('Generate a puzzle before printing!', 'warning');
                 return;
             }
-            if (appMode === 'designer') {
+            if (solved) {
                 document.body.classList.add('print-solved');
             } else {
                 document.body.classList.remove('print-solved');
             }
             window.print();
+            setTimeout(() => {
+                document.body.classList.remove('print-solved');
+            }, 1000);
         }
 
         function exportToPNG() {
