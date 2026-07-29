@@ -1194,20 +1194,18 @@
                 </div>
 
                 <div class="preset-section form-group">
-                    <label class="form-label" for="preset-select">Themed Word Presets</label>
-                    <div class="select-container">
-                        <select id="preset-select">
-                            <option value="" disabled>-- Select a theme preset --</option>
-                            <option value="new">✨ Blank New Crossword</option>
-                            <option value="tech" selected>💻 Technology & Web Dev</option>
-                            <option value="space">🚀 Outer Space Wonders</option>
-                            <option value="food">🍕 Culinary & Fine Foods</option>
-                            <option value="animals">🦁 Wild Animal Kingdom</option>
-                            <option value="igcse_psychology">🧠 iGCSE Psychology</option>
-                            <option value="igcse_computing">💻 iGCSE Computer Science</option>
-                            <option value="igcse_biology">🧬 iGCSE Biology</option>
-                            <option value="igcse_chemistry">🧪 iGCSE Chemistry</option>
-                        </select>
+                    <label class="form-label">Subject & Topic Presets</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <div class="select-container">
+                            <select id="preset-subject-select" aria-label="Select subject">
+                                <option value="">Subject</option>
+                            </select>
+                        </div>
+                        <div class="select-container">
+                            <select id="preset-topic-select" aria-label="Select topic">
+                                <option value="">Topic</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -1537,35 +1535,55 @@
             }
 
             generate() {
-                let bestLayout = null;
-                let bestScore = -1;
-
                 if (this.wordsData.length === 0) return false;
 
-                for (let attempt = 0; attempt < this.attempts; attempt++) {
-                    this._resetGrid();
-                    const shuffledWords = [...this.wordsData];
-                    this._shuffle(shuffledWords);
-                    shuffledWords.sort((a, b) => b.word.length - a.word.length);
+                // Precompute character connectivity for word selection heuristics
+                this._calculateConnectivity();
 
-                    const first = shuffledWords[0];
+                let bestLayout = null;
+                let bestScore = -Infinity;
+
+                const totalWords = this.wordsData.length;
+                const poolSizes = [totalWords];
+                if (totalWords > 12) poolSizes.push(Math.min(totalWords, 25), 20, 15, 12);
+                if (totalWords > 6) poolSizes.push(8);
+                const uniquePoolSizes = [...new Set(poolSizes)].sort((a, b) => b - a);
+
+                for (let attempt = 0; attempt < this.attempts; attempt++) {
+                    const poolSize = uniquePoolSizes[attempt % uniquePoolSizes.length];
+
+                    let candidateWords = [];
+                    if (poolSize === totalWords) {
+                        candidateWords = [...this.wordsData];
+                    } else {
+                        const sortedByConn = [...this.wordsData].sort((a, b) => b.connectivity - a.connectivity);
+                        const topCount = Math.ceil(poolSize * 0.7);
+                        const topSubset = sortedByConn.slice(0, topCount);
+                        const remainingPool = sortedByConn.slice(topCount);
+                        this._shuffle(remainingPool);
+                        candidateWords = topSubset.concat(remainingPool.slice(0, poolSize - topSubset.length));
+                    }
+
+                    if (attempt % 3 === 0) {
+                        candidateWords.sort((a, b) => b.word.length - a.word.length);
+                    } else if (attempt % 3 === 1) {
+                        candidateWords.sort((a, b) => b.connectivity - a.connectivity);
+                    } else {
+                        this._shuffle(candidateWords);
+                    }
+
+                    this._resetGrid();
+                    const first = candidateWords[0];
                     const mid = Math.floor(this.maxGridSize / 2);
                     const direction = Math.random() < 0.5 ? 'H' : 'V';
                     const startRow = direction === 'H' ? mid : mid - Math.floor(first.word.length / 2);
                     const startCol = direction === 'H' ? mid - Math.floor(first.word.length / 2) : mid;
 
-                    if (this._placeWord(first, startRow, startCol, direction)) {
-                        this.placedWords.push({
-                            ...first,
-                            row: startRow,
-                            col: startCol,
-                            dir: direction
-                        });
-
-                        let remaining = shuffledWords.slice(1);
+                    if (this._commitWordPlacement(first, startRow, startCol, direction)) {
+                        let remaining = candidateWords.slice(1);
                         let madeProgress = true;
 
-                        while (madeProgress) {
+                        while (madeProgress && remaining.length > 0) {
                             madeProgress = false;
                             const retryList = [];
                             for (const wData of remaining) {
@@ -1580,14 +1598,26 @@
                         }
                     }
 
-                    const score = this.placedWords.length;
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestLayout = {
-                            grid: { ...this.grid },
-                            placedWords: this.placedWords.map(w => ({ ...w }))
-                        };
-                        if (score === this.wordsData.length) break;
+                    const placedCount = this.placedWords.length;
+                    if (placedCount >= 2) {
+                        const totalIntersections = this._countTotalIntersections();
+                        const dims = this.getDimensions();
+                        const compactness = (dims.rows + dims.cols);
+
+                        // Layout quality scoring formula
+                        const score = (placedCount * 1000) + (totalIntersections * 50) - (compactness * 5);
+
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestLayout = {
+                                grid: { ...this.grid },
+                                placedWords: this.placedWords.map(w => ({ ...w }))
+                            };
+
+                            if (placedCount === totalWords && totalIntersections >= Math.floor(totalWords / 2)) {
+                                break;
+                            }
+                        }
                     }
                 }
 
@@ -1598,6 +1628,7 @@
                     this._assignNumbers();
                     return true;
                 }
+
                 return false;
             }
 
@@ -1627,7 +1658,25 @@
                 this.placedWords = [];
             }
 
-            _placeWord(wordData, row, col, direction) {
+            _calculateConnectivity() {
+                const charCounts = {};
+                for (const wObj of this.wordsData) {
+                    const uniqueChars = new Set(wObj.word);
+                    for (const char of uniqueChars) {
+                        charCounts[char] = (charCounts[char] || 0) + 1;
+                    }
+                }
+
+                for (const wObj of this.wordsData) {
+                    let score = 0;
+                    for (const char of wObj.word) {
+                        score += (charCounts[char] || 0);
+                    }
+                    wObj.connectivity = score;
+                }
+            }
+
+            _canPlaceWord(wordData, row, col, direction) {
                 const word = wordData.word;
                 const length = word.length;
 
@@ -1654,20 +1703,33 @@
                     if (this.grid.hasOwnProperty(`${row - 1},${col}`) || this.grid.hasOwnProperty(`${row + length},${col}`)) return false;
                 }
 
-                for (let i = 0; i < length; i++) {
+                return true;
+            }
+
+            _commitWordPlacement(wordData, row, col, direction) {
+                if (!this._canPlaceWord(wordData, row, col, direction)) return false;
+
+                const word = wordData.word;
+                for (let i = 0; i < word.length; i++) {
                     const r = row + (direction === 'V' ? i : 0);
                     const c = col + (direction === 'H' ? i : 0);
                     this.grid[`${r},${c}`] = word[i];
                 }
+                this.placedWords.push({
+                    ...wordData,
+                    row,
+                    col,
+                    dir: direction
+                });
                 return true;
             }
 
             _findBestFit(wordData) {
                 const word = wordData.word;
-                const targets = [...this.placedWords];
-                this._shuffle(targets);
+                let bestCandidate = null;
+                let bestScore = -Infinity;
 
-                for (const target of targets) {
+                for (const target of this.placedWords) {
                     const targetWord = target.word;
                     const wordSet = new Set(word);
                     const commonLetters = [...new Set(targetWord)].filter(char => wordSet.has(char));
@@ -1684,20 +1746,72 @@
                                 const newRow = interR - (newDir === 'V' ? wIdx : 0);
                                 const newCol = interC - (newDir === 'H' ? wIdx : 0);
 
-                                if (this._placeWord(wordData, newRow, newCol, newDir)) {
-                                    this.placedWords.push({
-                                        ...wordData,
-                                        row: newRow,
-                                        col: newCol,
-                                        dir: newDir
-                                    });
-                                    return true;
+                                if (this._canPlaceWord(wordData, newRow, newCol, newDir)) {
+                                    const candidateScore = this._scoreCandidatePosition(wordData, newRow, newCol, newDir);
+                                    if (candidateScore > bestScore) {
+                                        bestScore = candidateScore;
+                                        bestCandidate = { row: newRow, col: newCol, dir: newDir };
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
+                if (bestCandidate) {
+                    this._commitWordPlacement(wordData, bestCandidate.row, bestCandidate.col, bestCandidate.dir);
+                    return true;
+                }
                 return false;
+            }
+
+            _scoreCandidatePosition(wordData, row, col, direction) {
+                const word = wordData.word;
+                const length = word.length;
+                let intersections = 0;
+
+                for (let i = 0; i < length; i++) {
+                    const r = row + (direction === 'V' ? i : 0);
+                    const c = col + (direction === 'H' ? i : 0);
+                    const key = `${r},${c}`;
+                    if (this.grid.hasOwnProperty(key)) {
+                        intersections++;
+                    }
+                }
+
+                let minR = row, maxR = row + (direction === 'V' ? length : 1);
+                let minC = col, maxC = col + (direction === 'H' ? length : 1);
+
+                for (const w of this.placedWords) {
+                    minR = Math.min(minR, w.row);
+                    maxR = Math.max(maxR, w.row + (w.dir === 'V' ? w.word.length : 1));
+                    minC = Math.min(minC, w.col);
+                    maxC = Math.max(maxC, w.col + (w.dir === 'H' ? w.word.length : 1));
+                }
+
+                const width = maxC - minC;
+                const height = maxR - minR;
+                const area = width * height;
+
+                return (intersections * 50) - area;
+            }
+
+            _countTotalIntersections() {
+                let intersections = 0;
+                const cellUsage = {};
+                for (const w of this.placedWords) {
+                    for (let i = 0; i < w.word.length; i++) {
+                        const r = w.row + (w.dir === 'V' ? i : 0);
+                        const c = w.col + (w.dir === 'H' ? i : 0);
+                        const key = `${r},${c}`;
+                        if (!cellUsage[key]) cellUsage[key] = { H: false, V: false };
+                        cellUsage[key][w.dir] = true;
+                    }
+                }
+                for (const key in cellUsage) {
+                    if (cellUsage[key].H && cellUsage[key].V) intersections++;
+                }
+                return intersections;
             }
 
             _centerGrid() {
@@ -1862,7 +1976,92 @@
         let isSharedPlayOnly = false;
         let sharedLayoutData = null;
 
-        const presetSelect = document.getElementById('preset-select');
+        const presetSubjectSelect = document.getElementById('preset-subject-select');
+        const presetTopicSelect = document.getElementById('preset-topic-select');
+        const presetSelect = {
+            get value() {
+                return presetTopicSelect ? presetTopicSelect.value : '';
+            },
+            set value(val) {
+                syncPresetDropdownsByValue(val);
+            }
+        };
+
+        const SUBJECT_PRESETS = {
+            '✨ Quick Presets': [
+                { topic: 'Blank New Crossword', value: 'new' },
+                { topic: 'Question Editor Set', value: 'editor' },
+                { topic: 'Tech & Web Dev', value: 'tech' },
+                { topic: 'Outer Space Wonders', value: 'space' },
+                { topic: 'Culinary & Fine Foods', value: 'food' },
+                { topic: 'Wild Animal Kingdom', value: 'animals' }
+            ]
+        };
+
+        async function initPresetDropdowns() {
+            try {
+                const res = await fetch('samples.json');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data.samples)) {
+                        data.samples.forEach(s => {
+                            if (!SUBJECT_PRESETS[s.subject]) SUBJECT_PRESETS[s.subject] = [];
+                            SUBJECT_PRESETS[s.subject].push({ topic: s.topic, value: 'file:' + s.file });
+                        });
+                    }
+                }
+            } catch (e) {
+                console.log('Using static fallback for crossword presets.');
+            }
+
+            populatePresetSubjects();
+        }
+
+        function populatePresetSubjects() {
+            if (!presetSubjectSelect) return;
+            presetSubjectSelect.innerHTML = '<option value="">Subject</option>';
+            Object.keys(SUBJECT_PRESETS).forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub;
+                opt.textContent = sub;
+                presetSubjectSelect.appendChild(opt);
+            });
+            presetTopicSelect.innerHTML = '<option value="">Topic</option>';
+        }
+
+        function populatePresetTopics() {
+            if (!presetSubjectSelect || !presetTopicSelect) return;
+            const sub = presetSubjectSelect.value;
+            presetTopicSelect.innerHTML = '<option value="">Topic</option>';
+            if (!sub || !SUBJECT_PRESETS[sub]) return;
+
+            SUBJECT_PRESETS[sub].forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.value;
+                opt.textContent = item.topic;
+                presetTopicSelect.appendChild(opt);
+            });
+        }
+
+        function syncPresetDropdownsByValue(val) {
+            if (!presetSubjectSelect || !presetTopicSelect) return;
+            if (!val) {
+                presetSubjectSelect.value = '';
+                presetTopicSelect.value = '';
+                presetTopicSelect.innerHTML = '<option value="">Topic</option>';
+                return;
+            }
+
+            for (const [subject, list] of Object.entries(SUBJECT_PRESETS)) {
+                const found = list.find(item => item.value === val);
+                if (found) {
+                    presetSubjectSelect.value = subject;
+                    populatePresetTopics();
+                    presetTopicSelect.value = val;
+                    return;
+                }
+            }
+        }
         const gridSizeSlider = document.getElementById('grid-size');
         const gridSizeValue = document.getElementById('grid-size-val');
         const attemptsSlider = document.getElementById('attempts');
@@ -1897,6 +2096,7 @@
         const downCluesList = document.getElementById('down-clues');
 
         document.addEventListener('DOMContentLoaded', () => {
+            initPresetDropdowns();
             setupEventListeners();
             loadAccessibilitySettings();
             loadSavedOrPreset();
@@ -1912,12 +2112,25 @@
 
             if (btnNewCrossword) btnNewCrossword.addEventListener('click', startNewCrossword);
 
-            presetSelect.addEventListener('change', (e) => {
-                if (e.target.value) {
-                    loadPreset(e.target.value);
-                    saveToLocalStorage();
-                }
-            });
+            if (presetSubjectSelect) {
+                presetSubjectSelect.addEventListener('change', () => {
+                    populatePresetTopics();
+                    if (presetTopicSelect.options.length === 2) {
+                        presetTopicSelect.selectedIndex = 1;
+                        loadPreset(presetTopicSelect.value);
+                        saveToLocalStorage();
+                    }
+                });
+            }
+
+            if (presetTopicSelect) {
+                presetTopicSelect.addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        loadPreset(e.target.value);
+                        saveToLocalStorage();
+                    }
+                });
+            }
 
             fontSelect.addEventListener('change', (e) => {
                 applyFontTheme(e.target.value);
@@ -2144,13 +2357,60 @@
             showToast('Started a new blank crossword puzzle!', 'success');
         }
 
+        function loadEditorSet() {
+            const rawSet = localStorage.getItem('penaltyQuestionEditorSet');
+            if (!rawSet) {
+                showToast('No question set found from Editor. Create one in Question Editor first!', 'error');
+                return false;
+            }
+            try {
+                const data = JSON.parse(rawSet);
+                if (!Array.isArray(data.questions) || data.questions.length === 0) {
+                    showToast('Question set from Editor is empty.', 'error');
+                    return false;
+                }
+
+                const parsed = data.questions
+                    .map(q => ({
+                        word: String(q.word || q.answer || '').trim().toUpperCase().replace(/[^A-Z]/g, ''),
+                        clue: String(q.definition || q.question || q.clue || '').trim(),
+                        id: generateUUID()
+                    }))
+                    .filter(q => q.word.length >= 2 && q.clue.length > 0);
+
+                if (parsed.length === 0) {
+                    showToast('No valid words found in Editor set (words must be at least 2 letters).', 'error');
+                    return false;
+                }
+
+                wordsWithClues = parsed;
+                sharedLayoutData = null;
+                if (presetSelect) presetSelect.value = 'editor';
+                renderWordPairsList();
+                generatePuzzle();
+                isSharedPlayOnly = false;
+                setAppMode('designer');
+                showToast(`Loaded ${wordsWithClues.length} words from Question Set Editor!`, 'success');
+                return true;
+            } catch (e) {
+                console.error("Error loading editor set into crossword:", e);
+                showToast('Failed to load Question Set from Editor.', 'error');
+                return false;
+            }
+        }
+
         function loadSavedOrPreset() {
-            // Check for URL parameters first (p = Play, d = Design/Edit, new = Start Blank)
+            // Check for URL parameters first (p = Play, d = Design/Edit, new = Start Blank, editorSet = Load Editor)
             const urlParams = new URLSearchParams(window.location.search);
             const isNew = urlParams.get('new');
             if (isNew !== null) {
                 startNewCrossword();
                 return;
+            }
+
+            const isEditorSet = urlParams.get('editorSet');
+            if (isEditorSet !== null) {
+                if (loadEditorSet()) return;
             }
 
             const pParam = urlParams.get('p');
@@ -2330,9 +2590,43 @@
             }
         }
 
-        function loadPreset(presetKey) {
+        async function loadPreset(presetKey) {
             if (presetKey === 'new') {
                 startNewCrossword();
+                return;
+            }
+            if (presetKey === 'editor') {
+                loadEditorSet();
+                return;
+            }
+            if (presetKey.startsWith('file:')) {
+                const filePath = presetKey.substring(5);
+                try {
+                    const response = await fetch(filePath);
+                    if (!response.ok) throw new Error('Could not load sample file.');
+                    const data = await response.json();
+                    if (!Array.isArray(data.questions)) throw new Error('Invalid sample format.');
+
+                    const parsed = data.questions
+                        .map(q => ({
+                            word: String(q.word || q.answer || '').trim().toUpperCase().replace(/[^A-Z]/g, ''),
+                            clue: String(q.definition || q.question || q.clue || '').trim(),
+                            id: generateUUID()
+                        }))
+                        .filter(q => q.word.length >= 2 && q.clue.length > 0);
+
+                    if (parsed.length === 0) throw new Error('No valid words found in sample file.');
+
+                    wordsWithClues = parsed;
+                    sharedLayoutData = null;
+                    presetSelect.value = presetKey;
+                    renderWordPairsList();
+                    generatePuzzle();
+                    showToast(`Loaded sample set (${wordsWithClues.length} words)!`, 'success');
+                } catch (err) {
+                    console.error('Error loading sample file:', err);
+                    showToast(err.message || 'Failed to load sample set.', 'error');
+                }
                 return;
             }
             if (PRESETS[presetKey]) {

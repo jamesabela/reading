@@ -245,7 +245,8 @@
                 <button id="show-import-btn" type="button">Import Text</button>
                 <button id="load-btn" type="button">Load JSON</button>
                 <button id="save-btn" class="primary" type="button">Save JSON</button>
-                <a class="link-btn" href="penalties.html" id="back-to-game">Back to Game</a>
+                <a class="link-btn" href="penalties.html" id="back-to-game">Back to Penalties</a>
+                <a class="link-btn" href="crossword.html" id="generate-crossword">Generate Crossword</a>
                 <input id="file-input" type="file" accept="application/json,.json" hidden>
             </div>
         </div>
@@ -550,13 +551,39 @@
         document.getElementById('import-replace-btn').onclick = () => importQuestions('replace');
         document.getElementById('import-add-btn').onclick = () => importQuestions('add');
 
-        document.getElementById('load-btn').onclick = () => fileInput.click();
-        Object.keys(SAMPLE_SETS).forEach((subject) => {
-            const option = document.createElement('option');
-            option.value = subject;
-            option.textContent = subject;
-            sampleSubjectSelect.appendChild(option);
-        });
+        function populateSampleSubjects() {
+            sampleSubjectSelect.innerHTML = '<option value="">Subject</option>';
+            Object.keys(SAMPLE_SETS).forEach((subject) => {
+                const option = document.createElement('option');
+                option.value = subject;
+                option.textContent = subject;
+                sampleSubjectSelect.appendChild(option);
+            });
+            sampleTopicSelect.innerHTML = '<option value="">Topic</option>';
+        }
+
+        async function loadSamplesRegistry() {
+            try {
+                const res = await fetch('samples.json');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (Array.isArray(data.samples) && data.samples.length > 0) {
+                    const dynamicSets = {};
+                    data.samples.forEach(s => {
+                        if (!dynamicSets[s.subject]) dynamicSets[s.subject] = [];
+                        dynamicSets[s.subject].push({ topic: s.topic, file: s.file });
+                    });
+                    Object.keys(SAMPLE_SETS).forEach(k => delete SAMPLE_SETS[k]);
+                    Object.assign(SAMPLE_SETS, dynamicSets);
+                    populateSampleSubjects();
+                }
+            } catch (e) {
+                // Fallback to static SAMPLE_SETS
+            }
+        }
+
+        populateSampleSubjects();
+        loadSamplesRegistry();
 
         function populateSampleTopics() {
             const subject = sampleSubjectSelect.value;
@@ -632,8 +659,8 @@
         };
 
         document.getElementById('save-btn').onclick = () => {
-            if (questions.length < 4) {
-                setStatus('Add at least 4 questions before saving for the penalty game.', true);
+            if (questions.length < 1) {
+                setStatus('Add at least 1 question before saving.', true);
                 return;
             }
 
@@ -653,17 +680,34 @@
             event.preventDefault();
 
             if (questions.length < 4) {
-                setStatus('Add at least 4 questions before going back to the game.', true);
+                setStatus('Add at least 4 questions before going back to Penalties.', true);
                 return;
             }
 
             if (!downloadedSinceChange) {
-                const shouldContinue = window.confirm('These questions will be sent to the game in this browser. Download a JSON file if you want to keep a permanent copy. Continue to the game?');
+                const shouldContinue = window.confirm('These questions will be sent to Penalties in this browser. Download a JSON file if you want to keep a permanent copy. Continue to Penalties?');
                 if (!shouldContinue) return;
             }
 
             localStorage.setItem(EDITOR_SET_KEY, JSON.stringify(buildQuestionSet()));
             window.location.href = 'penalties.html?editorSet=1';
+        };
+
+        document.getElementById('generate-crossword').onclick = (event) => {
+            event.preventDefault();
+
+            if (questions.length < 2) {
+                setStatus('Add at least 2 questions before generating a crossword.', true);
+                return;
+            }
+
+            if (!downloadedSinceChange) {
+                const shouldContinue = window.confirm('These questions will be sent to Crossword Studio in this browser. Download a JSON file if you want to keep a permanent copy. Continue to Crossword?');
+                if (!shouldContinue) return;
+            }
+
+            localStorage.setItem(EDITOR_SET_KEY, JSON.stringify(buildQuestionSet()));
+            window.location.href = 'crossword.html?editorSet=1';
         };
 
         render();

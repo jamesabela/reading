@@ -21,8 +21,6 @@ function renderNav() {
                 <li><a href="research.html" class="${currentPath === 'research.html' ? 'active' : ''}">Research</a></li>
                 <li><a href="dyslexia.html" class="${currentPath === 'dyslexia.html' ? 'active' : ''}">Dyslexia</a></li>
                 <li><a href="eal.html" class="${currentPath === 'eal.html' ? 'active' : ''}">EAL Support</a></li>
-                <li><a href="news.html" class="${currentPath === 'news.html' ? 'active' : ''}">News</a></li>
-                <li><a href="videos.html" class="${currentPath === 'videos.html' ? 'active' : ''}">Videos</a></li>
                 <li><a href="apps.html" class="${currentPath === 'apps.html' ? 'active' : ''}">English Tools</a></li>
                 <li><a href="contact.html" class="${currentPath === 'contact.html' ? 'active' : ''}">Contact</a></li>
             </ul>
@@ -71,7 +69,6 @@ function renderFooter() {
                         <li><a href="research.html" style="color: var(--text-muted); text-decoration: none;">Research</a></li>
                         <li><a href="dyslexia.html" style="color: var(--text-muted); text-decoration: none;">Dyslexia Support</a></li>
                         <li><a href="eal.html" style="color: var(--text-muted); text-decoration: none;">EAL Support</a></li>
-                        <li><a href="news.html" style="color: var(--text-muted); text-decoration: none;">Latest News</a></li>
                         <li><a href="contact.html" style="color: var(--text-muted); text-decoration: none;">Contact Us</a></li>
                     </ul>
                 </div>
@@ -90,48 +87,9 @@ function renderFooter() {
     `;
 }
 
-function renderNews() {
-    const newsGrid = document.getElementById('news-grid');
-    if (!newsGrid) return;
-
-    const newsItems = [
-        {
-            version: "Lateral Thinking Puzzles",
-            date: "Tuesday, July 21, 2026",
-            title: "Mobile Friendly Update",
-            content: "Our <a href=\"https://jamesabela.github.io/jsfun/lateral.html\" target=\"_blank\" style=\"color: var(--primary); text-decoration: underline;\">Lateral Thinking Puzzles</a> tool has been updated to be fully mobile-friendly to help make those long car journeys much more fun with engaging puzzles!",
-            highlight: "MOBILE UPDATE"
-        },
-        {
-            version: "Version 1.3.0.0",
-            date: "Tuesday, April 14, 2026",
-            title: "Enhanced Accessibility & Audio",
-            content: "The latest update enhances usability and accessibility by introducing dynamic right-click context menus for both grid quadrants and the centre word. New read-aloud features allow users to hear selected text, supporting improved accessibility. Piper Neural text to speech has been integrated to provide high-quality offline speech synthesis, now fully managed within the application for a seamless experience.",
-            highlight: "NEW AUDIO SYSTEM"
-        },
-        {
-            version: "Version 1.2.0.0",
-            date: "Friday, April 10, 2026",
-            title: "Expanded Export & Layouts",
-            content: "This version adds new export options to make Concept Grid even more useful in the classroom, including Excel (XLSX) export and a new spelling worksheet PDF export with a 'Look-Say-Cover-Write-Check' layout. Strengthens accessibility with better spacing and layout support for Open Dyslexic.",
-            highlight: "CLASSROOM TOOLS"
-        }
-    ];
-
-    newsGrid.innerHTML = newsItems.map(item => `
-        <div class="card reveal">
-            <span style="font-size: 0.7rem; font-weight: 800; color: var(--secondary); text-transform: uppercase;">${item.highlight} • ${item.date}</span>
-            <h2 style="margin: 1rem 0;">${item.version}</h2>
-            <h4 style="color: var(--primary); margin-bottom: 1rem;">${item.title}</h4>
-            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">${item.content}</p>
-        </div>
-    `).join('');
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     renderNav();
     renderFooter();
-    renderNews();
 
     // Scroll effect for nav
     window.addEventListener('scroll', () => {

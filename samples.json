@@ -1,0 +1,116 @@
+{
+  "samples": [
+    {
+      "id": "vocab-general",
+      "subject": "Vocabulary",
+      "topic": "General",
+      "title": "Vocabulary - General",
+      "file": "penalties/penaltyshootout.json"
+    },
+    {
+      "id": "igcse-computing-general",
+      "subject": "iGCSE Computing",
+      "topic": "General",
+      "title": "iGCSE Computer Science - General",
+      "file": "editor/samples/igcse-computing-sample.json"
+    },
+    {
+      "id": "igcse-computing-data-representation",
+      "subject": "iGCSE Computing",
+      "topic": "Data Representation",
+      "title": "iGCSE Computer Science - Data Representation",
+      "file": "editor/samples/igcse-computing-data-representation.json"
+    },
+    {
+      "id": "igcse-computing-data-transmission",
+      "subject": "iGCSE Computing",
+      "topic": "Data Transmission",
+      "title": "iGCSE Computer Science - Data Transmission",
+      "file": "editor/samples/igcse-computing-data-transmission.json"
+    },
+    {
+      "id": "igcse-computing-hardware",
+      "subject": "iGCSE Computing",
+      "topic": "Hardware",
+      "title": "iGCSE Computer Science - Hardware",
+      "file": "editor/samples/igcse-computing-hardware.json"
+    },
+    {
+      "id": "igcse-computing-software",
+      "subject": "iGCSE Computing",
+      "topic": "Software",
+      "title": "iGCSE Computer Science - Software",
+      "file": "editor/samples/igcse-computing-software.json"
+    },
+    {
+      "id": "igcse-computing-internet",
+      "subject": "iGCSE Computing",
+      "topic": "Internet",
+      "title": "iGCSE Computer Science - Internet",
+      "file": "editor/samples/igcse-computing-internet.json"
+    },
+    {
+      "id": "igcse-computing-databases",
+      "subject": "iGCSE Computing",
+      "topic": "Databases",
+      "title": "iGCSE Computer Science - Databases",
+      "file": "editor/samples/igcse-computing-databases.json"
+    },
+    {
+      "id": "igcse-biology",
+      "subject": "iGCSE Biology",
+      "topic": "General",
+      "title": "iGCSE Biology",
+      "file": "editor/samples/igcse-biology-sample.json"
+    },
+    {
+      "id": "igcse-psychology",
+      "subject": "iGCSE Psychology",
+      "topic": "General",
+      "title": "iGCSE Psychology",
+      "file": "editor/samples/igcse-psychology-sample.json"
+    },
+    {
+      "id": "igcse-business-studies",
+      "subject": "iGCSE Business Studies",
+      "topic": "General",
+      "title": "iGCSE Business Studies",
+      "file": "editor/samples/igcse-business-studies-sample.json"
+    },
+    {
+      "id": "igcse-economics",
+      "subject": "iGCSE Economics",
+      "topic": "General",
+      "title": "iGCSE Economics",
+      "file": "editor/samples/igcse-economics-sample.json"
+    },
+    {
+      "id": "igcse-geography",
+      "subject": "iGCSE Geography",
+      "topic": "General",
+      "title": "iGCSE Geography",
+      "file": "editor/samples/igcse-geography-sample.json"
+    },
+    {
+      "id": "igcse-history-ww2",
+      "subject": "iGCSE History",
+      "topic": "Second World War",
+      "title": "iGCSE History - Second World War",
+      "file": "editor/samples/igcse-history-ww2-sample.json"
+    },
+    {
+      "id": "igcse-physics",
+      "subject": "iGCSE Physics",
+      "topic": "General",
+      "title": "iGCSE Physics",
+      "file": "editor/samples/igcse-physics-sample.json"
+    },
+    {
+      "id": "igcse-chemistry",
+      "subject": "iGCSE Chemistry",
+      "topic": "General",
+      "title": "iGCSE Chemistry",
+      "file": "editor/samples/igcse-chemistry-sample.json"
+    }
+  ]
+}
