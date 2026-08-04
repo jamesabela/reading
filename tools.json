@@ -66,6 +66,14 @@
         "desc": "Scratch-based story plot device generator for creative writing inspiration.",
         "tag": "Storytelling / KS1-3",
         "isExternal": true
+      },
+      {
+        "title": "AmberPuppets",
+        "emoji": "🎭",
+        "url": "https://www.amberpuppets.com/",
+        "desc": "Turn your classroom into a digital puppet theater! Interactive storytelling app designed for primary literacy.",
+        "tag": "Storytelling / Primary",
+        "isExternal": true
       }
     ]
   },
