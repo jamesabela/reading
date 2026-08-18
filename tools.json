@@ -266,14 +266,6 @@
         "desc": "Get two students presenting at once — great for peer assessment activities.",
         "tag": "Picker / Peer-Assessment",
         "isExternal": true
-      },
-      {
-        "title": "Number Flash Cards",
-        "emoji": "🔢",
-        "url": "https://sethideclercq.com/tools/number-gen.html",
-        "desc": "Random number flash card generator for mathematics drills.",
-        "tag": "Maths / Primary",
-        "isExternal": true
       }
     ]
   },
